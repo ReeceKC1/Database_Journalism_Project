@@ -1,3 +1,3 @@
-source env/Scripts/activate
+source database_env/Scripts/activate
 export FLASK_APP=database_journalism_flask_main.py
 flask run

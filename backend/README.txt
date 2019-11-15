@@ -9,4 +9,6 @@ get requirements.txt
 install requirements.txt (must be in dir with requirements.txt)
     pip install -r requirements.txt
 
-DO NOT COMMIT VIRTUAL ENVIRONMENTS
+Notes:
+    DO NOT COMMIT VIRTUAL ENVIRONMENTS
+    DO NOT COMMIT __pycache__
