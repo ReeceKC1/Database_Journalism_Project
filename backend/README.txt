@@ -9,6 +9,11 @@ get requirements.txt
 install requirements.txt (must be in dir with requirements.txt)
     pip install -r requirements.txt
 
+start flask app
+    flask run
+start in debug
+    python database_journalism_flask_main.py
+
 Notes:
     DO NOT COMMIT VIRTUAL ENVIRONMENTS
     DO NOT COMMIT __pycache__
