@@ -4,14 +4,17 @@ from sqlalchemy.sql import text
 from functions import *
 from enums import *
 from database import connection
+from flask_cors import CORS
 
 app = Flask(__name__)
 
+CORS(app)
+
 @app.route('/', methods=['GET'])
 def home():
-    return "goodbye"
+    return jsonify("goodbye")
 
-@app.route('/add', methods=['GET'])
+@app.route('/add', methods=['POST'])
 def add_student():
     connection.execute(text(f'SELECT * FROM student'))
     return jsonify({'name': 'gay'})

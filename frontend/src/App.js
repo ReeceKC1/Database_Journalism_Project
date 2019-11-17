@@ -11,7 +11,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('localhost:5000/', {
+    axios.get('http://localhost:5000/', {
       headers: { 
         "Access-Control-Allow-Origin": "*"
       },
