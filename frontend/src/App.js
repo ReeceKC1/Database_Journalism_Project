@@ -1,7 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import { observable, decorate } from '../node_modules/mobx/lib/mobx'
+import { observer, } from '../node_modules/mobx-react/dist/mobx-react'
+import { globalState } from './state'
 
-export default class App extends React.Component {
+const App  = observer(class App extends React.Component {
+  taco = []
   constructor(props) {
     super(props);
 
@@ -31,9 +35,20 @@ export default class App extends React.Component {
     return (
       <div className="container padded">
         PP POOPOO
+        {globalState.appState.tacoGlobal &&
+        <div>
+          hello
+        </div>
+      }
       </div>
     );
   }
   
-}
+})
+
+decorate(App, {
+  taco: observable,
+})
+
+export default App
 
