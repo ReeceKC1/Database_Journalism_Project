@@ -97,13 +97,14 @@ metadata.create_all(engine)
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     return "goodbye"
 
 @app.route('/add', methods=['GET'])
 def add_student():
     connection.execute(text(f''))
+    return jsonify({'name': 'gay'})
 
 @app.errorhandler(404)
 def not_found(error):
