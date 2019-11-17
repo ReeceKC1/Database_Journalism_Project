@@ -11,10 +11,19 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('localhost:5000').then((response) => {
+    axios.get('localhost:5000/', {
+      headers: { 
+        "Access-Control-Allow-Origin": "*"
+      },
+    responseType: 'json',
+     }).then(response => {
       console.log(response);
+    }).catch(error => console.log('here',error));
+
+    // axios.get('').then((response) => {
+    //   console.log(response);
       
-    }).catch((error) => console.log('here',error));
+    // }).catch((error) => console.log('here',error));
   }
 
 
