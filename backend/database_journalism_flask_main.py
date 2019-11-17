@@ -5,7 +5,7 @@ from functions import *
 from enums import *
 
 # Creating/Getting database
-engine = create_engine('mysql://user:password@159.203.125.59:3306/database')
+engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database')
 # Creating metadata object
 metadata = MetaData()
 # Creating metadata object
