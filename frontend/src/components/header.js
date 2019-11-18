@@ -15,12 +15,14 @@ export default class Header extends React.Component {
         this.setState({value});
     };
 
+    
     render() {
+
         return (
             <div>
                 <AppBar position="static">
                     <Tabs value={this.state.value} onChange={(event, value) => this.handleChange(event, value)} aria-label="header">
-                        <Tab label="Home" component={NavLink} to={"/"} style={{textDecoration: "none"}}/>
+                        <Tab label="Home" component={NavLink} to={"/"} />
                         <Tab label="Create Evaluation" component={NavLink} to={"/create"}/>
                         <Tab label="Item Three" />
                     </Tabs>
