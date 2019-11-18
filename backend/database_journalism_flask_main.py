@@ -23,7 +23,11 @@ def add_student():
 def create_evaluation():
     return
 
-@app.route('api/evaluation/create', methods=['POST'])
+@app.route('api/evaluation/get', methods=['GET'])
+def create_evaluation():
+    return
+
+@app.route('api/evaluation/get?type=<string:type>&year=<string:year>', methods=['GET'])
 def create_evaluation():
     return
 

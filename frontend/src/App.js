@@ -42,11 +42,6 @@ const App  = observer(class App extends React.Component {
           <Route path="/">
             <div className="container padded">
               PP POOPOO
-              {globalState.appState.tacoGlobal &&
-              <div>
-                hello
-              </div>
-            }
             </div>
           </Route>
         </Switch>

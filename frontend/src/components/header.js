@@ -1,20 +1,18 @@
 import React from 'react';
 import {AppBar, Tabs, Tab} from '@material-ui/core/';
 import {NavLink, Link} from 'react-router-dom';
-import { observer, } from '../node_modules/mobx-react/dist/mobx-react'
+import { observer, } from 'mobx-react'
+import { globalState, setCurrentTab } from '../state'
 
 
  const Header = observer(class Header extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            value: 0
-        };
     }
 
     handleChange = (event, value) => {
-        this.setState({value});
+        setCurrentTab(value)
     };
 
     
@@ -23,7 +21,7 @@ import { observer, } from '../node_modules/mobx-react/dist/mobx-react'
         return (
             <div>
                 <AppBar position="static">
-                    <Tabs value={this.state.value} onChange={(event, value) => this.handleChange(event, value)} aria-label="header">
+                    <Tabs value={globalState.appState.currentTab} onChange={(event, value) => this.handleChange(event, value)} aria-label="header">
                         <Tab label="Home" component={NavLink} to={"/"} />
                         <Tab label="Create Evaluation" component={NavLink} to={"/create"}/>
                         <Tab label="Item Three" />

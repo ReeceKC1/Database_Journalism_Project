@@ -2,11 +2,11 @@ import { observable, decorate } from '../node_modules/mobx/lib/mobx'
 
 // component for app state
 const appState = {
-    tacoGlobal: false,
+    currentTab: 0,
 }
 // decorating components
 decorate(appState, {
-    tacoGlobal: observable,
+    currentTab: observable,
 })
 // global state variable
 export const globalState = {
@@ -14,3 +14,6 @@ export const globalState = {
 }
 
 // *********** actions on the state ***************
+export function setCurrentTab(value){
+    globalState.currentTab = value
+}
