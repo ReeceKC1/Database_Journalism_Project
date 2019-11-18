@@ -6,6 +6,7 @@ import { globalState } from './state'
 import ReactDOM from 'react-dom';
 import {Switch, Route} from 'react-router-dom';
 import Header from './components/header';
+import CreateEvaluation from './pages/create_evaluation';
 
 const App  = observer(class App extends React.Component {
   constructor(props) {
@@ -32,7 +33,7 @@ const App  = observer(class App extends React.Component {
         {/* Main Body Routes */}
         <Switch>
           <Route path="/create">
-            This is the route page
+            <CreateEvaluation />
 
           </Route>
 
