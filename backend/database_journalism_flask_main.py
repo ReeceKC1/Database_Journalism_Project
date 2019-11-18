@@ -14,11 +14,6 @@ CORS(app)
 def home():
     return jsonify("goodbye")
 
-@app.route('/add', methods=['POST'])
-def add_student():
-    connection.execute(text(f'SELECT * FROM student'))
-    return jsonify({'name': 'gay'})
-
 @app.route('/api/evaluation/create', methods=['POST'])
 def create_evaluation():
     return
