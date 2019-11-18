@@ -19,16 +19,16 @@ def add_student():
     connection.execute(text(f'SELECT * FROM student'))
     return jsonify({'name': 'gay'})
 
-@app.route('api/evaluation/create', methods=['POST'])
+@app.route('/api/evaluation/create', methods=['POST'])
 def create_evaluation():
     return
 
-@app.route('api/evaluation/get', methods=['GET'])
-def create_evaluation():
+@app.route('/api/evaluation/get', methods=['GET'])
+def get_evaluation():
     return
 
-@app.route('api/evaluation/get?type=<string:type>&year=<string:year>', methods=['GET'])
-def create_evaluation():
+@app.route('/api/evaluation/get?type=<string:type>&year=<string:year>', methods=['GET'])
+def get_evaluation_by_key():
     return
 
 @app.errorhandler(404)
