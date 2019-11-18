@@ -19,6 +19,14 @@ def add_student():
     connection.execute(text(f'SELECT * FROM student'))
     return jsonify({'name': 'gay'})
 
+@app.route('api/evaluation/create', methods=['POST'])
+def create_evaluation():
+    return
+
+@app.route('api/evaluation/create', methods=['POST'])
+def create_evaluation():
+    return
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)

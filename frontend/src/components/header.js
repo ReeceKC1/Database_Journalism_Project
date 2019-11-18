@@ -1,8 +1,10 @@
 import React from 'react';
 import {AppBar, Tabs, Tab} from '@material-ui/core/';
 import {NavLink, Link} from 'react-router-dom';
+import { observer, } from '../node_modules/mobx-react/dist/mobx-react'
 
-export default class Header extends React.Component {
+
+ const Header = observer(class Header extends React.Component {
     constructor(props) {
         super(props);
 
@@ -37,4 +39,6 @@ export default class Header extends React.Component {
             </div>
         );
     }
-}
+})
+
+export default Header
