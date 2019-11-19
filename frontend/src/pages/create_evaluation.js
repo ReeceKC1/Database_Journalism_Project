@@ -77,6 +77,7 @@ export default class CreateEvaluation extends React.Component {
     // Handle Submit will format data properly
     handleSubmit = (event) => {
         console.log('I am submitting');
+        console.log(this.state);
     };
 
     render() {
@@ -103,7 +104,7 @@ export default class CreateEvaluation extends React.Component {
           );
 
         return (
-            <Container maxWidth="sm">
+            <Container maxWidth="md" minwidth="sm">
                 <form className={useStyles.container} noValidate autoComplete="off" onSubmit={this.handleSubmit} >
                     {/* Title */}
                     <div >

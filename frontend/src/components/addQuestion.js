@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, TextField, Button, FormControl, InputLabel, Select,
+import { Grid, TextField, Button, FormControl, InputLabel, Select,
     MenuItem } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
+import Option from '../components/addOption';
 
 export default class Question extends React.Component {
     constructor(props) {
@@ -32,60 +33,127 @@ export default class Question extends React.Component {
     changeLabel = (event) => {
         let value = event.target.value;
         this.setState({label: value});
-        console.log('Change Label', value);
-        // this.notifyParentOnChange();
+
+        this.notifyParentOnChange('label', value);
     };
 
     changeQuestion = (event) => {
         let value = event.target.value;
         
         this.setState({question: value});
-        // this.notifyParentOnChange();
+        this.notifyParentOnChange('question', value);
     };
 
-    // Let the parent know the questions info on change
-    notifyParentOnChange = () => {
-        let question = {
-            id: this.state.num,
-            label: this.state.label,
-            question: this.state.question,
-            options: this.state.options
-        };
+    // TODO might want to change if 
+    // I am going to be able to change option order
+    optionChange = (value) => {
+        let id = value.id;
+        let options = this.state.options;
+        let optionNdx = options[id];
 
-        console.log('tyring to change', question);
+        // Changing the option value
+        optionNdx.option_text = value.option_text;
+
+        this.setState({options: options});
+        this.notifyParentOnChange('options', options);
+    }
+
+    // Let the parent know the questions info on change
+    notifyParentOnChange = (option, value) => {
+        let question;
+        if(option == 'label') {
+            question = {
+                id: this.state.num,
+                label: value,
+                question: this.state.question,
+                options: this.state.options
+            };
+        } else if(option == 'question') {
+            question = {
+                id: this.state.num,
+                label: this.state.label,
+                question: value,
+                options: this.state.options
+            };
+        } else if(option == 'options') {
+            question = {
+                id: this.state.num,
+                label: this.state.label,
+                question: this.state.question,
+                options: value
+            };
+        }
+        
+
+        // console.log('tyring to change', question);
         
         this.props.updateQuestion(question);
     }
 
+    // Add new option
+    addOption = () => {
+        let options = this.state.options;
+        let option = {
+            id: this.state.options.length,
+            option_text: ''
+        };
+
+        options.push(option);
+
+        this.setState({options: options});
+    };
+
+    // Edit an option
+    
+
     render() {
+        const renderOptions = this.state.options.map((option) => 
+            <div key={option.id}>
+                <Option id={option.id} 
+                optionTextChange={(value) => this.optionChange(value)}
+                />
+            </div>
+        );
+
         return (
             <div>
-                <Container maxWidth="sm" style={{backgroundColor: '#cfe8fc', marginBottom: '20px'}}>
-                    {/* Question Number */}
-                    <small>Question: {this.state.num}</small>
+                <Grid container style={{backgroundColor: '#cfe8fc', marginBottom: '20px'}}>
+                    <Grid item xs={12}>
+                        {/* Question Number */}
+                        <small>Question: {this.state.num}</small>
 
-                    {/* Question Label */}
-                    <div >
+                        {/* Question Label */}
+                        <div >
+                                <TextField
+                                id="standard-basic"
+                                label="Question Label"
+                                margin="normal"
+                                fullWidth
+                                onChange={(event) => this.changeLabel(event)}
+                                />
+                            </div>
+
+                        {/* Question */}
+                        <div >
                             <TextField
                             id="standard-basic"
-                            label="Question Label"
+                            label="Question"
                             margin="normal"
                             fullWidth
-                            onChange={(event) => this.changeLabel(event)}
-                            />
+                            onChange={(event) => this.changeQuestion(event)}
+                        />
                         </div>
 
-                    {/* Question */}
-                    <div >
-                        <TextField
-                        id="standard-basic"
-                        label="Question"
-                        margin="normal"
-                        fullWidth
-                        onChange={(event) => this.changeQuestion(event)}
-                    />
-                    </div>
-                </Container>
+                        {/* Options */}
+                        <hr></hr>
+                        {renderOptions}
+                        <Button variant="outlined" color="primary" type="button" onClick={() => this.addOption()}>
+                            Add Option
+                        </Button>
+                        <br></br>
+
+                    </Grid>
+                </Grid>
             </div>
         );
     }
