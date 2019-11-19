@@ -14,6 +14,18 @@ CORS(app)
 def home():
     return jsonify("goodbye")
 
+@app.route('/api/student/check.<string:id>', methods=['GET'])
+def check_student():
+    return
+
+@app.route('/api/supervisor/check.<string:email>', methods=['GET'])
+def supervisor_check():
+    return
+
+@app.route('/api/company/check.<string:name>', methods=['GET'])
+def company_check():
+    return
+
 @app.route('/api/evaluation/create', methods=['POST'])
 def create_evaluation():
     return
@@ -24,6 +36,10 @@ def get_evaluation():
 
 @app.route('/api/evaluation/get?type=<string:type>&year=<string:year>', methods=['GET'])
 def get_evaluation_by_key():
+    return
+
+@app.route('/api/answer/evaluation', methods=['POST'])
+def create_answer():
     return
 
 @app.errorhandler(404)
