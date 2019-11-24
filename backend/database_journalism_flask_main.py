@@ -47,7 +47,6 @@ def create_evaluation():
     session = Session()
     try:
         questions = request.json.pop('questions')
-        print(request.json)
         evaluation = Evaluation(**request.json)
         session.add(evaluation)
         session.commit()
@@ -56,12 +55,11 @@ def create_evaluation():
         # Iterating through each question
         for question in questions:
             # print(question)
-            question.pop('id')
+            question['order_value'] = question.pop('id')
             question['question_id'] = str(uuid.uuid1())
             question['evaluation_year'] = evaluation.year
             question['evaluation_type'] = evaluation.eval_type
             options = question.pop('options')
-            print(question)
             question_obj = Question(**question)
             session.add(question_obj)
             session.commit()
@@ -98,12 +96,53 @@ def get_evaluation():
 
 @app.route('/api/answer/evaluation', methods=['POST'])
 def create_answer():
-    return
+    session = Session()
+    try:
+        evaluation = request.json
 
-@app.route('/api/destroy_all')
-def destroy_all():
-    destroy_database()
-    return jsonify({'success': 'destroyed database'}), 200
+        student = evaluation.pop('student')
+        session.add(student)
+
+        company = evaluation.pop('company')
+        session.add(company)
+
+        supervisor = evaluation.pop('supervisor')
+        session.add(supervisor)
+        session.commit()
+
+        internship = evaluation.pop('internship')
+        session.add(internship)
+        session.commit()
+
+        answers = evaluation.pop('answers')
+
+        if evaluation['eval_type'] == 'portfolio_eval':
+            stuff
+        else:
+            commment_text = evaluation.pop('commment_text')
+            comment = {
+                'comment_text': comment_text,
+                'comment_id': str(uuid.uuid1())
+            }
+            session.add(comment)
+            session.commit()
+
+            evaluation['student_id'] = student['student_id']
+            evaluation['company_name'] = company['company_name']
+            evaluation['supervisor_email'] = supervisor['email']
+            evaluation['answer_id'] = str(uuid.uuid1())
+            evaluation['comment_id'] = comment['comment_id']
+            session.add(evaluation)
+            session.commit()
+
+            for obj in answers:
+                obj['answer_id'] = evaluation['answer_id']
+                session.add(obj)
+            session.commit()
+    except:
+        return jsonify({'error': 'could not save'}), 400
+
+    return jsonify({'status': 'saved'}), 200
 
 @app.errorhandler(404)
 def not_found(error):
@@ -111,5 +150,3 @@ def not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-connection.close()

@@ -110,6 +110,7 @@ class Question(Base):
     question_id = Column('question_id', String(255), index = True, unique = True, primary_key = True)
     label = Column('label', String(255))
     question_text = Column('question_text', String(255))
+    order_value = Column('order_value', String(255))
 
     @property
     def seralize(self):
@@ -118,7 +119,8 @@ class Question(Base):
             'evaluation_type' : self.evaluation_type,
             'question_id' : self.question_id,
             'label' : self.label,
-            'question_text' : self.question_text
+            'question_text' : self.question_text,
+            'order_value': self.order_value
         }
 
 class Option(Base):

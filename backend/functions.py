@@ -35,7 +35,3 @@ def get_evaluation_by_key(param_type, param_year):
     evaluation['questions'] = seralized_questions
         
     return jsonify(evaluation), 200
-
-def destroy_database():
-    metadata.drop_all(engine)
-    metadata.create_all(engine)
