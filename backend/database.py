@@ -18,7 +18,7 @@ class Student(Base):
     student_id = Column('student_id', String(255), unique = True, primary_key = True)
     first_name = Column('first_name', String(255))
     last_name = Column('last_name', String(255))
-    class_year = Column('class', String(255))
+    class_year = Column('class_year', String(255))
     email = Column('email', String(255))
     semester_of_completion = Column('semester_of_completion', String(255))
     grade = Column('grade', String(255))
