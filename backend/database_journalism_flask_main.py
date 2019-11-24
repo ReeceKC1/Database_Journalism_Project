@@ -87,7 +87,12 @@ def get_evaluation():
 # Function to get an evaluation based on type and year
 # TODO: @REECE
 def get_evaluation_by_key(param_type, param_year):
+    session = Session()
     print('looking for ', param_type, ' at ', param_year)
+    evaluation = session.query(Evaluation).filter_by(eval_type=param_type, year=param_year).all()
+    questions = session.query(Question).filter_by(evaluation_type=param_type, evaluation_year=param_year).all()
+    print(evaluation)
+    print(questions)
     return jsonify({'status': 'saved new one'}), 200
 
 @app.route('/api/answer/evaluation', methods=['POST'])
