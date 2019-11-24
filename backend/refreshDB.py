@@ -1,7 +1,4 @@
 from database import *
-#  Creating/Getting database
-engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database')
-# Creating metadata object
 
 try:
     Internship.__table__.drop(engine)
@@ -75,7 +72,7 @@ try:
 except Exception as e:
     print("Evaluation Table might have been dropped already: ")
 
-
+metadata.create_all(engine)
 
 
 
