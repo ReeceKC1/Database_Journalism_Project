@@ -6,11 +6,12 @@ from sqlalchemy.orm import sessionmaker
 #  Creating/Getting database
 engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database')
 # Creating metadata object
-metadata = MetaData()
+# metadata = MetaData()
 # Creating session object
 Session = sessionmaker(bind=engine)
 #  Declaring base for table classes
-Base = declarative_base(metadata)
+# Base = declarative_base(metadata)
+Base = declarative_base()
 # Declaring tables with attributes
 class Student(Base):
     __tablename__ = 'student'
@@ -151,7 +152,7 @@ class Comment(Base):
 
 class Evaluation_Answers(Base):
     __tablename__ = 'evaluation_answers'
-    eval_type = Column('eval_type', String(255), ForeignKey('evaluation.type'), primary_key = True)
+    eval_type = Column('eval_type', String(255), ForeignKey('evaluation.eval_type'), primary_key = True)
     eval_year = Column('eval_year', String(255), ForeignKey('evaluation.year'), primary_key = True)
     student_id = Column('student_id', String(255), ForeignKey('student.student_id'), primary_key = True)
     company_name = Column('company_name', String(255), ForeignKey('company.company_name'), primary_key = True)
@@ -173,7 +174,7 @@ class Evaluation_Answers(Base):
 
 class Portfolio_Answers(Base):
     __tablename__ = 'portfolio_answers'
-    eval_type = Column('eval_type', String(255), ForeignKey('evaluation.type'), primary_key = True)
+    eval_type = Column('eval_type', String(255), ForeignKey('evaluation.eval_type'), primary_key = True)
     eval_year = Column('eval_year', String(255), ForeignKey('evaluation.year'), primary_key = True)
     student_id = Column('student_id', String(255), ForeignKey('student.student_id'), primary_key = True)
     company_name = Column('company_name', String(255), ForeignKey('company.company_name'), primary_key = True)
@@ -224,4 +225,4 @@ class Port_Answer(Base):
         }
 
 # Creating tables
-metadata.create_all(engine)
+Base.metadata.create_all(engine)

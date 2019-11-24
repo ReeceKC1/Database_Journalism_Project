@@ -1,4 +1,5 @@
 from database import *
+# Creating metadata object
 
 try:
     Internship.__table__.drop(engine)
@@ -72,7 +73,6 @@ try:
 except Exception as e:
     print("Evaluation Table might have been dropped already: ")
 
-metadata.create_all(engine)
 
 
 
