@@ -56,6 +56,15 @@ class Evaluation(Base):
     title = Column('title', String(255))
     version = Column('version', String(255))
 
+    @property
+    def seralize(self):
+        return {
+            'year' : self.year,
+            'eval_type' : self.eval_type,
+            'title' : self.title,
+            'version' : self.version
+        }
+
 class Question(Base):
     __tablename__ = 'question'
     evaluation_year = Column('evaluation_year', String(255), ForeignKey('evaluation.year'), primary_key = True)

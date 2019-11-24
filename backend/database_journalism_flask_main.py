@@ -27,7 +27,9 @@ def supervisor_check():
 def company_check():
     return
 
-# Work on this
+############################################################
+# Evaluation api
+############################################################
 @app.route('/api/evaluation/create', methods=['POST'])
 def create_evaluation():
     try:
@@ -55,6 +57,8 @@ def create_evaluation():
                 print(option)
                 option_obj = Option(**option)
                 session.add(option_obj)
+
+        # Saving the objects to the DB
         session.commit()
     except Exception as e:
         print(e)
@@ -64,15 +68,29 @@ def create_evaluation():
 
 @app.route('/api/evaluation/get', methods=['GET'])
 def get_evaluation():
-    return
+    param_type = request.args.get('type')
+    param_year = request.args.get('year')
 
-@app.route('/api/evaluation/get?type=<string:type>&year=<string:year>', methods=['GET'])
-def get_evaluation_by_key():
-    return
+    # Get an Evaluation based on type and year
+    if param_type != None and param_year != None:
+        return get_evaluation_by_key(param_type, param_year)
+
+    q = session.query(Evaluation).all();
+    return jsonify(result=[i.seralize for i in q]), 200
+
+# Function to get an evaluation based on type and year
+# TODO: @REECE
+def get_evaluation_by_key(param_type, param_year):
+    print('looking for ', param_type, ' at ', param_year)
+    return jsonify({'status': 'saved new one'}), 200
 
 @app.route('/api/answer/evaluation', methods=['POST'])
 def create_answer():
     return
+
+
+
+
 
 @app.errorhandler(404)
 def not_found(error):

@@ -10,7 +10,7 @@ export default class CreateEvaluation extends React.Component {
 
         this.state = {
             title: '',
-            type: '',
+            eval_type: '',
             year: '',
             version: '1',
             questions: [
@@ -36,7 +36,7 @@ export default class CreateEvaluation extends React.Component {
 
     typeChange = (event) => {
         let value = event.target.value;
-        this.setState({ type: value });
+        this.setState({ eval_type: value });
     };
     
     yearChange = (event) => {
