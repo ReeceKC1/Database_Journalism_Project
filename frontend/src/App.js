@@ -35,7 +35,12 @@ const App  = observer(class App extends React.Component {
         <Switch>
           <Route path="/create">
             <CreateEvaluation />
+          </Route>
 
+          <Route path="/view-evaluation">
+            <div>
+              Yeet
+            </div>
           </Route>
 
 
