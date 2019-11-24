@@ -88,12 +88,28 @@ def get_evaluation():
 # TODO: @REECE
 def get_evaluation_by_key(param_type, param_year):
     session = Session()
-    print('looking for ', param_type, ' at ', param_year)
-    evaluation = session.query(Evaluation).filter_by(eval_type=param_type, year=param_year).all()
+    
+    # Query for evaluation and questions
+    evaluation = session.query(Evaluation).filter_by(eval_type=param_type, year=param_year).all()[0]
     questions = session.query(Question).filter_by(evaluation_type=param_type, evaluation_year=param_year).all()
-    print(evaluation)
-    print(questions)
-    return jsonify({'status': 'saved new one'}), 200
+    evaluation = evaluation.seralize
+
+    # Query and format questions for evaluation
+    seralized_questions = []
+    for obj in questions:
+        obj = obj.seralize
+        options = session.query(Option).filter_by(question_id=obj['question_id'])
+        serialized_options = []
+
+        # Query and format options for question
+        for opt in options:
+            opt = opt.seralize
+            serialized_options.append(opt)
+        obj['options'] = serialized_options
+        seralized_questions.append(obj)
+    evaluation['questions'] = seralized_questions
+        
+    return jsonify(evaluation), 200
 
 @app.route('/api/answer/evaluation', methods=['POST'])
 def create_answer():
