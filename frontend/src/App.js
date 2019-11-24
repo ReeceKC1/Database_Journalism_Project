@@ -8,6 +8,7 @@ import {Switch, Route} from 'react-router-dom';
 import Header from './components/header';
 import CreateEvaluation from './pages/create_evaluation';
 import Home from './pages/home';
+import ViewEvaluation from './pages/view_evaluation';
 
 const App  = observer(class App extends React.Component {
   constructor(props) {
@@ -37,11 +38,7 @@ const App  = observer(class App extends React.Component {
             <CreateEvaluation />
           </Route>
 
-          <Route path="/view-evaluation">
-            <div>
-              Yeet
-            </div>
-          </Route>
+          <Route path="/view-evaluation" component={ViewEvaluation}></Route>
 
 
           {/* Must BE LAST it matches with all routes */}
