@@ -61,7 +61,7 @@ def create_evaluation():
             question['evaluation_year'] = evaluation.year
             question['evaluation_type'] = evaluation.eval_type
             options = question.pop('options')
-            # print(question)
+            print(question)
             question_obj = Question(**question)
             session.add(question_obj)
             session.commit()
