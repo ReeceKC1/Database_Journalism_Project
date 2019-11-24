@@ -3,16 +3,17 @@ from sqlalchemy import *
 from sqlalchemy.sql import text
 from functions import *
 from enums import *
-from database import connection
+from database import *
 from flask_cors import CORS
+import uuid 
 
 app = Flask(__name__)
 
 CORS(app)
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
-    return jsonify("goodbye")
+    return "Hello world!"
 
 @app.route('/api/student/check.<string:id>', methods=['GET'])
 def check_student():
@@ -26,9 +27,40 @@ def supervisor_check():
 def company_check():
     return
 
+# Work on this
 @app.route('/api/evaluation/create', methods=['POST'])
 def create_evaluation():
-    return
+    try:
+        questions = request.json.pop('questions')
+        evaluation = Evaluation(**request.json)
+        session.add(evaluation)
+
+        
+        # Iterating through each question
+        for question in questions:
+            print(question)
+            question.pop('id')
+            question['question_id'] = str(uuid.uuid1())
+            question['evaluation_year'] = evaluation.year
+            question['evaluation_type'] = evaluation.eval_type
+            options = question.pop('options')
+            print(question)
+            question_obj = Question(**question)
+            session.add(question_obj)
+
+            # Iterating through each option
+            for option in options:
+                option['option_weight'] = str(option.pop('id'))
+                option['question_id'] = question_obj.question_id
+                print(option)
+                option_obj = Option(**option)
+                session.add(option_obj)
+        session.commit()
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'could not save'}), 400
+
+    return jsonify({'status': 'saved'}), 200
 
 @app.route('/api/evaluation/get', methods=['GET'])
 def get_evaluation():
