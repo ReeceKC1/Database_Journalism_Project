@@ -100,6 +100,11 @@ def get_evaluation():
 def create_answer():
     return
 
+@app.route('/api/destroy_all')
+def destroy_all():
+    destroy_database()
+    return jsonify({'success': 'destroyed database'}), 200
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
