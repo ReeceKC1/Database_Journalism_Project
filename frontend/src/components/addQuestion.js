@@ -24,7 +24,7 @@ export default class Question extends React.Component {
         this.setState({
             num: question.id,
             label: question.label,
-            question_text: question.question,
+            question_text: question.question_text,
             options: question.options
         });
     }
@@ -65,7 +65,7 @@ export default class Question extends React.Component {
             question = {
                 id: this.state.num,
                 label: value,
-                question_text: this.state.question,
+                question_text: this.state.question_text,
                 options: this.state.options
             };
         } else if(option == 'question') {
@@ -79,7 +79,7 @@ export default class Question extends React.Component {
             question = {
                 id: this.state.num,
                 label: this.state.label,
-                question_text: this.state.question,
+                question_text: this.state.question_text,
                 options: value
             };
         }

@@ -53,7 +53,7 @@ export default class CreateEvaluation extends React.Component {
         let questionNdx = questions[ndx];
 
         questionNdx.label = question.label;
-        questionNdx.question = question.question;
+        questionNdx.question_text = question.question_text;
         questionNdx.options = question.options;
 
         this.setState({ questions: questions });
@@ -64,7 +64,7 @@ export default class CreateEvaluation extends React.Component {
         let templateQuestion = {
             id: this.state.questions.length,
             label: '',
-            question: '',
+            question_text: '',
             options: [], 
         }
 
