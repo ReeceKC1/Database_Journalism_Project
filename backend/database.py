@@ -7,12 +7,10 @@ from sqlalchemy.orm import sessionmaker
 engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database')
 # Creating metadata object
 metadata = MetaData()
-# Creating metadata object
-
+# Creating session object
 Session = sessionmaker(bind=engine)
-
+#  Declaring base for table classes
 Base = declarative_base(metadata)
-connection = engine.connect()
 # Declaring tables with attributes
 class Student(Base):
     __tablename__ = 'student'
