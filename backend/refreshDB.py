@@ -1,6 +1,4 @@
 from database import *
-#  Creating/Getting database
-engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database')
 # Creating metadata object
 
 try:
