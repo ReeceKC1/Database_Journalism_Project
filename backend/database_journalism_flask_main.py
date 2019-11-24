@@ -16,16 +16,28 @@ def home():
     return "Hello world!"
 
 @app.route('/api/student/check.<string:id>', methods=['GET'])
-def check_student():
-    return
+def check_student(id):
+    session = Session()
+    student = session.query(Student).filter_by(student_id=id).one_or_none()
+    if student:
+        return jsonify({'success': 'student found'}), 200
+    return jsonify({'error': 'student not found'}), 400
 
 @app.route('/api/supervisor/check.<string:email>', methods=['GET'])
-def supervisor_check():
-    return
+def supervisor_check(email):
+    session = Session()
+    supervisor = session.query(Supervisor).filter_by(email=email).one_or_none()
+    if supervisor:
+        return jsonify({'success': 'supervisor found'}), 200
+    return jsonify({'error': 'supervisor not found'}), 400
 
 @app.route('/api/company/check.<string:name>', methods=['GET'])
-def company_check():
-    return
+def company_check(name):
+    session = Session()
+    company = session.query(Company).filter_by(company_name=name).one_or_none()
+    if company:
+        return jsonify({'success': 'company found'}), 200
+    return jsonify({'error': 'company not found'}), 400
 
 ############################################################
 # Evaluation api
@@ -84,40 +96,9 @@ def get_evaluation():
     q = session.query(Evaluation).all();
     return jsonify(result=[i.seralize for i in q]), 200
 
-# Function to get an evaluation based on type and year
-# TODO: @REECE
-def get_evaluation_by_key(param_type, param_year):
-    session = Session()
-    
-    # Query for evaluation and questions
-    evaluation = session.query(Evaluation).filter_by(eval_type=param_type, year=param_year).all()[0]
-    questions = session.query(Question).filter_by(evaluation_type=param_type, evaluation_year=param_year).all()
-    evaluation = evaluation.seralize
-
-    # Query and format questions for evaluation
-    seralized_questions = []
-    for obj in questions:
-        obj = obj.seralize
-        options = session.query(Option).filter_by(question_id=obj['question_id'])
-        serialized_options = []
-
-        # Query and format options for question
-        for opt in options:
-            opt = opt.seralize
-            serialized_options.append(opt)
-        obj['options'] = serialized_options
-        seralized_questions.append(obj)
-    evaluation['questions'] = seralized_questions
-        
-    return jsonify(evaluation), 200
-
 @app.route('/api/answer/evaluation', methods=['POST'])
 def create_answer():
     return
-
-
-
-
 
 @app.errorhandler(404)
 def not_found(error):
