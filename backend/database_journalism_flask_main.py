@@ -93,7 +93,7 @@ def get_evaluation():
     if param_type != None and param_year != None:
         return get_evaluation_by_key(param_type, param_year)
 
-    q = session.query(Evaluation).all();
+    q = session.query(Evaluation).order_by(Evaluation.year.desc())
     return jsonify(result=[i.seralize for i in q]), 200
 
 @app.route('/api/answer/evaluation', methods=['POST'])
