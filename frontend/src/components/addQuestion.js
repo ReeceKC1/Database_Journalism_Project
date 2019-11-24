@@ -11,7 +11,7 @@ export default class Question extends React.Component {
         this.state = {
             num: 0,
             label: '',
-            question: '',
+            question_text: '',
             options: [], 
         };
     }
@@ -24,7 +24,7 @@ export default class Question extends React.Component {
         this.setState({
             num: question.id,
             label: question.label,
-            question: question.question,
+            question_text: question.question,
             options: question.options
         });
     }
@@ -40,7 +40,7 @@ export default class Question extends React.Component {
     changeQuestion = (event) => {
         let value = event.target.value;
         
-        this.setState({question: value});
+        this.setState({question_text: value});
         this.notifyParentOnChange('question', value);
     };
 
@@ -65,21 +65,21 @@ export default class Question extends React.Component {
             question = {
                 id: this.state.num,
                 label: value,
-                question: this.state.question,
+                question_text: this.state.question,
                 options: this.state.options
             };
         } else if(option == 'question') {
             question = {
                 id: this.state.num,
                 label: this.state.label,
-                question: value,
+                question_text: value,
                 options: this.state.options
             };
         } else if(option == 'options') {
             question = {
                 id: this.state.num,
                 label: this.state.label,
-                question: this.state.question,
+                question_text: this.state.question,
                 options: value
             };
         }
@@ -120,7 +120,7 @@ export default class Question extends React.Component {
                 <Grid container style={{backgroundColor: '#cfe8fc', marginBottom: '20px'}}>
                     <Grid item xs={12}>
                         {/* Question Number */}
-                        <small>Question: {this.state.num}</small>
+                        <small>question_text: {this.state.num}</small>
 
                         {/* Question Label */}
                         <div >

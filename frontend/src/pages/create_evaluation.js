@@ -3,6 +3,7 @@ import { Container, TextField, Button, FormControl, InputLabel, Select,
     MenuItem } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
+import axios from 'axios';
 
 export default class CreateEvaluation extends React.Component {
     constructor(props) {
@@ -78,6 +79,11 @@ export default class CreateEvaluation extends React.Component {
     handleSubmit = (event) => {
         console.log('I am submitting');
         console.log(this.state);
+
+        axios.post('http://localhost:5000/api/evaluation/create', this.state)
+        .then(response => {
+            console.log(response);
+          }).catch(error => console.log('here',error));
     };
 
     render() {
@@ -105,7 +111,7 @@ export default class CreateEvaluation extends React.Component {
 
         return (
             <Container maxWidth="md" minwidth="sm">
-                <form className={useStyles.container} noValidate autoComplete="off" onSubmit={this.handleSubmit} >
+                <form className={useStyles.container} noValidate autoComplete="off" onSubmit={() => this.handleSubmit()} >
                     {/* Title */}
                     <div >
                         <TextField
@@ -123,7 +129,7 @@ export default class CreateEvaluation extends React.Component {
                         <InputLabel id="type">Type</InputLabel>
                         <Select
                         labelId="type"
-                        value={this.state.type}
+                        value={this.state.eval_type}
                         onChange={(event) => this.typeChange(event)}
                         >
                             <MenuItem value="student_eval">Student Evaluation</MenuItem>

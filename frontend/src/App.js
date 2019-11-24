@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 import {Switch, Route} from 'react-router-dom';
 import Header from './components/header';
 import CreateEvaluation from './pages/create_evaluation';
+import Home from './pages/home';
 
 const App  = observer(class App extends React.Component {
   constructor(props) {
@@ -40,9 +41,7 @@ const App  = observer(class App extends React.Component {
 
           {/* Must BE LAST it matches with all routes */}
           <Route path="/">
-            <div className="container padded">
-              PP POOPOO
-            </div>
+            <Home />
           </Route>
         </Switch>
       </div>
