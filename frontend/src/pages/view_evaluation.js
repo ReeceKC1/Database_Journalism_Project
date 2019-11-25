@@ -2,14 +2,18 @@ import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
     Button } from '@material-ui/core/';
 import axios from 'axios';
-import {NavLink, Link} from 'react-router-dom';
+import StudentEvalStatic from '../components/static/studentEvalStatic';
+import InternshipEvalStatic from '../components/static/internshipEvalStatic';
+import PortfolioEvalStatic from '../components/static/portfolioEvalStatic';
 
 export default class ViewEvaluation extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            evaluation: null
+            evaluation: null,
+            type: null,
+            year: null
         };
     }
 
@@ -20,9 +24,12 @@ export default class ViewEvaluation extends React.Component {
             var typePatt = "=(.+)&";
             var yearPatt = "year=(.+)"
 
-
+            // Got Type and year from the url
             var type = search.match(typePatt)[1];
-            var year = search.match(yearPatt)[1]
+            var year = search.match(yearPatt)[1];
+            // Setting it to the state
+            this.setState({ type: type, year: year});
+            
             
             const url = 'http://localhost:5000/api/evaluation/get?type='+ type + '&year=' + year;
             axios.get(url).then(response => {
@@ -41,6 +48,26 @@ export default class ViewEvaluation extends React.Component {
             return (
                 <Container maxWidth="md" minwidth="sm">
                     {JSON.stringify(this.state.evaluation)}
+                    <br></br>
+                    <br></br>
+
+                    {/* Rendering the header */}
+                    {this.state.type === 'student_eval' && 
+                        <StudentEvalStatic/>
+                    }
+
+                    {this.state.type === 'student_onsite_eval' && 
+                        <StudentEvalStatic/>
+                    }
+
+                    {this.state.type === 'internship_eval' && 
+                        <InternshipEvalStatic/>
+                    }
+                    
+                    {this.state.type === 'portfolio_eval' && 
+                        <PortfolioEvalStatic/>
+                    }
+                    
                 </Container>
             );
         } else {
