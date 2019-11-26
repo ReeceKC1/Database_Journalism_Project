@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, TextField, Button} from '@material-ui/core/';
 import Option from '../components/addOption';
+import ReactDragListView from 'react-drag-listview';
 
 export default class Question extends React.Component {
     constructor(props) {
@@ -157,9 +158,6 @@ export default class Question extends React.Component {
         this.setState({options: options});
     };
 
-    // Edit an option
-    
-
     render() {
         const renderOptions = this.state.options.map((option) => 
             <div key={option.id}>
@@ -169,6 +167,23 @@ export default class Question extends React.Component {
                 />
             </div>
         );
+
+        // Sortable option list
+        const that = this;
+        const dragProps = {
+            onDragEnd(fromIndex, toIndex) {
+                const options = that.state.options;
+                const item = options.splice(fromIndex, 1)[0];
+                options.splice(toIndex, 0, item);
+
+                for(var i = 0; i < options.length; i++) {
+                    options[i].id = i;
+                }
+                that.setState({ options });
+            }, 
+            nodeSelector: 'div',
+            handleSelector: 'a'
+        };
 
         return (
             <div>
@@ -204,6 +219,7 @@ export default class Question extends React.Component {
 
                         {/* Options */}
                         <hr></hr>
+
                         {/* Button to add defaults */}
                         <Button variant="outlined" color="primary" type="button" onClick={() => this.addAvg()}>
                             Avg Set
@@ -214,7 +230,18 @@ export default class Question extends React.Component {
                         </Button>
 
 
-                        {renderOptions}
+                        {/* {renderOptions} */}
+                        <ReactDragListView {...dragProps}>
+                            {this.state.options.map((option) => ( 
+                                <div key={option.id}>
+                                    {/* Need to keep this drag element */}
+                                    <a href="#">Drag</a>
+                                    <Option id={option.id} 
+                                    value={option.option_text}
+                                    optionTextChange={(value) => this.optionChange(value)}
+                                    />
+                            </div>))}
+                        </ReactDragListView>
                         <Button variant="outlined" color="primary" type="button" onClick={() => this.addOption()}>
                             Add Option
                         </Button>
