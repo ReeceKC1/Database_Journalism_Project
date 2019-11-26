@@ -28,7 +28,11 @@ export default class CreateEvaluation extends React.Component {
 
     // If data was passed in render it
     componentDidMount() {
-        if(this.props.location !== undefined && this.props.location.state !== undefined && this.props.location.state.type !== null) {
+        if(this.props.location !== undefined 
+            && this.props.location.state !== undefined 
+            && this.props.location.state !== null
+            && this.props.location.state.type !== null
+            && this.props.location.state.year !== null) {
             let propState = this.props.location.state;
             let type = propState.type;
             let year = propState.year;

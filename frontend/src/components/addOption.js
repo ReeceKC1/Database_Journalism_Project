@@ -14,23 +14,34 @@ export default class Option extends React.Component {
 
     // Loading in data
     componentDidMount() {
-        this.setState({id: this.props.id});
-        this.setState({option_label: 'Option ' + (this.props.id + 1)}) 
-
-        if(this.props.value != undefined) {
-            this.setState({id: Number(this.props.value.option_weight)});
-            this.setState({option_text: this.props.value.option_text});
-        } else {
-            this.setState({option_text: ''});
+        if(this.props.value != null) {
+            if(this.props.value.option_weight != undefined) {
+                this.setState({id: Number(this.props.value.option_weight)});
+                this.setState({option_label: 'Option ' + (this.props.value.id + 1)});
+                this.setState({option_text: this.props.value.option_text});
+            } else {
+                this.setState({id: this.props.value.id});
+                this.setState({option_label: 'Option ' + (this.props.value.id + 1)});
+                this.setState({option_text: this.props.value.option_text});
+            }
         }
           
     }
 
+    // Handles with the drag change
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
         if (this.props !== prevProps) {
-            this.setState({id: Number(this.props.value.option_weight)});
-            this.setState({option_text: this.props.value.option_text});
+            if(this.props.value.option_weight != undefined) {
+                this.setState({id: Number(this.props.value.option_weight)});
+                this.setState({option_label: 'Option ' + (this.props.value.id + 1)});
+                this.setState({option_text: this.props.value.option_text});
+            } else {
+                this.setState({id: this.props.value.id});
+                this.setState({option_label: 'Option ' + (this.props.value.id + 1)});
+                this.setState({option_text: this.props.value.option_text});
+            }
+            
         }
       }
 

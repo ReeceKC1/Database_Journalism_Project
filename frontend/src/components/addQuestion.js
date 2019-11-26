@@ -159,14 +159,14 @@ export default class Question extends React.Component {
     };
 
     render() {
-        const renderOptions = this.state.options.map((option) => 
-            <div key={option.id}>
-                <Option id={option.id} 
-                value={option.option_text}
-                optionTextChange={(value) => this.optionChange(value)}
-                />
-            </div>
-        );
+        // const renderOptions = this.state.options.map((option) => 
+        //     <div key={option.id}>
+        //         <Option id={option.id} 
+        //         value={option.option_text}
+        //         optionTextChange={(value) => this.optionChange(value)}
+        //         />
+        //     </div>
+        // );
 
         // Sortable option list
         const that = this;
@@ -175,6 +175,7 @@ export default class Question extends React.Component {
                 const options = that.state.options;
                 const item = options.splice(fromIndex, 1)[0];
                 options.splice(toIndex, 0, item);
+                console.log("I am trying to update shit");
 
                 for(var i = 0; i < options.length; i++) {
                     options[i].id = i;
