@@ -97,78 +97,80 @@ def get_evaluation():
 @app.route('/api/answer/evaluation', methods=['POST'])
 def create_answer():
     session = Session()
-    # try:
-    evaluation = request.json
+    try:
+        evaluation = request.json
 
-    student = evaluation.pop('student')
-    student_obj = Student(**student)
-    session.add(student_obj)
-
-    company = evaluation.pop('company')
-    company_obj = Company(**company)
-    session.add(company_obj)
-
-    supervisor = evaluation.pop('supervisor')
-    supervisor_obj = Supervisor(**supervisor)
-    session.add(supervisor_obj)
-    session.commit()
-
-    internship = evaluation.pop('internship')
-    internship['student_id'] = student['student_id']
-    internship['company_name'] = company['company_name']
-    internship['supervisor_email'] = supervisor['email']
-    internship_obj = Internship(**internship)
-    session.add(internship_obj)
-    session.commit()
-
-    answers = evaluation.pop('answers')
-    evaluation['student_id'] = student['student_id']
-    evaluation['company_name'] = company['company_name']
-    evaluation['supervisor_email'] = supervisor['email']
-    evaluation['answer_id'] = str(uuid.uuid1())
-
-    if evaluation['eval_type'] == 'portfolio_eval':
-        evaluation['date_reviewed'] = func.current_date()
-        evaluation_obj = Portfolio_Answers(**evaluation)
-        session.add(evaluation_obj)
+        student = evaluation.pop('student')
+        student_obj = Student(**student)
+        session.add(student_obj)
         session.commit()
-        for obj in answers:
-            comment_text = obj.pop('comment_text')
+
+        answers = evaluation.pop('answers')
+        evaluation['student_id'] = student['student_id']
+        evaluation['answer_id'] = str(uuid.uuid1())
+
+        if evaluation['eval_type'] == 'portfolio_eval':
+            evaluation['date_reviewed'] = func.current_date()
+            evaluation_obj = Portfolio_Answers(**evaluation)
+            session.add(evaluation_obj)
+            session.commit()
+            for obj in answers:
+                comment_text = obj.pop('comment_text')
+                comment = {
+                    'comment_text': comment_text,
+                    'comment_id': str(uuid.uuid1())
+                }
+                comment_obj = Comment(**comment)
+                session.add(comment_obj)
+                session.commit()
+                obj['comment_id'] = comment['comment_id']
+                obj['answer_id'] = evaluation['answer_id']
+                answer_obj = Port_Answer(**obj)
+                session.add(answer_obj)
+            session.commit()
+        else:
+            company = evaluation.pop('company')
+            company_obj = Company(**company)
+            session.add(company_obj)
+
+            supervisor = evaluation.pop('supervisor')
+            supervisor_obj = Supervisor(**supervisor)
+            session.add(supervisor_obj)
+            session.commit()
+
+            internship = evaluation.pop('internship')
+            internship['student_id'] = student['student_id']
+            internship['company_name'] = company['company_name']
+            internship['supervisor_email'] = supervisor['email']
+            internship_obj = Internship(**internship)
+            session.add(internship_obj)
+            session.commit()
+
+            evaluation['company_name'] = company['company_name']
+            evaluation['supervisor_email'] = supervisor['email']
+
+            comment_text = evaluation.pop('comment_text')
             comment = {
-                'comment_text': comment_text,
+                'comment_text': str(comment_text),
                 'comment_id': str(uuid.uuid1())
             }
             comment_obj = Comment(**comment)
             session.add(comment_obj)
             session.commit()
-            obj['comment_id'] = comment['comment_id']
-            obj['answer_id'] = evaluation['answer_id']
-            answer_obj = Port_Answer(**obj)
-            session.add(answer_obj)
-        session.commit()
-    else:
-        comment_text = evaluation.pop('comment_text')
-        comment = {
-            'comment_text': str(comment_text),
-            'comment_id': str(uuid.uuid1())
-        }
-        comment_obj = Comment(**comment)
-        session.add(comment_obj)
-        session.commit()
 
-        evaluation['comment_id'] = comment['comment_id']
-        evaluation_obj = Evaluation_Answers(**evaluation)
-        session.add(evaluation_obj)
-        session.commit()
+            evaluation['comment_id'] = comment['comment_id']
+            evaluation_obj = Evaluation_Answers(**evaluation)
+            session.add(evaluation_obj)
+            session.commit()
 
-        for obj in answers:
-            obj['answer_id'] = evaluation['answer_id']
-            answer_obj = Eval_Answer(**obj)
-            session.add(answer_obj)
-        session.commit()
-    # except Exception as e:
-    #     print(e)
-    #     return jsonify({'error': 'could not save'}), 400
+            for obj in answers:
+                obj['answer_id'] = evaluation['answer_id']
+                answer_obj = Eval_Answer(**obj)
+                session.add(answer_obj)
+            session.commit()
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'could not save'}), 400
 
     return jsonify({'status': 'saved'}), 200
 

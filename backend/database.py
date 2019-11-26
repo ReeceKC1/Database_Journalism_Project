@@ -177,8 +177,7 @@ class Portfolio_Answers(Base):
     eval_type = Column('eval_type', String(255), ForeignKey('evaluation.eval_type'), primary_key = True)
     eval_year = Column('eval_year', String(255), ForeignKey('evaluation.year'), primary_key = True)
     student_id = Column('student_id', String(255), ForeignKey('student.student_id'), primary_key = True)
-    company_name = Column('company_name', String(255), ForeignKey('company.company_name'), primary_key = True)
-    supervisor_email = Column('supervisor_email', String(255), ForeignKey('supervisor.email'), primary_key = True)
+    reviewer_name = Column('reviewer_name', String(255), primary_key = True)
     answer_id = Column('answer_id', String(255), index = True, unique = True, primary_key = True)
     date_reviewed = Column('date_reviewed', Date, primary_key = True)
 
@@ -188,8 +187,7 @@ class Portfolio_Answers(Base):
             'eval_type' : self.eval_type,
             'eval_year' : self.eval_year,
             'student_id' : self.student_id,
-            'company_name' : self.company_name,
-            'supervisor_email' : self.supervisor_email,
+            'reviewer_name': self.reviewer_name,
             'answer_id' : self.answer_id,
             'date_reviewed' : self.date_reviewed
         }
