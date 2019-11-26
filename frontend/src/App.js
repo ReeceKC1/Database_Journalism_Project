@@ -2,8 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { observable, decorate } from '../node_modules/mobx/lib/mobx'
 import { observer, } from '../node_modules/mobx-react/dist/mobx-react'
-import { globalState } from './state'
-import ReactDOM from 'react-dom';
+// import { globalState } from './state'
+// import ReactDOM from 'react-dom';
 import {Switch, Route} from 'react-router-dom';
 import Header from './components/header';
 import CreateEvaluation from './pages/create_evaluation';
@@ -34,9 +34,7 @@ const App  = observer(class App extends React.Component {
 
         {/* Main Body Routes */}
         <Switch>
-          <Route path="/create">
-            <CreateEvaluation />
-          </Route>
+          <Route path="/create" component={CreateEvaluation}></Route>
 
           <Route path="/view-evaluation" component={ViewEvaluation}></Route>
 

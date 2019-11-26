@@ -1,6 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Button, FormControl, InputLabel, Select,
-    MenuItem } from '@material-ui/core/';
+import { Grid, TextField } from '@material-ui/core/';
 
 export default class Option extends React.Component {
     constructor(props) {

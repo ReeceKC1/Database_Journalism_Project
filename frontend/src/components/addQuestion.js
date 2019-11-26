@@ -1,7 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Button, FormControl, InputLabel, Select,
-    MenuItem } from '@material-ui/core/';
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, TextField, Button} from '@material-ui/core/';
 import Option from '../components/addOption';
 
 export default class Question extends React.Component {
@@ -117,21 +115,21 @@ export default class Question extends React.Component {
     // Let the parent know the questions info on change
     notifyParentOnChange = (option, value) => {
         let question;
-        if(option == 'label') {
+        if(option === 'label') {
             question = {
                 id: this.state.num,
                 label: value,
                 question_text: this.state.question_text,
                 options: this.state.options
             };
-        } else if(option == 'question') {
+        } else if(option === 'question') {
             question = {
                 id: this.state.num,
                 label: this.state.label,
                 question_text: value,
                 options: this.state.options
             };
-        } else if(option == 'options') {
+        } else if(option === 'options') {
             question = {
                 id: this.state.num,
                 label: this.state.label,
@@ -187,6 +185,7 @@ export default class Question extends React.Component {
                                 margin="normal"
                                 fullWidth
                                 onChange={(event) => this.changeLabel(event)}
+                                value={this.state.label}
                                 autoFocus 
                                 />
                             </div>
@@ -199,6 +198,7 @@ export default class Question extends React.Component {
                             margin="normal"
                             fullWidth
                             onChange={(event) => this.changeQuestion(event)}
+                            value={this.state.question_text}
                         />
                         </div>
 

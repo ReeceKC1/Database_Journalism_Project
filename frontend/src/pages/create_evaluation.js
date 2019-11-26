@@ -4,6 +4,7 @@ import { Container, TextField, Button, FormControl, InputLabel, Select,
 import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
 import axios from 'axios';
+import * as Evaluation from '../axois/evaluation';
 
 export default class CreateEvaluation extends React.Component {
     constructor(props) {
@@ -25,8 +26,40 @@ export default class CreateEvaluation extends React.Component {
         };
     }
 
+    // If data was passed in render it
     componentDidMount() {
+        if(this.props.location !== undefined && this.props.location.state !== undefined) {
+            let propState = this.props.location.state;
+            let type = propState.type;
+            let year = propState.year;
 
+            Evaluation.getEvaluationByKey(type, year).then(response => {
+                let data = response.data;
+                console.log('Got Eval', response);
+
+                // Increment Version
+                let version = Number(data.version);
+                version++;
+
+                // Add id's to questions
+                let questions = data.questions;
+                for(var i = 0; i < questions.length; i++) {
+                    let question = questions[i];
+                    question.id = i;
+                }
+
+                // Update the State
+                this.setState({
+                    title: data.title,
+                    eval_type: data.eval_type,
+                    year: data.year,
+                    version: String(version),
+                    questions: questions
+                });
+            }).catch(error => {
+                console.log(error);
+            });
+        }
     }
 
     // Functions to change state
@@ -120,6 +153,7 @@ export default class CreateEvaluation extends React.Component {
                         margin="normal"
                         fullWidth
                         onChange={(event) => this.titleChange(event)}
+                        value={this.state.title}
                         />
                     </div>
 
@@ -148,6 +182,7 @@ export default class CreateEvaluation extends React.Component {
                         margin="normal"
                         fullWidth
                         onChange={(event) => this.yearChange(event)}
+                        value={this.state.year}
                         />
                     </div>
 

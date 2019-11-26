@@ -2,7 +2,8 @@ import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
     Button } from '@material-ui/core/';
 import axios from 'axios';
-import {NavLink, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import * as Evaluation from '../axois/evaluation';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -34,6 +35,7 @@ export default class Home extends React.Component {
                             <TableCell>Evaluation Type</TableCell>
                             <TableCell>Year</TableCell>
                             <TableCell>Version</TableCell>
+                            <TableCell>Duplicate</TableCell>
                             <TableCell>View Evaluation</TableCell>
                             <TableCell>Take Evaluation</TableCell>
                         </TableRow>
@@ -45,6 +47,21 @@ export default class Home extends React.Component {
                             <TableCell>{row.eval_type}</TableCell>
                             <TableCell>{row.year}</TableCell>
                             <TableCell>{row.version}</TableCell>
+                            <TableCell>
+                                <Button variant="outlined" color="primary"
+                                    component={Link}
+                                    to={{
+                                        pathname: "/create",
+                                        state: {
+                                            year: row.year,
+                                            type: row.eval_type
+                                        }
+                                        
+                                    }}
+                                >
+                                    Duplicate
+                                </Button>
+                            </TableCell>
                             <TableCell>
                                 <Button variant="outlined" color="primary"
                                     component={Link}

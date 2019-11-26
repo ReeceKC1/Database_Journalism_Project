@@ -1,10 +1,9 @@
 import React from 'react';
-import { Container, Table, TableHead, TableRow, TableCell, TableBody,
-    Button } from '@material-ui/core/';
-import axios from 'axios';
+import { Container } from '@material-ui/core/';
 import StudentEvalStatic from '../components/static/studentEvalStatic';
 import InternshipEvalStatic from '../components/static/internshipEvalStatic';
 import PortfolioEvalStatic from '../components/static/portfolioEvalStatic';
+import * as Evaluation from '../axois/evaluation';
 
 export default class ViewEvaluation extends React.Component {
     constructor(props) {
@@ -30,9 +29,7 @@ export default class ViewEvaluation extends React.Component {
             // Setting it to the state
             this.setState({ type: type, year: year});
             
-            
-            const url = 'http://localhost:5000/api/evaluation/get?type='+ type + '&year=' + year;
-            axios.get(url).then(response => {
+            Evaluation.getEvaluationByKey(type, year).then(response => {
                 let data = response.data;
                 console.log('Got Eval', response);
 
