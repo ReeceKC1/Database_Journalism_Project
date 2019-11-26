@@ -16,8 +16,22 @@ export default class Option extends React.Component {
     // Loading in data
     componentDidMount() {
         this.setState({id: this.props.id});
-        this.setState({option_label: 'Option ' + (this.props.id + 1)})
+        this.setState({option_label: 'Option ' + (this.props.id + 1)}) 
+
+        if(this.props.value != undefined) {
+            this.setState({option_text: this.props.value});
+        } else {
+            this.setState({option_text: ''});
+        }
+          
     }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props !== prevProps) {
+          this.setState({option_text: this.props.value});
+        }
+      }
 
     changeOptionText = (event) => {
         let value = event.target.value;
@@ -50,6 +64,8 @@ export default class Option extends React.Component {
                             margin="normal"
                             fullWidth
                             onChange={(event) => this.changeOptionText(event)}
+                            autoFocus 
+                            value={this.state.option_text}
                             />
                         </div>
                 </Grid>

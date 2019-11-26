@@ -44,6 +44,62 @@ export default class Question extends React.Component {
         this.notifyParentOnChange('question', value);
     };
 
+    addAvg = () => {
+        let options = [
+            {
+                id: 0,
+                option_text: 'Above Average', 
+                option_label: 'Option 1',
+            },
+            {
+                id: 1,
+                option_text: 'Average', 
+                option_label: 'Option 2',
+            },
+            {
+                id: 2,
+                option_text: 'Below Average', 
+                option_label: 'Option 3',
+            }
+        ];
+
+        this.setState({options: options});
+        this.notifyParentOnChange('options', options);
+    };
+
+    addAgree = () => {
+        let options = [
+            {
+                id: 0,
+                option_text: 'Strongly Agree', 
+                option_label: 'Option 1',
+            },
+            {
+                id: 1,
+                option_text: 'Somewhat Agree', 
+                option_label: 'Option 2',
+            },
+            {
+                id: 2,
+                option_text: 'Neither Agree nor Disagree', 
+                option_label: 'Option 3',
+            },
+            {
+                id: 3,
+                option_text: 'Somewhat Disagree', 
+                option_label: 'Option 4',
+            },
+            {
+                id: 4,
+                option_text: 'Strongly Disagree', 
+                option_label: 'Option 5',
+            },
+        ];
+
+        this.setState({options: options});
+        this.notifyParentOnChange('options', options);
+    }
+
     // TODO might want to change if 
     // I am going to be able to change option order
     optionChange = (value) => {
@@ -110,6 +166,7 @@ export default class Question extends React.Component {
         const renderOptions = this.state.options.map((option) => 
             <div key={option.id}>
                 <Option id={option.id} 
+                value={option.option_text}
                 optionTextChange={(value) => this.optionChange(value)}
                 />
             </div>
@@ -130,6 +187,7 @@ export default class Question extends React.Component {
                                 margin="normal"
                                 fullWidth
                                 onChange={(event) => this.changeLabel(event)}
+                                autoFocus 
                                 />
                             </div>
 
@@ -146,6 +204,16 @@ export default class Question extends React.Component {
 
                         {/* Options */}
                         <hr></hr>
+                        {/* Button to add defaults */}
+                        <Button variant="outlined" color="primary" type="button" onClick={() => this.addAvg()}>
+                            Avg Set
+                        </Button>
+
+                        <Button variant="outlined" color="primary" type="button" onClick={() => this.addAgree()}>
+                            Agree Set
+                        </Button>
+
+
                         {renderOptions}
                         <Button variant="outlined" color="primary" type="button" onClick={() => this.addOption()}>
                             Add Option
