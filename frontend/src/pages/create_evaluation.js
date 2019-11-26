@@ -28,7 +28,7 @@ export default class CreateEvaluation extends React.Component {
 
     // If data was passed in render it
     componentDidMount() {
-        if(this.props.location !== undefined && this.props.location.state !== undefined) {
+        if(this.props.location !== undefined && this.props.location.state !== undefined && this.props.location.state.type !== null) {
             let propState = this.props.location.state;
             let type = propState.type;
             let year = propState.year;
@@ -111,9 +111,57 @@ export default class CreateEvaluation extends React.Component {
     // Handle Submit will format data properly
     handleSubmit = (event) => {
         console.log('I am submitting');
-        console.log(this.state);
+        
+        // Need to go through each question and option to clean up data 
+        // in case it has been imported
+        // console.log(this.state);
+        let payload = {
+            title: this.state.title,
+            eval_type: this.state.eval_type,
+            year: this.state.year,
+            version: this.state.version,
+            questions: []
+        };
 
-        axios.post('http://localhost:5000/api/evaluation/create', this.state)
+        // Question / Option Data
+        for(var i = 0; i < this.state.questions.length; i++) {
+            let question = this.state.questions[i];
+
+            let newQuestion = {
+                id: question.id,
+                label: question.label,
+                question_text: question.question_text,
+                options: []
+            };
+            
+            for(var j = 0; j < question.options.length; j++) {
+                let option = question.options[j];
+
+                let newOption;
+                if(option.id !== undefined) {
+                    newOption = {
+                        id: option.id,
+                        option_text: option.option_text
+                    };
+                } else {
+                    newOption = {
+                        id: Number(option.option_weight),
+                        option_text: option.option_text
+                    };
+                }
+                
+                
+
+                newQuestion.options.push(newOption);
+            }
+
+            payload.questions.push(newQuestion);
+        }
+
+        console.log(payload);
+
+
+        axios.post('http://localhost:5000/api/evaluation/create', payload)
         .then(response => {
             console.log(response);
           }).catch(error => console.log('here',error));

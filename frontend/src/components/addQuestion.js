@@ -237,7 +237,7 @@ export default class Question extends React.Component {
                                     {/* Need to keep this drag element */}
                                     <a href="#">Drag</a>
                                     <Option id={option.id} 
-                                    value={option.option_text}
+                                    value={option}
                                     optionTextChange={(value) => this.optionChange(value)}
                                     />
                             </div>))}

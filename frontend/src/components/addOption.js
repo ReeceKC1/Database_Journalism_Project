@@ -18,7 +18,8 @@ export default class Option extends React.Component {
         this.setState({option_label: 'Option ' + (this.props.id + 1)}) 
 
         if(this.props.value != undefined) {
-            this.setState({option_text: this.props.value});
+            this.setState({id: Number(this.props.value.option_weight)});
+            this.setState({option_text: this.props.value.option_text});
         } else {
             this.setState({option_text: ''});
         }
@@ -28,7 +29,8 @@ export default class Option extends React.Component {
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
         if (this.props !== prevProps) {
-          this.setState({option_text: this.props.value});
+            this.setState({id: Number(this.props.value.option_weight)});
+            this.setState({option_text: this.props.value.option_text});
         }
       }
 
