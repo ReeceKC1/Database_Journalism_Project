@@ -1,25 +1,55 @@
 import React from 'react';
+import { observer } from '../../../node_modules/mobx-react/dist/mobx-react'
+import { Paper, TextField, Typography, Select, MenuItem, InputLabel, Grid, FormControl } from '@material-ui/core'
+
 // import { Container, Table, TableHead, TableRow, TableCell, TableBody,
 //     Button } from '@material-ui/core/';
 
-export default class SupervisorForm extends React.Component {
+const SupervisorForm = observer(class SupervisorForm extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            email: '',
-            name: '',
-            title: ''
-        };
     }
 
     componentDidMount() {}
 
     render() {
+        let style = {
+            width: '500px',
+        }
         return (
-            <div>
-                This is the supervisor form section
-            </div>
+            <Paper style={{width: '600px', padding: '10px'}}>
+                <Typography variant="h5">
+                    Supervisor Information
+                </Typography>
+                <Grid container spacing={1} alignItems = "center" direction = "column">
+                    <Grid item>
+                        <TextField
+                        style={style}
+                        label="Email"
+                        InputProps={this.props.viewEvaluationState.readOnly}
+                        onChange={(event) => {this.props.viewEvaluationState.supervisor_state.email = event.target.value}}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <TextField
+                        style={style}
+                        label="Name"
+                        InputProps={this.props.viewEvaluationState.readOnly}
+                        onChange={(event) => {this.props.viewEvaluationState.supervisor_state.name = event.target.value}}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <TextField
+                        style={style}
+                        label="Title"
+                        InputProps={this.props.viewEvaluationState.readOnly}
+                        onChange={(event) => {this.props.viewEvaluationState.supervisor_state.title = event.target.value}}
+                        />
+                    </Grid>
+                </Grid>
+            </Paper>
         ); 
     }
-}
+})
+
+export default SupervisorForm

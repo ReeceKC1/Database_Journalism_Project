@@ -51,9 +51,12 @@ def create_evaluation():
         session.add(evaluation)
         session.commit()
 
-        
         # Iterating through each question
         for question in questions:
+            # Label duplicate checking
+            if len([q for q in questions if q['label'] == question['label']]) > 1:
+                print('error duplicate labels')
+                return jsonify({'error': 'error duplicate labels'}), 400
             # print(question)
             question['order_value'] = question.pop('id')
             question['question_id'] = str(uuid.uuid1())
@@ -77,7 +80,7 @@ def create_evaluation():
         # session.commit()
     except Exception as e:
         print(e)
-        return jsonify({'error': 'could not save'}), 400
+        return jsonify({'error': str(e)}), 400
 
     return jsonify({'status': 'saved'}), 200
 
@@ -100,10 +103,14 @@ def create_answer():
     try:
         evaluation = request.json
 
+        if session.query(Evaluation).filter_by(year=evaluation['year'],eval_type=evaluation['eval_type']).one_or_none():
+            return jsonify({'error': 'evaluation with current type and year already exists'}), 400
+
         student = evaluation.pop('student')
         student_obj = Student(**student)
-        session.add(student_obj)
-        session.commit()
+        if not session.query(Student).filter_by(student_id=student_obj.student_id).one_or_none():
+            session.add(student_obj)
+            session.commit()
 
         answers = evaluation.pop('answers')
         evaluation['student_id'] = student['student_id']
@@ -131,11 +138,13 @@ def create_answer():
         else:
             company = evaluation.pop('company')
             company_obj = Company(**company)
-            session.add(company_obj)
+            if not session.query(Company).filter_by(company_name=company_obj.company_name).one_or_none():
+                session.add(company_obj)
 
             supervisor = evaluation.pop('supervisor')
             supervisor_obj = Supervisor(**supervisor)
-            session.add(supervisor_obj)
+            if not session.query(Supervisor).filter_by(email=supervisor_obj.email).one_or_none():
+                session.add(supervisor_obj)
             session.commit()
 
             internship = evaluation.pop('internship')
@@ -143,7 +152,8 @@ def create_answer():
             internship['company_name'] = company['company_name']
             internship['supervisor_email'] = supervisor['email']
             internship_obj = Internship(**internship)
-            session.add(internship_obj)
+            if not session.query(Internship.id).filter(student_id=internship_obj.student_id,company_name=internship_obj.company_name,supervisor_email=internship_obj.supervisor_email):
+                session.add(internship_obj)
             session.commit()
 
             evaluation['company_name'] = company['company_name']
@@ -170,7 +180,7 @@ def create_answer():
             session.commit()
     except Exception as e:
         print(e)
-        return jsonify({'error': 'could not save'}), 400
+        return jsonify({'error': str(e)}), 400
 
     return jsonify({'status': 'saved'}), 200
 

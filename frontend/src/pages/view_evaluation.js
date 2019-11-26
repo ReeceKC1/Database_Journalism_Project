@@ -4,15 +4,62 @@ import StudentEvalStatic from '../components/static/studentEvalStatic';
 import InternshipEvalStatic from '../components/static/internshipEvalStatic';
 import PortfolioEvalStatic from '../components/static/portfolioEvalStatic';
 import * as Evaluation from '../axois/evaluation';
+import { observable, decorate } from '../../node_modules/mobx/lib/mobx'
+import { observer } from '../../node_modules/mobx-react/dist/mobx-react'
 
-export default class ViewEvaluation extends React.Component {
+const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     constructor(props) {
         super(props);
 
+        const viewEvaluationState = {
+            readOnly: {
+                readOnly: false,
+            },
+            reviewer_state: {
+                reviewer_name: '',
+            },
+            student_state: {
+                already_exists: false,
+                student_id: '',
+                first_name: '',
+                last_name: '',
+                email: '',
+                class_year: '',
+                semester_of_completion: '',
+                grade: '',
+                pr_major_minor: '',
+            },
+            internship_state: {
+                start_date: '',
+                end_date: '',
+                hours: '',
+            },
+            company_state: {
+                company_name: '',
+                address: '',
+                phone: '',
+            },
+            supervisor_state: {
+                email: '',
+                name: '',
+                title: '',
+            }
+        }
+
+        decorate(viewEvaluationState, {
+            readOnly: observable,
+            reviewer_state: observable,
+            student_state: observable,
+            internship_state: observable,
+            company_state: observable,
+            supervisor_state: observable,
+        })
+
         this.state = {
+            viewEvaluationState: viewEvaluationState,
             evaluation: null,
             type: null,
-            year: null
+            year: null,
         };
     }
 
@@ -50,19 +97,19 @@ export default class ViewEvaluation extends React.Component {
 
                     {/* Rendering the header */}
                     {this.state.type === 'student_eval' && 
-                        <StudentEvalStatic/>
+                        <StudentEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
                     }
 
                     {this.state.type === 'student_onsite_eval' && 
-                        <StudentEvalStatic/>
+                        <StudentEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
                     }
 
                     {this.state.type === 'internship_eval' && 
-                        <InternshipEvalStatic/>
+                        <InternshipEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
                     }
                     
                     {this.state.type === 'portfolio_eval' && 
-                        <PortfolioEvalStatic/>
+                        <PortfolioEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
                     }
                     
                 </Container>
@@ -76,4 +123,6 @@ export default class ViewEvaluation extends React.Component {
         }
         
     }
-}
+})
+
+export default ViewEvaluation

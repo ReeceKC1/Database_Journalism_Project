@@ -123,6 +123,10 @@ class Question(Base):
             'question_text' : self.question_text,
             'order_value': self.order_value
         }
+    def __eq__(self, other):
+        return self.label==other.label
+    def __hash__(self):
+        return hash(('label', self.label))
 
 class Option(Base):
     __tablename__ = 'option'

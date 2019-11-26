@@ -10,7 +10,7 @@ import CreateEvaluation from './pages/create_evaluation';
 import Home from './pages/home';
 import ViewEvaluation from './pages/view_evaluation';
 
-const App  = observer(class App extends React.Component {
+const App = observer(class App extends React.Component {
   constructor(props) {
     super(props);
 

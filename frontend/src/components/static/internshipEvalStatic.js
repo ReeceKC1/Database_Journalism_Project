@@ -22,10 +22,10 @@ export default class InternshipEvalStatic extends React.Component {
         return (
             <div>
                 This is the internship eval static form section
-                <StudentForm/>
-                <CompanyForm/>
-                <SupervisorForm/>
-                <InternshipForm/>
+                <StudentForm viewEvaluationState={this.props.viewEvaluationState}/>
+                <CompanyForm viewEvaluationState={this.props.viewEvaluationState}/>
+                <SupervisorForm viewEvaluationState={this.props.viewEvaluationState}/>
+                <InternshipForm viewEvaluationState={this.props.viewEvaluationState}/>
 
                 <br></br>
                 This is where we will load in the lower form

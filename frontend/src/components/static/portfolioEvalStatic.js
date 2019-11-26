@@ -3,9 +3,7 @@ import React from 'react';
 //     Button } from '@material-ui/core/';
 // import {NavLink, Link} from 'react-router-dom';
 import StudentForm from './student';
-import CompanyForm from './company';
-import SupervisorForm from './supervisor';
-import InternshipForm from './internship';
+import ReviewerForm from './ReviewerForm'
 
 export default class PortfolioEvalStatic extends React.Component {
     constructor(props) {
@@ -22,11 +20,8 @@ export default class PortfolioEvalStatic extends React.Component {
         return (
             <div>
                 This is the portfolio eval static form section
-                <StudentForm/>
-                <CompanyForm/>
-                <SupervisorForm/>
-                <InternshipForm/>
-
+                <StudentForm viewEvaluationState={this.props.viewEvaluationState}/>
+                <ReviewerForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <br></br>
                 This is where we will load in the lower form
 

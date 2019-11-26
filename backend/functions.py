@@ -18,13 +18,15 @@ def get_evaluation_by_key(param_type, param_year):
     
     questions = session.query(Question).filter_by(evaluation_type=param_type, evaluation_year=param_year).all()
     evaluation = evaluation.seralize
+    questions.sort(key=lambda x : x.order_value)
 
     # Query and format questions for evaluation
     seralized_questions = []
     for obj in questions:
         obj = obj.seralize
-        options = session.query(Option).filter_by(question_id=obj['question_id'])
+        options = session.query(Option).filter_by(question_id=obj['question_id']).all()
         serialized_options = []
+        options.sort(key=lambda x : x.option_weight)
 
         # Query and format options for question
         for opt in options:
