@@ -1,10 +1,12 @@
 import React from 'react';
-import {AppBar, Tabs, Tab} from '@material-ui/core/';
+import {AppBar, Tabs, Tab, Toolbar, IconButton, Typography } from '@material-ui/core/';
 import {NavLink} from 'react-router-dom';
 import { observer, } from 'mobx-react'
 import { globalState, setCurrentTab } from '../state'
 import { withStyles } from "@material-ui/core/styles";
-
+import HomeIcon from '@material-ui/icons/Home';
+import AddIcon from '@material-ui/icons/Add';
+import { withRouter } from 'react-router-dom';
 
  const Header = observer(class Header extends React.Component {
     constructor(props) {
@@ -15,6 +17,14 @@ import { withStyles } from "@material-ui/core/styles";
     handleChange = (event, value) => {
         setCurrentTab(value)
     };
+
+    handleHomeClick = () => {
+        // this.props.history.push('/')
+    }
+
+    handleAddClick = () => {
+        // this.props.history.push('/create')
+    }
 
     
     render() {
@@ -27,26 +37,29 @@ import { withStyles } from "@material-ui/core/styles";
             }
           });
 
-        const CustomTab = withStyles(style)(Tab);
+        // const CustomTab = withStyles(style)(Tab);
 
         return (
             <div>
-                <AppBar position="static">
-                    <Tabs value={globalState.appState.currentTab} onChange={(event, value) => this.handleChange(event, value)} aria-label="header">
-                        <CustomTab label="Home" component={NavLink} to={"/"} />
-                        <CustomTab label="Create Evaluation" component={NavLink} to={"/create"}/>
-                        <CustomTab label="Item Three" />
-                    </Tabs>
+                <AppBar position="sticky">
+                    <Toolbar>
+                        <div style={{width: '100%'}}>
+                            <div style={{float: 'left'}}>
+                                <Typography variant="body1" style={{marginTop: '13px'}}>
+                                    Peepee Poopoo Site
+                                </Typography>
+                            </div>
+                            <div style={{float: 'right'}}>
+                                <IconButton component={NavLink} to={"/"}>
+                                    <HomeIcon style={{color: 'white'}}/>
+                                </IconButton>
+                                <IconButton component={NavLink} to={"/create"}>
+                                    <AddIcon style={{color: 'white'}}/>
+                                </IconButton>
+                            </div>
+                        </div>
+                    </Toolbar>
                 </AppBar>
-                {/* <TabPanel value={value} index={0}>
-                Item One
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                Item Two
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                Item Three
-                </TabPanel> */}
             </div>
         );
     }

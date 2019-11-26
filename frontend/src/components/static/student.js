@@ -1,8 +1,6 @@
+import { FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { observer } from '../../../node_modules/mobx-react/dist/mobx-react'
-import { Paper, TextField, Typography, Select, MenuItem, InputLabel, Grid, FormControl } from '@material-ui/core'
-// import { Container, Table, TableHead, TableRow, TableCell, TableBody,
-//     Button } from '@material-ui/core/';
+import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
 
 const StudentForm = observer(class StudentForm extends React.Component {
     constructor(props) {

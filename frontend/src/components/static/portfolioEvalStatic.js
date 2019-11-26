@@ -4,6 +4,7 @@ import React from 'react';
 // import {NavLink, Link} from 'react-router-dom';
 import StudentForm from './student';
 import ReviewerForm from './ReviewerForm'
+import { Typography } from '@material-ui/core'
 
 export default class PortfolioEvalStatic extends React.Component {
     constructor(props) {
@@ -19,7 +20,9 @@ export default class PortfolioEvalStatic extends React.Component {
     render() {
         return (
             <div>
-                This is the portfolio eval static form section
+                <Typography variant="h3">
+                    Portfolio Evaluation
+                </Typography>
                 <StudentForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <ReviewerForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <br></br>

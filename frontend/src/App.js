@@ -13,10 +13,6 @@ import ViewEvaluation from './pages/view_evaluation';
 const App = observer(class App extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-
-    };
   }
 
   componentDidMount() {
@@ -30,13 +26,13 @@ const App = observer(class App extends React.Component {
     return (
       <div>
         {/* Headers */}
-        <Header></Header>
+        <Header/>
 
         {/* Main Body Routes */}
         <Switch>
-          <Route path="/create" component={CreateEvaluation}></Route>
+          <Route path="/create" exact render = {(props) => <CreateEvaluation {...props}/>}/>
 
-          <Route path="/view-evaluation" component={ViewEvaluation}></Route>
+          <Route path="/view-evaluation" exact render = {(props) => <ViewEvaluation {...props}/>}/>
 
 
           {/* Must BE LAST it matches with all routes */}

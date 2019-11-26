@@ -91,10 +91,6 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         if(this.state.evaluation != null) {
             return (
                 <Container maxWidth="md" minwidth="sm">
-                    {JSON.stringify(this.state.evaluation)}
-                    <br></br>
-                    <br></br>
-
                     {/* Rendering the header */}
                     {this.state.type === 'student_eval' && 
                         <StudentEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
@@ -117,7 +113,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         } else {
             return (
                 <Container maxWidth="md" minwidth="sm">
-                    No Data Found!
+                    Loading...
                 </Container>
             );
         }

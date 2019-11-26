@@ -6,6 +6,7 @@ import StudentForm from './student';
 import CompanyForm from './company';
 import SupervisorForm from './supervisor';
 import InternshipForm from './internship';
+import { Typography } from '@material-ui/core'
 
 export default class StudentEvalStatic extends React.Component {
     constructor(props) {
@@ -19,7 +20,9 @@ export default class StudentEvalStatic extends React.Component {
     render() {
         return (
             <div>
-                This is the student Eval / on-site Eval static form section
+                <Typography variant="h3">
+                    Student Evaluation
+                </Typography>                
                 <StudentForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <CompanyForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <SupervisorForm viewEvaluationState={this.props.viewEvaluationState}/>
