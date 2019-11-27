@@ -76,7 +76,10 @@ export default class Home extends React.Component {
                             <TableCell>
                                 <Button variant="outlined" color="primary"
                                     component={Link}
-                                    to={"/take-evaluation?type=" + row.eval_type + "&year=" + row.year}
+                                    to={{
+                                        pathname: "/take-evaluation",
+                                        search: "?type=" + row.eval_type + "&year=" + row.year
+                                    }}
                                 >
                                     Take Evaluation
                                 </Button>

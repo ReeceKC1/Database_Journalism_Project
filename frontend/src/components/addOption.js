@@ -1,14 +1,15 @@
 import React from 'react';
 import { Grid, TextField } from '@material-ui/core/';
+import { observer } from 'mobx-react';
 
-export default class Option extends React.Component {
+const Option = observer(class Option extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             id: 0,
             option_text: '', 
-            option_label: 'Option 1',
+            option_label: '',
         };
     }
 
@@ -17,7 +18,7 @@ export default class Option extends React.Component {
         if(this.props.value != null) {
             if(this.props.value.option_weight != undefined) {
                 this.setState({id: Number(this.props.value.option_weight)});
-                this.setState({option_label: 'Option ' + (this.props.value.id + 1)});
+                this.setState({option_label: 'Option ' + (Number(this.props.value.option_weight) + 1)});
                 this.setState({option_text: this.props.value.option_text});
             } else {
                 this.setState({id: this.props.value.id});
@@ -34,7 +35,7 @@ export default class Option extends React.Component {
         if (this.props !== prevProps) {
             if(this.props.value.option_weight != undefined) {
                 this.setState({id: Number(this.props.value.option_weight)});
-                this.setState({option_label: 'Option ' + (this.props.value.id + 1)});
+                this.setState({option_label: 'Option ' + (Number(this.props.value.option_weight) + 1)});
                 this.setState({option_text: this.props.value.option_text});
             } else {
                 this.setState({id: this.props.value.id});
@@ -47,18 +48,12 @@ export default class Option extends React.Component {
 
     changeOptionText = (event) => {
         let value = event.target.value;
+        let questionID = this.props.questionID;
 
         this.setState({ option_text: value });
-        this.notifyParentOnChange(value);
-    };
-
-    notifyParentOnChange = (value) => {
-        let option = {
-            id: this.state.id,
-            option_text: value
-        };
-
-        this.props.optionTextChange(option);
+        this.props.createEvaluationState.questions[questionID].options[this.state.id].option_text = value;
+        // this.props.value.option_text = value;
+        // this.notifyParentOnChange(value);
     };
 
     render() {
@@ -84,4 +79,6 @@ export default class Option extends React.Component {
             </Grid>
         );
     };
-}
+})
+
+export default Option

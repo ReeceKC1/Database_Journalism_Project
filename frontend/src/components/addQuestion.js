@@ -2,13 +2,14 @@ import React from 'react';
 import { Grid, TextField, Button} from '@material-ui/core/';
 import Option from '../components/addOption';
 import ReactDragListView from 'react-drag-listview';
+import { observer } from 'mobx-react';
 
-export default class Question extends React.Component {
+const Question = observer(class Question extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            num: 0,
+            id: 0,
             label: '',
             question_text: '',
             options: [], 
@@ -16,12 +17,16 @@ export default class Question extends React.Component {
     }
 
     componentDidMount() {
-        console.log("I got question",this.props.question);
+        // console.log("I got question",this.props.question);
         let question = this.props.question;
+        let ndx = this.props.question.id;
+        let mobxQuestion = this.props.createEvaluationState.questions[ndx];
+        // console.log(mobxQuestion);
+        this.setState({question: question});
 
         // Setting values in the question
         this.setState({
-            num: question.id,
+            id: question.id,
             label: question.label,
             question_text: question.question_text,
             options: question.options
@@ -31,19 +36,22 @@ export default class Question extends React.Component {
     // Functions to set state
     changeLabel = (event) => {
         let value = event.target.value;
+        let ndx = this.state.id;
         this.setState({label: value});
-
-        this.notifyParentOnChange('label', value);
+        
+        this.props.createEvaluationState.questions[ndx].label = value;
     };
 
     changeQuestion = (event) => {
         let value = event.target.value;
-        
+        let ndx = this.state.id;        
         this.setState({question_text: value});
-        this.notifyParentOnChange('question', value);
+        
+        this.props.createEvaluationState.questions[ndx].question_text = value;
     };
 
     addAvg = () => {
+        let ndx = this.state.id;
         let options = [
             {
                 id: 0,
@@ -63,10 +71,11 @@ export default class Question extends React.Component {
         ];
 
         this.setState({options: options});
-        this.notifyParentOnChange('options', options);
+        this.props.createEvaluationState.questions[ndx].options = options;
     };
 
     addAgree = () => {
+        let ndx = this.state.id;
         let options = [
             {
                 id: 0,
@@ -96,91 +105,39 @@ export default class Question extends React.Component {
         ];
 
         this.setState({options: options});
-        this.notifyParentOnChange('options', options);
-    }
-
-    // TODO might want to change if 
-    // I am going to be able to change option order
-    optionChange = (value) => {
-        let id = value.id;
-        let options = this.state.options;
-        let optionNdx = options[id];
-
-        // Changing the option value
-        optionNdx.option_text = value.option_text;
-
-        this.setState({options: options});
-        this.notifyParentOnChange('options', options);
-    }
-
-    // Let the parent know the questions info on change
-    notifyParentOnChange = (option, value) => {
-        let question;
-        if(option === 'label') {
-            question = {
-                id: this.state.num,
-                label: value,
-                question_text: this.state.question_text,
-                options: this.state.options
-            };
-        } else if(option === 'question') {
-            question = {
-                id: this.state.num,
-                label: this.state.label,
-                question_text: value,
-                options: this.state.options
-            };
-        } else if(option === 'options') {
-            question = {
-                id: this.state.num,
-                label: this.state.label,
-                question_text: this.state.question_text,
-                options: value
-            };
-        }
-        
-
-        // console.log('tyring to change', question);
-        
-        this.props.updateQuestion(question);
+        this.props.createEvaluationState.questions[ndx].options = options;
     }
 
     // Add new option
     addOption = () => {
-        let options = this.state.options;
+        let ndx = this.state.id;
+        let options = this.props.createEvaluationState.questions[ndx].options;
         let option = {
-            id: this.state.options.length,
+            id: options.length,
             option_text: ''
         };
 
         options.push(option);
 
         this.setState({options: options});
+        this.props.createEvaluationState.questions[ndx].options = options;
     };
 
     render() {
-        // const renderOptions = this.state.options.map((option) => 
-        //     <div key={option.id}>
-        //         <Option id={option.id} 
-        //         value={option.option_text}
-        //         optionTextChange={(value) => this.optionChange(value)}
-        //         />
-        //     </div>
-        // );
-
         // Sortable option list
         const that = this;
         const dragProps = {
             onDragEnd(fromIndex, toIndex) {
-                const options = that.state.options;
+                const options = that.props.question.options;
                 const item = options.splice(fromIndex, 1)[0];
                 options.splice(toIndex, 0, item);
                 console.log("I am trying to update shit");
 
-                for(var i = 0; i < options.length; i++) {
-                    options[i].id = i;
-                }
-                that.setState({ options });
+                // for(var i = 0; i < options.length; i++) {
+                //     options[i].id = i;
+                // }
+                // that.setState({ options });
+                that.props.question.options = options;
             }, 
             nodeSelector: 'div',
             handleSelector: 'a'
@@ -191,7 +148,7 @@ export default class Question extends React.Component {
                 <Grid container style={{backgroundColor: '#cfe8fc', marginBottom: '20px'}}>
                     <Grid item xs={12}>
                         {/* Question Number */}
-                        <small>question_text: {this.state.num}</small>
+                        <small>question_text: {this.state.id}</small>
 
                         {/* Question Label */}
                         <div >
@@ -233,13 +190,14 @@ export default class Question extends React.Component {
 
                         {/* {renderOptions} */}
                         <ReactDragListView {...dragProps}>
-                            {this.state.options.map((option) => ( 
+                            {this.props.question.options.map((option) => ( 
                                 <div key={option.id}>
                                     {/* Need to keep this drag element */}
                                     <a href="#">Drag</a>
                                     <Option id={option.id} 
                                     value={option}
-                                    optionTextChange={(value) => this.optionChange(value)}
+                                    questionID={this.state.id}
+                                    createEvaluationState={this.props.createEvaluationState}
                                     />
                             </div>))}
                         </ReactDragListView>
@@ -253,4 +211,6 @@ export default class Question extends React.Component {
             </div>
         );
     }
-}
+})
+
+export default Question

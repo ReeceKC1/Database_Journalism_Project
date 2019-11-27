@@ -34,6 +34,8 @@ const App = observer(class App extends React.Component {
 
           <Route path="/view-evaluation" exact render = {(props) => <ViewEvaluation {...props}/>}/>
 
+          <Route path="/take-evaluation" exact render = {(props) => <ViewEvaluation {...props}/>}/>
+
 
           {/* Must BE LAST it matches with all routes */}
           <Route path="/">

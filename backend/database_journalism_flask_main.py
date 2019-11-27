@@ -74,10 +74,10 @@ def create_evaluation():
                 # print(option)
                 option_obj = Option(**option)
                 session.add(option_obj)
-                session.commit()
+                # session.commit()
 
         # Saving the objects to the DB
-        # session.commit()
+        session.commit()
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 400

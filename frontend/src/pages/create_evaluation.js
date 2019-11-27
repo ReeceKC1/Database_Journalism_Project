@@ -5,24 +5,34 @@ import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
 import axios from 'axios';
 import * as Evaluation from '../axois/evaluation';
+import { observable, decorate } from 'mobx';
+import { observer } from 'mobx-react';
 
-export default class CreateEvaluation extends React.Component {
+const CreateEvaluation =  observer(class CreateEvaluation extends React.Component {
     constructor(props) {
         super(props);
+
+        const createEvaluationState = {
+            title: '',
+            eval_type: '',
+            year: '',
+            version: '1',
+            questions: []
+        }
+
+        decorate(createEvaluationState, {
+           title: observable,
+           eval_type: observable,
+           year: observable,
+           questions: observable
+        });
 
         this.state = {
             title: '',
             eval_type: '',
             year: '',
             version: '1',
-            questions: [
-                // {
-                //     id: 0,
-                //     label: 'Q1',
-                //     question: 'Question1',
-                //     options: [], 
-                // }
-            ]
+            createEvaluationState: createEvaluationState
         };
     }
 
@@ -70,45 +80,36 @@ export default class CreateEvaluation extends React.Component {
     titleChange = (event) => {
         let value = event.target.value;
         this.setState({ title: value });
+        this.state.createEvaluationState.title = value;
     };
 
     typeChange = (event) => {
         let value = event.target.value;
         this.setState({ eval_type: value });
+        this.state.createEvaluationState.eval_type = value;
     };
     
     yearChange = (event) => {
         let value = event.target.value;
         this.setState({ year: value });
-    };
-
-    updateQuestion = (question) => {
-        let ndx = question.id;
-        let questions = this.state.questions;
-        
-        // Update the particular question data
-        let questionNdx = questions[ndx];
-
-        questionNdx.label = question.label;
-        questionNdx.question_text = question.question_text;
-        questionNdx.options = question.options;
-
-        this.setState({ questions: questions });
+        this.state.createEvaluationState.year = value;
     };
 
     // Add a question
     addQuestion = () => {
         let templateQuestion = {
-            id: this.state.questions.length,
+            id: this.state.createEvaluationState.questions.length,
             label: '',
             question_text: '',
             options: [], 
         }
 
-        let questions = this.state.questions;
+        let questions = this.state.createEvaluationState.questions;
         questions.push(templateQuestion);
 
-        this.setState({ questions: questions});
+        // this.setState({ questions: questions});
+
+        this.state.createEvaluationState.questions = questions;
     };
 
 
@@ -119,17 +120,18 @@ export default class CreateEvaluation extends React.Component {
         // Need to go through each question and option to clean up data 
         // in case it has been imported
         // console.log(this.state);
+        let state = this.state.createEvaluationState;
         let payload = {
-            title: this.state.title,
-            eval_type: this.state.eval_type,
-            year: this.state.year,
-            version: this.state.version,
+            title: state.title,
+            eval_type: state.eval_type,
+            year: state.year,
+            version: state.version,
             questions: []
         };
 
         // Question / Option Data
-        for(var i = 0; i < this.state.questions.length; i++) {
-            let question = this.state.questions[i];
+        for(var i = 0; i < state.questions.length; i++) {
+            let question = state.questions[i];
 
             let newQuestion = {
                 id: question.id,
@@ -144,7 +146,7 @@ export default class CreateEvaluation extends React.Component {
                 let newOption;
                 if(option.id !== undefined) {
                     newOption = {
-                        id: option.id,
+                        id: j,
                         option_text: option.option_text
                     };
                 } else {
@@ -153,8 +155,6 @@ export default class CreateEvaluation extends React.Component {
                         option_text: option.option_text
                     };
                 }
-                
-                
 
                 newQuestion.options.push(newOption);
             }
@@ -164,7 +164,7 @@ export default class CreateEvaluation extends React.Component {
 
         console.log(payload);
 
-
+        // Actually Submitting the Data 
         axios.post('http://localhost:5000/api/evaluation/create', payload)
         .then(response => {
             console.log(response);
@@ -185,11 +185,12 @@ export default class CreateEvaluation extends React.Component {
           }));
 
         //   Function to Reder All Questions
-          const renderQuestions = this.state.questions.map((question) => 
+        //TODO: Update to MOBX
+          const renderQuestions = this.state.createEvaluationState.questions.map((question) => 
             <Question 
                 question={question} 
                 key={question.id}
-                updateQuestion={(question) => this.updateQuestion(question)}
+                createEvaluationState={this.state.createEvaluationState}
             />
             
           );
@@ -268,4 +269,6 @@ export default class CreateEvaluation extends React.Component {
             </Container>
         );
     }
-}
+})
+
+export default CreateEvaluation
