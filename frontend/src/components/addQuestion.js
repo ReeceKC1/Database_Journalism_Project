@@ -1,8 +1,9 @@
 import React from 'react';
-import { Grid, TextField, Button} from '@material-ui/core/';
+import { Grid, TextField, Button, Paper, Typography, IconButton } from '@material-ui/core/';
 import Option from '../components/addOption';
 import ReactDragListView from 'react-drag-listview';
 import { observer } from 'mobx-react';
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 
 const Question = observer(class Question extends React.Component {
     constructor(props) {
@@ -142,73 +143,85 @@ const Question = observer(class Question extends React.Component {
             nodeSelector: 'div',
             handleSelector: 'a'
         };
-
+        let style = {
+            width: '90%',
+            marginLeft: '5%',
+        }
         return (
-            <div>
-                <Grid container style={{backgroundColor: '#cfe8fc', marginBottom: '20px'}}>
-                    <Grid item xs={12}>
-                        {/* Question Number */}
-                        <small>question_text: {this.state.id}</small>
-
-                        {/* Question Label */}
-                        <div >
-                                <TextField
-                                id="standard-basic"
-                                label="Question Label"
-                                margin="normal"
-                                fullWidth
-                                onChange={(event) => this.changeLabel(event)}
-                                value={this.state.label}
-                                autoFocus 
-                                />
-                            </div>
-
-                        {/* Question */}
-                        <div >
-                            <TextField
-                            id="standard-basic"
-                            label="Question"
-                            margin="normal"
-                            fullWidth
-                            onChange={(event) => this.changeQuestion(event)}
-                            value={this.state.question_text}
+            
+                <Grid container spacing={1} direction = "column" >
+                    <Paper style={{backgroundColor: '#cfe8fc', marginBottom: '20px', padding: '15px'}}>
+                    {/* Question Number */}
+                    <Typography>
+                        Question: {this.state.id}
+                    </Typography>
+                    {/* Question Label */}
+                    <Grid item style = {{width: '100%'}}>
+                        <TextField
+                        id="standard-basic"
+                        label="Question Label"
+                        margin="normal"
+                        style={style}
+                        onChange={(event) => this.changeLabel(event)}
+                        value={this.state.label}
+                        autoFocus 
                         />
-                        </div>
+                    </Grid>
+                        {/* Question */}
+                    <Grid item style = {{width: '100%'}}>
+                        <TextField
+                        id="standard-basic"
+                        label="Question"
+                        margin="normal"
+                        style={style}
+                        onChange={(event) => this.changeQuestion(event)}
+                        value={this.state.question_text}
+                        />
+                    </Grid>
 
-                        {/* Options */}
-                        <hr></hr>
+                    {/* Options */}
+                    <hr></hr>
 
-                        {/* Button to add defaults */}
-                        <Button variant="outlined" color="primary" type="button" onClick={() => this.addAvg()}>
-                            Avg Set
-                        </Button>
+                    {/* Button to add defaults */}
+                    <Grid item style = {{width: '100%'}}>
+                        <Typography>
+                            Question Options
+                        </Typography>
 
-                        <Button variant="outlined" color="primary" type="button" onClick={() => this.addAgree()}>
-                            Agree Set
-                        </Button>
-
-
-                        {/* {renderOptions} */}
-                        <ReactDragListView {...dragProps}>
-                            {this.props.question.options.map((option) => ( 
-                                <div key={option.id}>
-                                    {/* Need to keep this drag element */}
-                                    <a href="#">Drag</a>
-                                    <Option id={option.id} 
-                                    value={option}
-                                    questionID={this.state.id}
-                                    createEvaluationState={this.props.createEvaluationState}
-                                    />
-                            </div>))}
-                        </ReactDragListView>
-                        <Button variant="outlined" color="primary" type="button" onClick={() => this.addOption()}>
+                        <Button style={{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addOption()}>
                             Add Option
                         </Button>
-                        <br></br>
 
+                        <Button style={{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addAvg()}>
+                            Avg Set
+                        </Button>
+                    
+                        <Button style={{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addAgree()}>
+                            Agree Set
+                        </Button>
                     </Grid>
+
+                    <hr></hr>
+
+                    {/* {renderOptions} */}
+                    <Grid item style={{width: '100%'}}>
+                    <ReactDragListView {...dragProps}>
+                        {this.props.question.options.map((option) => ( 
+                            <div key={option.id} style={{padding: '8px', height: '100px', backgroundColor: 'red', width: '100%'}}>
+                                {/* Need to keep this drag element */}
+                                <IconButton variant="contained" color="primary" type="button" style={{margin: '4px', float: 'left'}}>
+                                    <a href="#"><DragHandleIcon/></a>
+                                </IconButton>
+                                <Option id={option.id} 
+                                value={option}
+                                questionID={this.state.id}
+                                createEvaluationState={this.props.createEvaluationState}
+                                />
+                        </div>))}
+                    </ReactDragListView>
+                    </Grid>
+                    </Paper>
                 </Grid>
-            </div>
         );
     }
 })

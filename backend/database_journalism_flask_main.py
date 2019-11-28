@@ -6,6 +6,7 @@ from enums import *
 from database import *
 from flask_cors import CORS
 import uuid 
+import traceback
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ def check_student(id):
     session = Session()
     student = session.query(Student).filter_by(student_id=id).one_or_none()
     if student:
-        return jsonify({'success': 'student found'}), 200
+        return jsonify(student), 200
     return jsonify({'error': 'student not found'}), 400
 
 @app.route('/api/supervisor/check.<string:email>', methods=['GET'])
@@ -28,7 +29,7 @@ def supervisor_check(email):
     session = Session()
     supervisor = session.query(Supervisor).filter_by(email=email).one_or_none()
     if supervisor:
-        return jsonify({'success': 'supervisor found'}), 200
+        return jsonify(supervisor), 200
     return jsonify({'error': 'supervisor not found'}), 400
 
 @app.route('/api/company/check.<string:name>', methods=['GET'])
@@ -36,7 +37,7 @@ def company_check(name):
     session = Session()
     company = session.query(Company).filter_by(company_name=name).one_or_none()
     if company:
-        return jsonify({'success': 'company found'}), 200
+        return jsonify(company), 200
     return jsonify({'error': 'company not found'}), 400
 
 ############################################################
@@ -103,8 +104,9 @@ def create_answer():
     try:
         evaluation = request.json
 
-        if session.query(Evaluation).filter_by(year=evaluation['year'],eval_type=evaluation['eval_type']).one_or_none():
-            return jsonify({'error': 'evaluation with current type and year already exists'}), 400
+        if not session.query(Evaluation).filter_by(year=evaluation['eval_year'],eval_type=evaluation['eval_type']).one_or_none():
+            print("no evaluation")
+            return jsonify({'error': 'no evaluation'}), 400
 
         student = evaluation.pop('student')
         student_obj = Student(**student)
@@ -152,7 +154,7 @@ def create_answer():
             internship['company_name'] = company['company_name']
             internship['supervisor_email'] = supervisor['email']
             internship_obj = Internship(**internship)
-            if not session.query(Internship.id).filter(student_id=internship_obj.student_id,company_name=internship_obj.company_name,supervisor_email=internship_obj.supervisor_email):
+            if not session.query(Internship).filter_by(student_id=internship_obj.student_id,company_name=internship_obj.company_name,supervisor_email=internship_obj.supervisor_email):
                 session.add(internship_obj)
             session.commit()
 
@@ -180,6 +182,7 @@ def create_answer():
             session.commit()
     except Exception as e:
         print(e)
+        print(traceback.format_exc())
         return jsonify({'error': str(e)}), 400
 
     return jsonify({'status': 'saved'}), 200

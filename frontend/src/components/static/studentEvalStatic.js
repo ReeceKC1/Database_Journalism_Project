@@ -1,25 +1,19 @@
 import React from 'react';
-// import { Container, Table, TableHead, TableRow, TableCell, TableBody,
-//     Button } from '@material-ui/core/';
-// import {NavLink, Link} from 'react-router-dom';
 import StudentForm from './student';
 import CompanyForm from './company';
 import SupervisorForm from './supervisor';
 import InternshipForm from './internship';
 import { Typography } from '@material-ui/core'
+import BuildEvaluation from '../buildEvaluation'
 
 export default class StudentEvalStatic extends React.Component {
-    constructor(props) {
-        super(props);
 
-        
-    }
 
     componentDidMount() {}
 
     render() {
         return (
-            <div>
+            <div style={{width: '50%', marginLeft: '25%'}}>
                 <Typography variant="h3">
                     Student Evaluation
                 </Typography>                
@@ -28,8 +22,8 @@ export default class StudentEvalStatic extends React.Component {
                 <SupervisorForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <InternshipForm viewEvaluationState={this.props.viewEvaluationState}/>
 
-                <br></br>
-                This is where we will load in the lower form
+                <BuildEvaluation viewEvaluationState={this.props.viewEvaluationState}/>
+
 
             </div>
         );

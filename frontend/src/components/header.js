@@ -1,12 +1,10 @@
-import React from 'react';
-import {AppBar, Tabs, Tab, Toolbar, IconButton, Typography } from '@material-ui/core/';
-import {NavLink} from 'react-router-dom';
-import { observer, } from 'mobx-react'
-import { globalState, setCurrentTab } from '../state'
-import { withStyles } from "@material-ui/core/styles";
-import HomeIcon from '@material-ui/icons/Home';
+import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core/';
 import AddIcon from '@material-ui/icons/Add';
-import { withRouter } from 'react-router-dom';
+import HomeIcon from '@material-ui/icons/Home';
+import { observer } from 'mobx-react';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { setCurrentTab } from '../state';
 
  const Header = observer(class Header extends React.Component {
     constructor(props) {
@@ -41,7 +39,7 @@ import { withRouter } from 'react-router-dom';
 
         return (
             <div>
-                <AppBar position="sticky">
+                <AppBar ref="appbar"  style={{position: 'fixed'}}>
                     <Toolbar>
                         <div style={{width: '100%'}}>
                             <div style={{float: 'left'}}>

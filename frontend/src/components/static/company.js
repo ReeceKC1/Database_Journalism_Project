@@ -1,4 +1,4 @@
-import { Grid, Paper, TextField, Typography } from '@material-ui/core';
+import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
 
@@ -11,15 +11,16 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
 
     render() {
         let style = {
-            width: '500px',
+            width: '90%',
+            marginLeft: '5%',
         }
         return (
-            <Paper style={{width: '600px', padding: '10px'}}>
+            <div style={{width: '100%', padding: '10px', width: '100%'}}>
                 <Typography variant="h5">
                     Company Information
                 </Typography>
                 <Grid container spacing={1} alignItems = "center" direction = "column">
-                    <Grid item>
+                    <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Company Name"
@@ -27,7 +28,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                         onChange={(event) => {this.props.viewEvaluationState.company_state.company_name = event.target.value}}
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Address"
@@ -35,7 +36,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                         onChange={(event) => {this.props.viewEvaluationState.company_state.address = event.target.value}}
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Phone Number"
@@ -44,7 +45,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                         />
                     </Grid>
                 </Grid>
-            </Paper>
+            </div>
         );      
     }
 })

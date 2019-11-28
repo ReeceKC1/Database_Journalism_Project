@@ -11,15 +11,16 @@ const ReviewerForm = observer(class RevewerForm extends React.Component {
 
     render() {
         let style = {
-            width: '500px',
+            width: '90%',
+            marginLeft: '5%',
         }
         return (
-            <Paper style={{width: '600px', padding: '10px'}}>
+            <div style={{width: '100%', padding: '10px'}}>
                 <Typography variant="h5">
                     Reviewer Information
                 </Typography>
                 <Grid container spacing={1} alignItems = "center" direction = "column">
-                    <Grid item>
+                    <Grid item style={{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Reviewer Name"
@@ -28,7 +29,7 @@ const ReviewerForm = observer(class RevewerForm extends React.Component {
                         />
                     </Grid>
                 </Grid>
-            </Paper>
+            </div>
         );
     }
 })

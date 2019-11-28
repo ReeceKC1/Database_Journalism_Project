@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, TextField, Button, FormControl, InputLabel, Select,
-    MenuItem } from '@material-ui/core/';
+    MenuItem, Typography, Grid } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
 import axios from 'axios';
@@ -174,14 +174,14 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     render() {
         const useStyles = makeStyles(theme => ({
             container: {
-              display: 'flex',
-              flexWrap: 'wrap',
+              marginBottom: '10px'
             },
             textField: {
               marginLeft: theme.spacing(1),
               marginRight: theme.spacing(1),
               width: 200,
             },
+
           }));
 
         //   Function to Reder All Questions
@@ -195,78 +195,97 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             
           );
 
+          let style = {
+            width: '90%',
+            marginLeft: '5%',
+          }
+
         return (
-            <Container maxWidth="md" minwidth="sm">
-                <form className={useStyles.container} noValidate autoComplete="off" onSubmit={() => this.handleSubmit()} >
-                    {/* Title */}
-                    <div >
-                        <TextField
-                        id="standard-basic"
-                        label="Evaluation Title"
-                        margin="normal"
-                        fullWidth
-                        onChange={(event) => this.titleChange(event)}
-                        value={this.state.title}
-                        />
-                    </div>
-
-                    {/* Type */}
-                    <div>
-                    <FormControl fullWidth>
-                        <InputLabel id="type">Type</InputLabel>
-                        <Select
-                        labelId="type"
-                        value={this.state.eval_type}
-                        onChange={(event) => this.typeChange(event)}
-                        >
-                            <MenuItem value="student_eval">Student Evaluation</MenuItem>
-                            <MenuItem value="student_onsite_eval">Student On-Site Evaluation</MenuItem>
-                            <MenuItem value="internship_eval">Internship Evaluation</MenuItem>
-                            <MenuItem value="portfolio_eval">Portfolio Evaluation</MenuItem>
-                        </Select>
-                    </FormControl>
-                    </div>
-
-                    {/* Year */}
-                    <div>
-                        <TextField
-                        id="standard-basic"
-                        label="Year"
-                        margin="normal"
-                        fullWidth
-                        onChange={(event) => this.yearChange(event)}
-                        value={this.state.year}
-                        />
-                    </div>
-
-                    {/* Version */}
-                    <div>
-                        <TextField
-                        id="standard-basic"
-                        label="Version"
-                        margin="normal"
-                        fullWidth
-                        value={this.state.version}
-                        readOnly
-                        disabled
-                        />
-                    </div>
-
-                    <hr></hr>
-                    {/* The real meat and potatoes of the builder */}
-                    {renderQuestions}
-                    <Button variant="outlined" color="primary" type="button" onClick={() => this.addQuestion()}>
-                        Add Question
-                    </Button>
-                    <br></br>
-
-
-                    {/* Submit */}
-                    <Button variant="outlined" color="primary" type="submit">
+            <div style={{width: '50%', marginLeft: '25%', marginTop: '75px'}}>
+                <Typography variant="h3">
                         Create Evaluation
-                    </Button>
+                    </Typography>
+                <form style={{padding: '10px'}} noValidate autoComplete="off" onSubmit={() => this.handleSubmit()} >
+                    <Typography variant="h5" style={{marginTop: '10px'}}>
+                        Evaluation Form Information
+                    </Typography>
+                    {/* Title */}
+                    <Grid  container spacing={1} alignItems ="center" direction="column">
+                        <Grid item style = {{width: '100%'}}>
+                            <TextField
+                            id="standard-basic"
+                            label="Evaluation Title"
+                            margin="normal"
+                            style={style}
+                            onChange={(event) => this.titleChange(event)}
+                            value={this.state.title}
+                            />
+                        </Grid>
+
+                        {/* Type */}
+                        <Grid item style = {{width: '100%'}}>
+                        <FormControl fullWidth style={style}>
+                            <InputLabel id="type">Type</InputLabel>
+                            <Select
+                            labelId="type"
+                            style={{width: '100%'}}
+                            value={this.state.eval_type}
+                            onChange={(event) => this.typeChange(event)}
+                            >
+                                <MenuItem value="student_eval">Student Evaluation</MenuItem>
+                                <MenuItem value="student_onsite_eval">Student On-Site Evaluation</MenuItem>
+                                <MenuItem value="internship_eval">Internship Evaluation</MenuItem>
+                                <MenuItem value="portfolio_eval">Portfolio Evaluation</MenuItem>
+                            </Select>
+                        </FormControl>
+                        </Grid>
+
+                        {/* Year */}
+                        <Grid item style = {{width: '100%'}}>
+                            <TextField
+                            id="standard-basic"
+                            label="Year"
+                            margin="normal"
+                            style={style}
+                            onChange={(event) => this.yearChange(event)}
+                            value={this.state.year}
+                            />
+                        </Grid>
+
+                        {/* Version */}
+                        <Grid item style = {{width: '100%', marginBottom: '10px'}}>
+                            <TextField
+                            id="standard-basic"
+                            label="Version"
+                            margin="normal"
+                            style={style}
+                            value={this.state.version}
+                            readOnly
+                            disabled
+                            />
+                        </Grid>
+                        {/* The real meat and potatoes of the builder */}
+
+                        
+                        {renderQuestions}
+
+                        <Grid item style = {{width: '100%', marginBottom: '25px'}}>
+                            <Typography>
+                                Evaluation Options
+                            </Typography>
+                            <Button style = {{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addQuestion()}>
+                                Add Question
+                            </Button>
+                            <Button style = {{margin: '5px'}} variant="contained" color="primary" type="submit">
+                                Create Evaluation
+                            </Button>
+                        </Grid>
+
+
+                        
+                    </Grid>
                 </form>
-            </Container>
+            </div>
         );
     }
 })

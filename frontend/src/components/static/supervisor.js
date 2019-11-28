@@ -1,4 +1,4 @@
-import { Grid, Paper, TextField, Typography } from '@material-ui/core';
+import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
 
@@ -11,15 +11,16 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
 
     render() {
         let style = {
-            width: '500px',
+            width: '90%',
+            marginLeft: '5%',
         }
         return (
-            <Paper style={{width: '600px', padding: '10px'}}>
+            <div style={{width: '100%', padding: '10px'}}>
                 <Typography variant="h5">
                     Supervisor Information
                 </Typography>
                 <Grid container spacing={1} alignItems = "center" direction = "column">
-                    <Grid item>
+                    <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Email"
@@ -27,7 +28,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         onChange={(event) => {this.props.viewEvaluationState.supervisor_state.email = event.target.value}}
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Name"
@@ -35,7 +36,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         onChange={(event) => {this.props.viewEvaluationState.supervisor_state.name = event.target.value}}
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
                         label="Title"
@@ -44,7 +45,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         />
                     </Grid>
                 </Grid>
-            </Paper>
+            </div>
         ); 
     }
 })

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Grid, TextField } from '@material-ui/core/';
+import { Paper, TextField } from '@material-ui/core/';
 import { observer } from 'mobx-react';
+import React from 'react';
 
 const Option = observer(class Option extends React.Component {
     constructor(props) {
@@ -15,8 +15,8 @@ const Option = observer(class Option extends React.Component {
 
     // Loading in data
     componentDidMount() {
-        if(this.props.value != null) {
-            if(this.props.value.option_weight != undefined) {
+        if(this.props.value !== null) {
+            if(this.props.value.option_weight !== undefined) {
                 this.setState({id: Number(this.props.value.option_weight)});
                 this.setState({option_label: 'Option ' + (Number(this.props.value.option_weight) + 1)});
                 this.setState({option_text: this.props.value.option_text});
@@ -58,25 +58,17 @@ const Option = observer(class Option extends React.Component {
 
     render() {
         return (
-            <Grid container justify="center" >
-                <Grid item xs={8} style={{backgroundColor: '#efefef', marginBottom: '20px'}}>
-                    {/* Question Number */}
-                    <small>Option: {this.state.id}</small>
-
-                    {/* Question Label */}
-                    <div >
-                            <TextField
-                            id="standard-basic"
-                            label={this.state.option_label}
-                            margin="normal"
-                            fullWidth
-                            onChange={(event) => this.changeOptionText(event)}
-                            autoFocus 
-                            value={this.state.option_text}
-                            />
-                        </div>
-                </Grid>
-            </Grid>
+                <Paper style={{width: '80%', marginRight: '5%', float: 'right'}}>
+                        <TextField
+                        id="standard-basic"
+                        label={this.state.option_label}
+                        margin="normal"
+                        onChange={(event) => this.changeOptionText(event)}
+                        autoFocus
+                        style={{width: '96%', marginLeft: '2%', marginBottom: '20px'}}
+                        value={this.state.option_text}
+                        />
+                </Paper>
         );
     };
 })

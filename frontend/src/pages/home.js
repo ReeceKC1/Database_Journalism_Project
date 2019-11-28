@@ -27,7 +27,7 @@ export default class Home extends React.Component {
         const rows = this.state.evaluations;
         
         return (
-            <Container maxWidth="md" minwidth="sm">
+            <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>
