@@ -12,10 +12,9 @@ app = Flask(__name__)
 
 CORS(app)
 
-@app.route('/')
-def home():
-    return "Hello world!"
-
+############################################################
+# Object api                                               #
+############################################################
 @app.route('/api/student/check.<string:id>', methods=['GET'])
 def check_student(id):
     session = Session()
@@ -40,8 +39,19 @@ def company_check(name):
         return jsonify(company), 200
     return jsonify({'error': 'company not found'}), 400
 
+@app.route('/api/internship', methods=['GET'])
+def get_internship():
+    session = Session()
+    student_id = request.args.get('student_id')
+    company_name = request.args.get('company_name')
+    start_date = request.args.get('start_date')
+    internship = session.query(Internship).filter_by(student_id=student_id,company_name=company_name,start_date=start_date).one_or_none()
+    if internship:
+        return jsonify(internship), 200
+    return jsonify({'error': 'internship not found'}), 400
+
 ############################################################
-# Evaluation api
+# Evaluation api                                           #
 ############################################################
 @app.route('/api/evaluation/create', methods=['POST'])
 def create_evaluation():
@@ -88,16 +98,38 @@ def create_evaluation():
 @app.route('/api/evaluation/get', methods=['GET'])
 def get_evaluation():
     session = Session()
-    param_type = request.args.get('type')
-    param_year = request.args.get('year')
+    try:
+        param_type = request.args.get('type')
+        param_year = request.args.get('year')
+        start_year = request.args.get('start_year')
+        end_year = request.args.get('end_year')
 
-    # Get an Evaluation based on type and year
-    if param_type != None and param_year != None:
-        return get_evaluation_by_key(param_type, param_year)
+        if param_type and start_year and end_year:
+            return get_evaluation_by_type_start_end(param_type, start_year, end_year)
 
-    q = session.query(Evaluation).order_by(Evaluation.year.desc())
-    return jsonify(result=[i.seralize for i in q]), 200
+        # Get an Evaluation based on type and year
+        if param_type and param_year:
+            return get_evaluation_by_key(param_type, param_year)
 
+        if start_year and end_year:
+            return get_evaluation_by_type_start_end(start_year, end_year)
+
+        if param_year:
+            return get_evaluation_by_year(param_year)
+
+        if param_type:
+            return get_evaluation_by_type(param_type)
+
+        q = session.query(Evaluation).order_by(Evaluation.year.desc())
+        return jsonify(result=[i.seralize for i in q]), 200
+    except Exception as e:
+        print(e)
+        print(traceback.format_exc())
+        return jsonify({'error': str(e)}), 400
+
+############################################################
+# Answer api                                               #
+############################################################
 @app.route('/api/answer/evaluation', methods=['POST'])
 def create_answer():
     session = Session()
@@ -187,6 +219,42 @@ def create_answer():
 
     return jsonify({'status': 'saved'}), 200
 
+@app.route('/api/answer/get', methods=['GET'])
+def get_answer():
+    session = Session()
+    try:
+        request_type = request.args.get('type')
+        request_year = request.args.get('year')
+        student_id = request.args.get('student_id')
+        start_year = request.args.get('start_year')
+        end_year = request.args.get('end_year')
+        label = request.args.get('label')
+
+        if request_type and start_year and end_year:
+            return get_answer_by_type_start_end(request_type, start_year, end_year)
+
+        if start_year and end_year and label:
+            return get_answer_by_start_end_label(start_year, end_year, label)
+
+        if request_year and student_id:
+            return get_answer_by_year_id(request_year, student_id)
+
+        if request_type and request_year:
+            return get_answer_by_type_year(request_type, request_year)
+
+        if student_id:
+            return get_answer_by_id(student_id)
+        
+        return jsonify({'error': 'invalid url'}), 400
+        
+    except Exception as e:
+        print(e)
+        print(traceback.format_exc())
+        return jsonify({'error': str(e)}), 400
+
+############################################################
+# Error Handling                                           #
+############################################################
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)

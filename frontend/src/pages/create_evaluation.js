@@ -266,8 +266,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                         </Grid>
                         {/* The real meat and potatoes of the builder */}
 
-                        
-                        {renderQuestions}
+                        <Grid item style = {{width: '100%'}}>
+                            {renderQuestions}
+                        </Grid>
 
                         <Grid item style = {{width: '100%', marginBottom: '25px'}}>
                             <Typography>

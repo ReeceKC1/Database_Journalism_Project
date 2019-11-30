@@ -150,7 +150,7 @@ const Question = observer(class Question extends React.Component {
         return (
             
                 <Grid container spacing={1} direction = "column" >
-                    <Paper style={{backgroundColor: '#cfe8fc', marginBottom: '20px', padding: '15px'}}>
+                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length}) + 330px)`, marginBottom: '20px', padding: '15px'}}>
                     {/* Question Number */}
                     <Typography>
                         Question: {this.state.id}
@@ -204,10 +204,10 @@ const Question = observer(class Question extends React.Component {
                     <hr></hr>
 
                     {/* {renderOptions} */}
-                    <Grid item style={{width: '100%'}}>
+                    <Grid item style={{width: '100%', height: `calc(100px * ${this.props.question.options.length})`}}>
                     <ReactDragListView {...dragProps}>
                         {this.props.question.options.map((option) => ( 
-                            <div key={option.id} style={{padding: '8px', height: '100px', backgroundColor: 'red', width: '100%'}}>
+                            <div key={option.id} style={{padding: '8px', height: '100px', width: '100%'}}>
                                 {/* Need to keep this drag element */}
                                 <IconButton variant="contained" color="primary" type="button" style={{margin: '4px', float: 'left'}}>
                                     <a href="#"><DragHandleIcon/></a>
