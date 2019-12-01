@@ -17,7 +17,7 @@ export default class Home extends React.Component {
     componentDidMount() {
         axios.get('http://localhost:5000/api/evaluation/get')
         .then(response => {
-            let data = response.data.result;
+            let data = response.data;
             this.setState({evaluations: data});
         }).catch(error => console.log(error));
     }

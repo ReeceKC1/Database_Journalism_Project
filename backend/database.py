@@ -34,7 +34,7 @@ class Student(Base):
             'email' : self.email,
             'semester_of_completion' : self.semester_of_completion,
             'grade' : self.grade,
-            'pr_major_minor' : self.pr_major_min
+            'pr_major_minor' : self.pr_major_minor
         }
 
 class Company(Base):

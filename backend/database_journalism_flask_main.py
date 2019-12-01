@@ -20,7 +20,7 @@ def check_student(id):
     session = Session()
     student = session.query(Student).filter_by(student_id=id).one_or_none()
     if student:
-        return jsonify(student), 200
+        return jsonify(student.seralize), 200
     return jsonify({'error': 'student not found'}), 400
 
 @app.route('/api/supervisor/check.<string:email>', methods=['GET'])
@@ -28,7 +28,7 @@ def supervisor_check(email):
     session = Session()
     supervisor = session.query(Supervisor).filter_by(email=email).one_or_none()
     if supervisor:
-        return jsonify(supervisor), 200
+        return jsonify(supervisor.seralize), 200
     return jsonify({'error': 'supervisor not found'}), 400
 
 @app.route('/api/company/check.<string:name>', methods=['GET'])
@@ -36,18 +36,19 @@ def company_check(name):
     session = Session()
     company = session.query(Company).filter_by(company_name=name).one_or_none()
     if company:
-        return jsonify(company), 200
+        return jsonify(company.seralize), 200
     return jsonify({'error': 'company not found'}), 400
 
 @app.route('/api/internship', methods=['GET'])
 def get_internship():
     session = Session()
+    print("in")
     student_id = request.args.get('student_id')
     company_name = request.args.get('company_name')
     start_date = request.args.get('start_date')
     internship = session.query(Internship).filter_by(student_id=student_id,company_name=company_name,start_date=start_date).one_or_none()
     if internship:
-        return jsonify(internship), 200
+        return jsonify(internship.seralize), 200
     return jsonify({'error': 'internship not found'}), 400
 
 ############################################################
@@ -112,7 +113,7 @@ def get_evaluation():
             return get_evaluation_by_key(param_type, param_year)
 
         if start_year and end_year:
-            return get_evaluation_by_type_start_end(start_year, end_year)
+            return get_evaluation_by_start_end(start_year, end_year)
 
         if param_year:
             return get_evaluation_by_year(param_year)
@@ -121,7 +122,7 @@ def get_evaluation():
             return get_evaluation_by_type(param_type)
 
         q = session.query(Evaluation).order_by(Evaluation.year.desc())
-        return jsonify(result=[i.seralize for i in q]), 200
+        return jsonify([i.seralize for i in q]), 200
     except Exception as e:
         print(e)
         print(traceback.format_exc())
@@ -176,6 +177,7 @@ def create_answer():
                 session.add(company_obj)
 
             supervisor = evaluation.pop('supervisor')
+            supervisor['company_name'] = company_obj.company_name
             supervisor_obj = Supervisor(**supervisor)
             if not session.query(Supervisor).filter_by(email=supervisor_obj.email).one_or_none():
                 session.add(supervisor_obj)
@@ -186,7 +188,7 @@ def create_answer():
             internship['company_name'] = company['company_name']
             internship['supervisor_email'] = supervisor['email']
             internship_obj = Internship(**internship)
-            if not session.query(Internship).filter_by(student_id=internship_obj.student_id,company_name=internship_obj.company_name,supervisor_email=internship_obj.supervisor_email):
+            if not session.query(Internship).filter_by(student_id=internship_obj.student_id,company_name=internship_obj.company_name,start_date=internship_obj.start_date).one_or_none():
                 session.add(internship_obj)
             session.commit()
 

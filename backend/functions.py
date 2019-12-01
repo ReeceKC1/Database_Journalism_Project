@@ -45,33 +45,43 @@ def get_evaluation_by_type_start_end(param_type, start_year, end_year):
 
     evaluations = session.execute(text(f"SELECT * \
                                         FROM evaluation \
-                                        WHERE eval_type = {param_type} \
+                                        WHERE eval_type = '{param_type}' \
                                         AND year >= '{start_year}' \
-                                        AND year <= '{end_year}'"))
+                                        AND year <= '{end_year}'")).fetchall()
 
-    return return_multiple_evaluations(evaluations)
+    obj_evaluations = []
+    for evaluation in evaluations:
+        evaluation = Evaluation(**evaluation)
+        obj_evaluations.append(evaluation)
 
-def get_evaluation_by_type_start_end(start_year, end_year):
+    return return_multiple_evaluations(obj_evaluations)
+
+def get_evaluation_by_start_end(start_year, end_year):
     session = Session()
 
     evaluations = session.execute(text(f"SELECT * \
                                         FROM evaluation \
                                         WHERE year >= '{start_year}' \
-                                        AND year <= '{end_year}'"))
+                                        AND year <= '{end_year}'")).fetchall()
+    
+    obj_evaluations = []
+    for evaluation in evaluations:
+        evaluation = Evaluation(**evaluation)
+        obj_evaluations.append(evaluation)
 
-    return return_multiple_evaluations(evaluations)
+    return return_multiple_evaluations(obj_evaluations)
 
 def get_evaluation_by_year(year):
     session = Session()
 
-    evaluations = session.query(Evaluation).filter_by(evaluation_year=year).all()
+    evaluations = session.query(Evaluation).filter_by(year=year).all()
 
     return return_multiple_evaluations(evaluations)
 
 def get_evaluation_by_type(param_type):
     session = Session()
 
-    evaluations = session.query(Evaluation).filter_by(evaluation_type=param_type).all()
+    evaluations = session.query(Evaluation).filter_by(eval_type=param_type).all()
 
     return return_multiple_evaluations(evaluations)
 
@@ -83,7 +93,7 @@ def return_multiple_evaluations(evaluations):
     
     for evaluation in evaluations:
         evaluation = evaluation.seralize
-        questions = session.query(Question).filter_by(evaluation_type=evaluation['evaluation_type'],evaluation_year=evaluation['evaluation_year'])
+        questions = session.query(Question).filter_by(evaluation_type=evaluation['eval_type'],evaluation_year=evaluation['year']).all()
         questions.sort(key=lambda x : x.order_value)
 
         seralized_questions = []
@@ -109,25 +119,152 @@ def return_multiple_evaluations(evaluations):
 ############################################################
 def get_answer_by_type_start_end(request_type, start_year, end_year):
     session = Session()
-    return get_answers(answers)
+
+    answers = session.execute(text(f"SELECT * \
+                                     FROM evaluation_answers \
+                                     WHERE eval_type = '{request_type}' \
+                                     AND eval_year >= '{start_year}' \
+                                     AND eval_year <= '{end_year}'")).fetchall()
+    port_answers = session.execute(text(f"SELECT * \
+                                          FROM portfolio_answers \
+                                          WHERE eval_type = '{request_type}' \
+                                          AND eval_year >= '{start_year}' \
+                                          AND eval_year <= '{end_year}'")).fetchall()
+
+    obj_answers = []
+    print(answers)
+    for answer in answers:
+        answer = Evaluation_Answers(**answer)
+        obj_answers.append(answer)
+
+    obj_port_answers = []
+    for answer in port_answers:
+        answer = Portfolio_Answers(**answer)
+        obj_port_answers.append(answer)
+
+    return get_answers(obj_answers, obj_port_answers)
 
 def get_answer_by_start_end_label(start_year, end_year, label):
     session = Session()
-    return get_answers(answers)
+
+    answers = session.execute(text(f"SELECT * \
+                                     FROM evaluation_answers \
+                                     WHERE eval_year >= '{start_year}' \
+                                     AND eval_year <= '{end_year}'")).fetchall()
+    port_answers = session.execute(text(f"SELECT * \
+                                          FROM portfolio_answers \
+                                          WHERE eval_year >= '{start_year}' \
+                                          AND eval_year <= '{end_year}'")).fetchall()
+    
+    obj_answers = []
+    for answer in answers:
+        answer = Evaluation_Answers(**answer)
+        obj_answers.append(answer)
+    answers = obj_answers
+
+    obj_port_answers = []
+    for answer in port_answers:
+        answer = Portfolio_Answers(**answer)
+        obj_port_answers.append(answer)
+    port_answers = obj_port_answers
+    
+    eval_answers_response = []
+    for answer in answers:
+        answer = answer.seralize
+
+        answer['student'] = session.query(Student).filter_by(student_id=answer.pop('student_id')).one_or_none().seralize
+        answer['company'] = session.query(Company).filter_by(company_name=answer.pop('company_name')).one_or_none().seralize
+        answer['supervisor'] = session.query(Supervisor).filter_by(email=answer.pop('supervisor_email')).one_or_none().seralize
+
+        answers = session.execute(text(f"SELECT answer_id, option_text, eval_answer.question_id \
+                                         FROM eval_answer, question \
+                                         WHERE answer_id = '{answer['answer_id']}' \
+                                         AND label = '{label}'")).fetchall()
+        obj_answers = []
+        for temp_answer in answers:
+            temp_answer = Eval_Answer(**temp_answer)
+            obj_answers.append(temp_answer)
+        answers = obj_answers
+        answer['answers'] = [x.seralize for x in answers]
+
+        answer['comment_text'] = session.query(Comment).filter_by(comment_id=answer.pop('comment_id')).one_or_none().comment_text
+        eval_answers_response.append(answer)
+
+    for answer in port_answers:
+        answer = answer.seralize
+
+        answer['student'] = session.query(Student).filter_by(student_id=answer.pop('student_id')).one_or_none()
+        answers = session.execute(text(f"SELECT answer_id, option_text, port_answer.question_id \
+                                         FROM port_answer, question \
+                                         WHERE answer_id = '{answer['answer_id']}' \
+                                         AND label = '{label}'")).fetchall()
+        seralized_answers = []
+        for obj in answers:
+            obj['comment_text'] = session.query(Comment).filter_by(comment_id=obj.pop('comment_id')).one_or_none()
+            obj_answers = []
+            for temp_answer in answers:
+                temp_answer = Port_Answer(**temp_answer)
+                obj_answers.append(temp_answer)
+            answers = obj_answers
+            obj.seralize
+            seralized_answers.append(obj)
+        answer['answers'] = seralized_answers
+        eval_answers_response.append(answer)
+    
+    return jsonify(eval_answers_response), 200
 
 def get_answer_by_year_id(year, student_id):
     session = Session()
-    answers = session.query()
-    return get_answers(answers)
+
+    answers = session.query(Evaluation_Answers).filter_by(eval_year=year, student_id=student_id).all()
+    port_answers = session.query(Portfolio_Answers).filter_by(eval_year=year, student_id=student_id).all()
+
+    return get_answers(answers, port_answers)
 
 def get_answer_by_type_year(request_type, year):
     session = Session()
-    return get_answers(answers)
+
+    answers = session.query(Evaluation_Answers).filter_by(eval_year=year, eval_type=request_type).all()
+    port_answers = session.query(Portfolio_Answers).filter_by(eval_year=year, eval_type=request_type).all()
+
+    return get_answers(answers, port_answers)
 
 def get_answer_by_id(student_id):
     session = Session()
-    return get_answers(answers)
 
-def get_answers(answers):
+    answers = session.query(Evaluation_Answers).filter_by(student_id=student_id).all()
+    port_answers = session.query(Portfolio_Answers).filter_by(student_id=student_id).all()
+
+    return get_answers(answers, port_answers)
+
+def get_answers(eval_answers, port_answers):
     session = Session()
-    return
+
+    eval_answers_response = []
+    for answer in eval_answers:
+        answer = answer.seralize
+
+        answer['student'] = session.query(Student).filter_by(student_id=answer.pop('student_id')).one_or_none().seralize
+        answer['company'] = session.query(Company).filter_by(company_name=answer.pop('company_name')).one_or_none().seralize
+        answer['supervisor'] = session.query(Supervisor).filter_by(email=answer.pop('supervisor_email')).one_or_none().seralize
+
+        answers = session.query(Eval_Answer).filter_by(answer_id=answer['answer_id']).all()
+        answer['answers'] = [x.seralize for x in answers]
+
+        answer['comment_text'] = session.query(Comment).filter_by(comment_id=answer.pop('comment_id')).one_or_none().comment_text
+        eval_answers_response.append(answer)
+
+    for answer in port_answers:
+        answer = answer.seralize
+
+        answer['student'] = session.query(Student).filter_by(student_id=answer.pop('student_id')).one_or_none()
+        answers = session.query(Port_Answer).filter_by(answer_id=answer['answer_id']).all()
+        seralized_answers = []
+        for obj in answers:
+            obj.seralize
+            obj['comment_text'] = session.query(Comment).filter_by(comment_id=obj.pop('comment_id')).one_or_none()
+            seralized_answers.append(obj)
+        answer['answers'] = seralized_answers
+        eval_answers_response.append(answer)
+    
+    return jsonify(eval_answers_response), 200
