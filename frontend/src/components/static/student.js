@@ -10,6 +10,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
         this.state = {
             year_value: '',
             pr_value: '',
+            autoFilled: false
         }
         decorate(this.state, {
             year_value: observable,
@@ -20,8 +21,40 @@ const StudentForm = observer(class StudentForm extends React.Component {
     componentDidMount() {}
 
     checkStudent = (id) => {
-        // student = axios.get(`http://localhost:5000/api/student/check.${id}`).then(response => {console.log(response)})
-        
+        //   student = axios.get(`http://localhost:5000/api/student/check.${id}`).then(response => {console.log(response)})
+        let url = 'http://localhost:5000/api/student/check.' + id;
+        return axios.get(url);
+    }
+    autoFillStudent= (id) =>{
+        this.checkStudent(id).then((response) => {
+            let student = response.data;
+            // console.log(student);
+            this.state.autoFilled = true;
+            this.props.viewEvaluationState.student_state.first_name = student.first_name;
+            this.props.viewEvaluationState.student_state.last_name = student.last_name;
+            this.props.viewEvaluationState.student_state.email = student.email;
+            this.props.viewEvaluationState.student_state.class_year = student.class_year;
+            this.state.year_value = student.class_year;
+            this.props.viewEvaluationState.student_state.semester_of_completion = student.semester_of_completion;
+            this.props.viewEvaluationState.student_state.grade = student.grade;
+            this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
+            this.state.pr_value= student.pr_major_minor;
+       }).catch((error) => {
+           console.log('Get subscriptions error',error.response);
+           if (this.state.autoFilled){
+               this.state.autoFilled = false;
+               this.props.viewEvaluationState.student_state.first_name = '';
+               this.props.viewEvaluationState.student_state.last_name = '';
+               this.props.viewEvaluationState.student_state.email = '';
+               this.props.viewEvaluationState.student_state.class_year = '';
+               this.state.year_value = '';
+               this.props.viewEvaluationState.student_state.semester_of_completion = '';
+               this.props.viewEvaluationState.student_state.grade = '';
+               this.props.viewEvaluationState.student_state.pr_major_minor = '';
+               this.state.pr_value= '';
+           }
+
+        });
     }
 
     render() {
@@ -40,13 +73,16 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         style={style}
                         label="Student ID"
                         InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => {this.props.viewEvaluationState.student_state.student_id = event.target.value; this.checkStudent(event.target.value)}}
+                        onChange={(event) => {this.props.viewEvaluationState.student_state.student_id = event.target.value;
+                                            //   this.checkStudent(event.target.value);
+                                              this.autoFillStudent(event.target.value)}}
                         />
                     </Grid>
                     {/* {!this.props.viewEvaluationState.already_exists &&
                     <div style={{width: '100%'}}> */}
                         <Grid item style = {{width: '100%'}}>
                             <TextField
+                            value={this.props.viewEvaluationState.student_state.first_name}
                             style={style}
                             label="First Name"
                             InputProps={this.props.viewEvaluationState.readOnly}
@@ -55,6 +91,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
                             <TextField
+                            value={this.props.viewEvaluationState.student_state.last_name}
                             style={style}
                             label="Last Name"
                             InputProps={this.props.viewEvaluationState.readOnly}
@@ -63,6 +100,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
                             <TextField
+                            value={this.props.viewEvaluationState.student_state.email}
                             style={style}
                             label="Email"
                             InputProps={this.props.viewEvaluationState.readOnly}
@@ -87,6 +125,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         <Grid item style = {{width: '100%'}}>
                             <TextField
                             style={style}
+                            value={this.props.viewEvaluationState.student_state.semester_of_completion}
                             label="Semester of completion"
                             InputProps={this.props.viewEvaluationState.readOnly}
                             onChange={(event) => {this.props.viewEvaluationState.student_state.semester_of_completion = event.target.value}}
@@ -94,6 +133,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
                             <TextField
+                            value={this.props.viewEvaluationState.student_state.grade}
                             style={style}
                             label="Grade"
                             InputProps={this.props.viewEvaluationState.readOnly}

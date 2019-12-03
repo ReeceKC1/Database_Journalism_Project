@@ -1,14 +1,38 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
+import axios from 'axios';
 
 const SupervisorForm = observer(class SupervisorForm extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            autoFilled: false
+        }
     }
 
     componentDidMount() {}
 
+    checkSupervisor = (email) => {
+        let url = 'http://localhost:5000/api/supervisor/check.' + email;
+        return axios.get(url);
+    }
+    autoFillSupervisor = (email) =>{
+        this.checkSupervisor(email).then((response) => {
+            let supervisor = response.data;
+            //console.log(supervisor);
+            this.state.autoFilled = true;
+            this.props.viewEvaluationState.supervisor_state.name = supervisor.name;
+            this.props.viewEvaluationState.supervisor_state.title = supervisor.title;
+       }).catch((error) => {
+           console.log('Get subscriptions error',error.response);
+           if (this.state.autoFilled){
+            this.state.autoFilled = false;
+            this.props.viewEvaluationState.supervisor_state.name = '';
+            this.props.viewEvaluationState.supervisor_state.title = '';
+           }
+        });
+    }
     render() {
         let style = {
             width: '90%',
@@ -25,11 +49,13 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         style={style}
                         label="Email"
                         InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => {this.props.viewEvaluationState.supervisor_state.email = event.target.value}}
+                        onChange={(event) => {this.props.viewEvaluationState.supervisor_state.email = event.target.value;
+                                              this.autoFillSupervisor(event.target.value)}}
                         />
                     </Grid>
                     <Grid item style = {{width: '100%'}}>
                         <TextField
+                        value={this.props.viewEvaluationState.supervisor_state.name}
                         style={style}
                         label="Name"
                         InputProps={this.props.viewEvaluationState.readOnly}
@@ -38,6 +64,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                     </Grid>
                     <Grid item style = {{width: '100%'}}>
                         <TextField
+                        value={this.props.viewEvaluationState.supervisor_state.title}
                         style={style}
                         label="Title"
                         InputProps={this.props.viewEvaluationState.readOnly}
