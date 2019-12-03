@@ -7,7 +7,8 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            autoFilled: false
+            autoFilled: false,
+            timeout: null
         }
     }
 
@@ -18,20 +19,23 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
         return axios.get(url);
     }
     autoFillCompany = (name) =>{
-        this.checkCompany(name).then((response) => {
-            let company = response.data;
-            //console.log(company);
-            this.state.autoFilled = true;
-            this.props.viewEvaluationState.company_state.address = company.address;
-            this.props.viewEvaluationState.company_state.phone = company.phone;
-       }).catch((error) => {
-           console.log('Get subscriptions error',error.response);
-           if (this.state.autoFilled){
-            this.state.autoFilled = false;
-            this.props.viewEvaluationState.company_state.address = '';
-            this.props.viewEvaluationState.company_state.phone = '';
-           }
-        });
+        clearTimeout(this.state.timeout);
+        this.state.timeout = setTimeout(() => {
+            this.checkCompany(name).then((response) => {
+                let company = response.data;
+                //console.log(company);
+                this.state.autoFilled = true;
+                this.props.viewEvaluationState.company_state.address = company.address;
+                this.props.viewEvaluationState.company_state.phone = company.phone;
+            }).catch((error) => {
+                console.log('Get subscriptions error',error.response);
+                if (this.state.autoFilled){
+                    this.state.autoFilled = false;
+                    this.props.viewEvaluationState.company_state.address = '';
+                    this.props.viewEvaluationState.company_state.phone = '';
+                }
+            });
+        }, 500);
     }
     render() {
         let style = {

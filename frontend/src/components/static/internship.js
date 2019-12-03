@@ -7,7 +7,8 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            autoFilled: false
+            autoFilled: false,
+            timeout: null
         }
     }
 
@@ -22,21 +23,23 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         console.log('student_id = ', student_id,' company_name = ',company_name, ' start_date = ',start_date);
 
         //the calls weren't working for get internship
-
-        this.getInternship(student_id,company_name,start_date).then((response) => {
-            let internship = response.data;
-            //console.log(internship);
-            this.state.autoFilled = true;
-            this.props.viewEvaluationState.internship_state.end_date = internship.end_date;
-            this.props.viewEvaluationState.internship_state.hours = internship.hours;
-       }).catch((error) => {
-           console.log('Get subscriptions error',error.response);
-           if (this.state.autoFilled){
-            this.state.autoFilled = false;
-            this.props.viewEvaluationState.internship_state.end_date = '';
-            this.props.viewEvaluationState.internship_state.hours = '';
-           }
-        });
+        clearTimeout(this.state.timeout);
+        this.state.timeout = setTimeout(() => {
+            this.getInternship(student_id,company_name,start_date).then((response) => {
+                let internship = response.data;
+                //console.log(internship);
+                this.state.autoFilled = true;
+                this.props.viewEvaluationState.internship_state.end_date = internship.end_date;
+                this.props.viewEvaluationState.internship_state.hours = internship.hours;
+            }).catch((error) => {
+            console.log('Get subscriptions error',error.response);
+            if (this.state.autoFilled){
+                this.state.autoFilled = false;
+                this.props.viewEvaluationState.internship_state.end_date = '';
+                this.props.viewEvaluationState.internship_state.hours = '';
+            }
+            });
+        }, 500);
     }
     render() {
         let style = {

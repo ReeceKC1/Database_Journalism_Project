@@ -10,7 +10,8 @@ const StudentForm = observer(class StudentForm extends React.Component {
         this.state = {
             year_value: '',
             pr_value: '',
-            autoFilled: false
+            autoFilled: false,
+            timeout: null
         }
         decorate(this.state, {
             year_value: observable,
@@ -26,35 +27,39 @@ const StudentForm = observer(class StudentForm extends React.Component {
         return axios.get(url);
     }
     autoFillStudent= (id) =>{
-        this.checkStudent(id).then((response) => {
-            let student = response.data;
-            // console.log(student);
-            this.state.autoFilled = true;
-            this.props.viewEvaluationState.student_state.first_name = student.first_name;
-            this.props.viewEvaluationState.student_state.last_name = student.last_name;
-            this.props.viewEvaluationState.student_state.email = student.email;
-            this.props.viewEvaluationState.student_state.class_year = student.class_year;
-            this.state.year_value = student.class_year;
-            this.props.viewEvaluationState.student_state.semester_of_completion = student.semester_of_completion;
-            this.props.viewEvaluationState.student_state.grade = student.grade;
-            this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
-            this.state.pr_value= student.pr_major_minor;
-       }).catch((error) => {
-           console.log('Get subscriptions error',error.response);
-           if (this.state.autoFilled){
-               this.state.autoFilled = false;
-               this.props.viewEvaluationState.student_state.first_name = '';
-               this.props.viewEvaluationState.student_state.last_name = '';
-               this.props.viewEvaluationState.student_state.email = '';
-               this.props.viewEvaluationState.student_state.class_year = '';
-               this.state.year_value = '';
-               this.props.viewEvaluationState.student_state.semester_of_completion = '';
-               this.props.viewEvaluationState.student_state.grade = '';
-               this.props.viewEvaluationState.student_state.pr_major_minor = '';
-               this.state.pr_value= '';
-           }
+        clearTimeout(this.state.timeout);
+        this.state.timeout = setTimeout(() => {
+            this.checkStudent(id).then((response) => {
+                let student = response.data;
+                // console.log(student);
+                this.state.autoFilled = true;
+                this.props.viewEvaluationState.student_state.first_name = student.first_name;
+                this.props.viewEvaluationState.student_state.last_name = student.last_name;
+                this.props.viewEvaluationState.student_state.email = student.email;
+                this.props.viewEvaluationState.student_state.class_year = student.class_year;
+                this.state.year_value = student.class_year;
+                this.props.viewEvaluationState.student_state.semester_of_completion = student.semester_of_completion;
+                this.props.viewEvaluationState.student_state.grade = student.grade;
+                this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
+                this.state.pr_value= student.pr_major_minor;
+        }).catch((error) => {
+            console.log('Get subscriptions error',error.response);
+            if (this.state.autoFilled){
+                this.state.autoFilled = false;
+                this.props.viewEvaluationState.student_state.first_name = '';
+                this.props.viewEvaluationState.student_state.last_name = '';
+                this.props.viewEvaluationState.student_state.email = '';
+                this.props.viewEvaluationState.student_state.class_year = '';
+                this.state.year_value = '';
+                this.props.viewEvaluationState.student_state.semester_of_completion = '';
+                this.props.viewEvaluationState.student_state.grade = '';
+                this.props.viewEvaluationState.student_state.pr_major_minor = '';
+                this.state.pr_value= '';
+            }
 
-        });
+            });
+        }, 500);
+      
     }
 
     render() {

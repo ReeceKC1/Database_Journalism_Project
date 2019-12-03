@@ -7,7 +7,8 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            autoFilled: false
+            autoFilled: false,
+            timeout: null
         }
     }
 
@@ -18,20 +19,23 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
         return axios.get(url);
     }
     autoFillSupervisor = (email) =>{
-        this.checkSupervisor(email).then((response) => {
-            let supervisor = response.data;
-            //console.log(supervisor);
-            this.state.autoFilled = true;
-            this.props.viewEvaluationState.supervisor_state.name = supervisor.name;
-            this.props.viewEvaluationState.supervisor_state.title = supervisor.title;
-       }).catch((error) => {
-           console.log('Get subscriptions error',error.response);
-           if (this.state.autoFilled){
-            this.state.autoFilled = false;
-            this.props.viewEvaluationState.supervisor_state.name = '';
-            this.props.viewEvaluationState.supervisor_state.title = '';
-           }
-        });
+        clearTimeout(this.state.timeout);
+        this.state.timeout = setTimeout(() => {
+            this.checkSupervisor(email).then((response) => {
+                let supervisor = response.data;
+                //console.log(supervisor);
+                this.state.autoFilled = true;
+                this.props.viewEvaluationState.supervisor_state.name = supervisor.name;
+                this.props.viewEvaluationState.supervisor_state.title = supervisor.title;
+        }).catch((error) => {
+            console.log('Get subscriptions error',error.response);
+            if (this.state.autoFilled){
+                this.state.autoFilled = false;
+                this.props.viewEvaluationState.supervisor_state.name = '';
+                this.props.viewEvaluationState.supervisor_state.title = '';
+            }
+            });
+        }, 500);
     }
     render() {
         let style = {
