@@ -24,9 +24,7 @@ const App = observer(class App extends React.Component {
 
 
           {/* Must BE LAST it matches with all routes */}
-          <Route path="/">
-            <Home />
-          </Route>
+          <Route path="/" exact render = {(props) => <Home {...props}/>}/>
         </Switch>
       </div>
      

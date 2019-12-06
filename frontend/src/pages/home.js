@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
-    Button } from '@material-ui/core/';
+    Button, Snackbar } from '@material-ui/core/';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import * as Evaluation from '../axois/evaluation';
@@ -25,9 +25,29 @@ export default class Home extends React.Component {
     render() {
 
         const rows = this.state.evaluations;
+        var alert = false;
+
+        // Alert on successful submit
+        if(this.props.location.state != undefined && this.props.location.state.eval_created) {
+            alert = true;
+        }
         
         return (
             <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                {/* Alert Bar */}
+                {alert &&
+                    <Snackbar
+                    anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                    }}
+                    open={true}
+                    autoHideDuration={6000}
+                    message={<span id="message-id">Evaluation Created Successfully!</span>}
+                />
+                }
+
+                {/* Table */}
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>

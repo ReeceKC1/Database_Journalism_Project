@@ -1,6 +1,6 @@
 import React from 'react';
 import StudentForm from './student';
-import ReviewerForm from './reviewerForm'
+import ReviewerForm from './ReviewerForm'
 import { Typography } from '@material-ui/core'
 import BuildEvaluation from '../buildEvaluation'
 

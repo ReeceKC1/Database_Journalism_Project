@@ -7,6 +7,7 @@ import axios from 'axios';
 import * as Evaluation from '../axois/evaluation';
 import { observable, decorate,toJS } from 'mobx';
 import { observer } from 'mobx-react';
+import { Redirect } from 'react-router-dom';
 
 const CreateEvaluation =  observer(class CreateEvaluation extends React.Component {
     constructor(props) {
@@ -28,10 +29,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         });
 
         this.state = {
-            title: '',
-            eval_type: '',
-            year: '',
-            version: '1',
+            redirectOnSuccess: false,
             yearError: '',
             yearSubmitable: false,
             timeout: null,
@@ -65,13 +63,46 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                     question.id = i;
                 }
 
-                // Update the State
-                this.setState({
+                var dupeQuestions = [];
+                // Go through each question pulling out relevant data
+                for(var i = 0; i < data.questions.length; i++) {
+                    var question = data.questions[i];
+                    var newQuestion = {
+                        id: Number(question.order_value),
+                        label: question.label,
+                        question_text: question.question_text,
+                        options: []
+                    };
+
+                    // Go throuh each option pulling out relevant data
+                    for(var j = 0; j < question.options.length; j++) {
+                        var option = question.options[j];
+                        var newOption = {
+                            id: Number(option.option_weight),
+                            option_text: option.option_text, 
+                            option_label: option.option_label,
+                        };
+
+                        newQuestion.options.push(newOption);
+
+                    }
+
+                    dupeQuestions.push(newQuestion);
+                }
+
+
+                // Update the Mobx state
+                let dupeState = {
                     title: data.title,
                     eval_type: data.eval_type,
                     year: data.year,
                     version: String(version),
-                    questions: questions
+                    questions: dupeQuestions
+                };
+
+                // Update the State
+                this.setState({
+                    createEvaluationState: dupeState
                 });
             }).catch(error => {
                 console.log(error);
@@ -123,6 +154,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         // this.setState({ questions: questions});
 
         this.state.createEvaluationState.questions = questions;
+        this.forceUpdate();
     };
     questionsAreSubmitable = () => {//this function searches through and makes sure no fields are blank
         let questions = this.state.createEvaluationState.questions;
@@ -147,9 +179,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         return true;
     }
     isSubmitable = () => {
-        let title = this.state.title.trim();
+        let title = this.state.createEvaluationState.title.trim();
         let year = this.state.yearSubmitable && (this.state.year);
-        let type = this.state.eval_type;
+        let type = this.state.createEvaluationState.eval_type;
         return (title && year && type && this.questionsAreSubmitable());
     }
 
@@ -208,36 +240,25 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         axios.post('http://localhost:5000/api/evaluation/create', payload)
         .then(response => {
             console.log(response);
+            this.setState({redirectOnSuccess: true});
           }).catch(error => console.log('here',error));
     };
 
     render() {
-        const useStyles = makeStyles(theme => ({
-            container: {
-              marginBottom: '10px'
-            },
-            textField: {
-              marginLeft: theme.spacing(1),
-              marginRight: theme.spacing(1),
-              width: 200,
-            },
-
-          }));
-
-        //   Function to Reder All Questions
-        //TODO: Update to MOBX
-          const renderQuestions = this.state.createEvaluationState.questions.map((question) => 
-            <Question 
-                question={question} 
-                key={question.id}
-                createEvaluationState={this.state.createEvaluationState}
-            />
-            
-          );
-
           let style = {
             width: '90%',
             marginLeft: '5%',
+          }
+
+          if(this.state.redirectOnSuccess) {
+              return(
+                <Redirect to={{
+                    pathname: '/',
+                    state: {
+                        eval_created: true
+                    }
+                }}></Redirect>
+              );
           }
 
         return (
@@ -261,7 +282,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             margin="normal"
                             style={style}
                             onChange={(event) => this.titleChange(event)}
-                            value={this.state.title}
+                            value={this.state.createEvaluationState.title}
                             />
                         </Grid> 
 
@@ -272,7 +293,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             <Select
                             labelId="type"
                             style={{width: '100%'}}
-                            value={this.state.eval_type}
+                            value={this.state.createEvaluationState.eval_type}
                             onChange={(event) => this.typeChange(event)}
                             >
                                 <MenuItem value="student_eval">Student Evaluation</MenuItem>
@@ -293,7 +314,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             helperText = {this.state.yearError}
                             style={style}
                             onChange={(event) => this.yearChange(event)}
-                            value={this.state.year}
+                            value={this.state.createEvaluationState.year}
                             />
                         </Grid>
 
@@ -304,7 +325,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             label="Version"
                             margin="normal"
                             style={style}
-                            value={this.state.version}
+                            value={this.state.createEvaluationState.version}
                             readOnly
                             disabled
                             />
@@ -312,7 +333,14 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                         {/* The real meat and potatoes of the builder */}
 
                         <Grid item style = {{width: '100%'}}>
-                            {renderQuestions}
+                            {this.state.createEvaluationState.questions.map((question) => 
+                                <Question 
+                                    question={question} 
+                                    key={question.id}
+                                    createEvaluationState={this.state.createEvaluationState}
+                                />
+                                
+                            )}
                         </Grid>
 
                         <Grid item style = {{width: '100%', marginBottom: '25px'}}>
@@ -336,4 +364,4 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     }
 })
 
-export default CreateEvaluation
+export default CreateEvaluation;
