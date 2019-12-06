@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
 import axios from 'axios';
 import * as Evaluation from '../axois/evaluation';
-import { observable, decorate } from 'mobx';
+import { observable, decorate,toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
 const CreateEvaluation =  observer(class CreateEvaluation extends React.Component {
@@ -93,7 +93,6 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     };
     
     yearChange = (event) => {
-        
         let value = event.target.value;
         this.setState({ year: value });
         clearTimeout(this.state.timeout);
@@ -106,11 +105,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                     this.setState({yearError:'Invalid Year'}); 
             }, 1000);
         }
-
-        
         this.state.createEvaluationState.year = value;
-
-
     };
 
     // Add a question
@@ -129,16 +124,33 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
 
         this.state.createEvaluationState.questions = questions;
     };
-
+    questionsAreSubmitable = () => {//this function searches through and makes sure no fields are blank
+        let questions = this.state.createEvaluationState.questions;
+        if(questions.length ==0){
+            return false;
+        }
+        for(var i = 0; i<questions.length;i++){
+            let question = questions[i];
+            if (question.label.trim() == '' || question.question_text.trim() == ''){
+                return false;
+            }
+            let options = toJS(this.state.createEvaluationState.questions[i].options);
+            if(options.length == 0){
+                return false;
+            }
+            for (var j=0; j<options.length;j++){
+                if(options[j].option_text.trim()==''){
+                    return false;
+                }
+            }
+        } 
+        return true;
+    }
     isSubmitable = () => {
-        //add checks for questions later
-        let title = this.state.title;
+        let title = this.state.title.trim();
         let year = this.state.yearSubmitable && (this.state.year);
         let type = this.state.eval_type;
-        if(title && year && type){
-            return true;
-        }
-        return false;
+        return (title && year && type && this.questionsAreSubmitable());
     }
 
     // Handle Submit will format data properly
@@ -232,11 +244,14 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             <div style={{width: '50%', marginLeft: '25%', marginTop: '75px'}}>
                 <Typography variant="h3">
                         Create Evaluation
-                    </Typography>
+                        
+                </Typography>
+                
                 <form style={{padding: '10px'}} noValidate autoComplete="off" onSubmit={() => this.handleSubmit()} >
                     <Typography variant="h5" style={{marginTop: '10px'}}>
                         Evaluation Form Information
                     </Typography>
+                    <p style= {{fontSize: '12px', color:'grey'}}>All fields are required.</p>
                     {/* Title */}
                     <Grid  container spacing={1} alignItems ="center" direction="column">
                         <Grid item style = {{width: '100%'}}>
@@ -244,7 +259,6 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Evaluation Title"
                             margin="normal"
-                            required={true}
                             style={style}
                             onChange={(event) => this.titleChange(event)}
                             value={this.state.title}
@@ -254,7 +268,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                         {/* Type */}
                         <Grid item style = {{width: '100%'}}>
                         <FormControl fullWidth style={style}>
-                            <InputLabel id="type">Type *</InputLabel>{/*had to put asterix becasue the select wouldn't allow me to set required*/} 
+                            <InputLabel id="type">Type</InputLabel>
                             <Select
                             labelId="type"
                             style={{width: '100%'}}
@@ -275,7 +289,6 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Year"
                             margin="normal"
-                            required={true}
                             error = {this.state.yearError != ""}
                             helperText = {this.state.yearError}
                             style={style}
@@ -290,7 +303,6 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Version"
                             margin="normal"
-                            required={true}
                             style={style}
                             value={this.state.version}
                             readOnly
