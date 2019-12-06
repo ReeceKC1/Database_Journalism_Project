@@ -32,6 +32,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             eval_type: '',
             year: '',
             version: '1',
+            yearError: '',
+            yearSubmitable: false,
+            timeout: null,
             createEvaluationState: createEvaluationState
         };
     }
@@ -90,9 +93,24 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     };
     
     yearChange = (event) => {
+        
         let value = event.target.value;
         this.setState({ year: value });
+        clearTimeout(this.state.timeout);
+        if (/^(20)\d{2}$/.test(value) || value ==''){
+            this.setState({yearError:''});
+            this.setState({yearSubmitable: true });
+        }else{
+            this.setState({yearSubmitable: false});
+            this.state.timeout = setTimeout(() => {
+                    this.setState({yearError:'Invalid Year'}); 
+            }, 1000);
+        }
+
+        
         this.state.createEvaluationState.year = value;
+
+
     };
 
     // Add a question
@@ -112,6 +130,16 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         this.state.createEvaluationState.questions = questions;
     };
 
+    isSubmitable = () => {
+        //add checks for questions later
+        let title = this.state.title;
+        let year = this.state.yearSubmitable && (this.state.year);
+        let type = this.state.eval_type;
+        if(title && year && type){
+            return true;
+        }
+        return false;
+    }
 
     // Handle Submit will format data properly
     handleSubmit = (event) => {
@@ -216,16 +244,17 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Evaluation Title"
                             margin="normal"
+                            required={true}
                             style={style}
                             onChange={(event) => this.titleChange(event)}
                             value={this.state.title}
                             />
-                        </Grid>
+                        </Grid> 
 
                         {/* Type */}
                         <Grid item style = {{width: '100%'}}>
                         <FormControl fullWidth style={style}>
-                            <InputLabel id="type">Type</InputLabel>
+                            <InputLabel id="type">Type *</InputLabel>{/*had to put asterix becasue the select wouldn't allow me to set required*/} 
                             <Select
                             labelId="type"
                             style={{width: '100%'}}
@@ -246,6 +275,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Year"
                             margin="normal"
+                            required={true}
+                            error = {this.state.yearError != ""}
+                            helperText = {this.state.yearError}
                             style={style}
                             onChange={(event) => this.yearChange(event)}
                             value={this.state.year}
@@ -258,6 +290,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Version"
                             margin="normal"
+                            required={true}
                             style={style}
                             value={this.state.version}
                             readOnly
@@ -277,12 +310,12 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             <Button style = {{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addQuestion()}>
                                 Add Question
                             </Button>
-                            <Button style = {{margin: '5px'}} variant="contained" color="primary" type="submit">
+                            <Button style = {{margin: '5px'}} variant="contained" color="primary" type="submit" disabled={!this.isSubmitable()}>
                                 Create Evaluation
                             </Button>
                         </Grid>
 
-
+                    
                         
                     </Grid>
                 </form>
