@@ -9,12 +9,21 @@ const StudentForm = observer(class StudentForm extends React.Component {
         super(props);
         this.state = {
             year_value: '',
+            grade: '',
             pr_value: '',
             autoFilled: false,
-            timeout: null
+            idError: '',
+            idSubmitable: false,
+            emailError: '',
+            emailSubmitable: false,
+            semesterError: '',
+            semesterSubmitable: false,
+            timeout: null,
+            timeout2: null
         }
         decorate(this.state, {
             year_value: observable,
+            grade: observable,
             pr_value: observable
         })
     }
@@ -40,6 +49,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.state.year_value = student.class_year;
                 this.props.viewEvaluationState.student_state.semester_of_completion = student.semester_of_completion;
                 this.props.viewEvaluationState.student_state.grade = student.grade;
+                this.state.grade = student.grade;
                 this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
                 this.state.pr_value= student.pr_major_minor;
         }).catch((error) => {
@@ -53,15 +63,65 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.state.year_value = '';
                 this.props.viewEvaluationState.student_state.semester_of_completion = '';
                 this.props.viewEvaluationState.student_state.grade = '';
+                this.state.grade ='';
                 this.props.viewEvaluationState.student_state.pr_major_minor = '';
                 this.state.pr_value= '';
             }
 
             });
         }, 500);
-      
-    }
 
+    }
+    idChange = (value) => {
+
+        if(this.props.viewEvaluationState.student_state.errors == undefined){
+            this.props.viewEvaluationState.student_state.errors = {};
+        }
+        this.props.viewEvaluationState.student_state.student_id = value;
+        clearTimeout(this.state.timeout2);
+        this.autoFillStudent(value);
+        if (/^\d{9}$/.test(value) || value ==''){
+            this.setState({idError:''});
+            this.props.viewEvaluationState.student_state.errors.idSubmitable= true;
+        }else{
+            this.props.viewEvaluationState.student_state.errors.idSubmitable= false;
+            this.state.timeout2 = setTimeout(() => {
+                    this.setState({idError:'Invalid Baylor ID number.'}); 
+            }, 1000);
+        }
+    }
+    emailChange = (value) => {
+        if(this.props.viewEvaluationState.student_state.errors == undefined){
+            this.props.viewEvaluationState.student_state.errors = {};
+        }
+        this.props.viewEvaluationState.student_state.email = value;
+        clearTimeout(this.state.timeout);
+        if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
+            this.setState({emailError:''});
+            this.props.viewEvaluationState.student_state.errors.emailSubmitable= true;
+        }else{
+            this.props.viewEvaluationState.student_state.errors.emailSubmitable= false;
+            this.state.timeout = setTimeout(() => {
+                    this.setState({emailError:'Invalid email address.'}); 
+            }, 1000);
+        }
+    }
+    semesterChange = (value) => {
+        if(this.props.viewEvaluationState.student_state.errors == undefined){
+            this.props.viewEvaluationState.student_state.errors = {};
+        }
+        this.props.viewEvaluationState.student_state.semester_of_completion = value;
+        clearTimeout(this.state.timeout);
+        if (/^((Spring |Summer |Fall )20)\d{2}$/.test(value) || value ==''){
+            this.setState({semesterError:''});
+            this.props.viewEvaluationState.student_state.errors.semesterSubmitable= true;
+        }else{
+            this.props.viewEvaluationState.student_state.errors.semesterSubmitable= false;
+            this.state.timeout = setTimeout(() => {
+                    this.setState({semesterError:'Format Ex: Spring 2020'}); 
+            }, 1000);
+        }
+    }
     render() {
         let style = {
             width: '90%',
@@ -76,11 +136,12 @@ const StudentForm = observer(class StudentForm extends React.Component {
                     <Grid item style = {{width: '100%'}}>
                         <TextField
                         style={style}
-                        label="Student ID"
+                        value={this.props.viewEvaluationState.student_state.id}
+                        label="Baylor ID#"
+                        error = {this.state.idError != ''}
+                        helperText = {this.state.idError}
                         InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => {this.props.viewEvaluationState.student_state.student_id = event.target.value;
-                                            //   this.checkStudent(event.target.value);
-                                              this.autoFillStudent(event.target.value)}}
+                        onChange={(event) => this.idChange(event.target.value)}
                         />
                     </Grid>
                     {/* {!this.props.viewEvaluationState.already_exists &&
@@ -107,9 +168,11 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             <TextField
                             value={this.props.viewEvaluationState.student_state.email}
                             style={style}
+                            error = {this.state.emailError != ''}
+                            helperText = {this.state.emailError}
                             label="Email"
                             InputProps={this.props.viewEvaluationState.readOnly}
-                            onChange={(event) => {this.props.viewEvaluationState.student_state.email = event.target.value}}
+                            onChange={(event) => this.emailChange(event.target.value)}
                             />
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
@@ -130,24 +193,33 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         <Grid item style = {{width: '100%'}}>
                             <TextField
                             style={style}
+                            error = {this.state.semesterError != ''}
+                            helperText = {this.state.semesterError}
                             value={this.props.viewEvaluationState.student_state.semester_of_completion}
                             label="Semester of completion"
                             InputProps={this.props.viewEvaluationState.readOnly}
-                            onChange={(event) => {this.props.viewEvaluationState.student_state.semester_of_completion = event.target.value}}
+                            onChange={(event) => this.semesterChange(event.target.value)}
                             />
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
-                            <TextField
-                            value={this.props.viewEvaluationState.student_state.grade}
-                            style={style}
-                            label="Grade"
-                            InputProps={this.props.viewEvaluationState.readOnly}
-                            onChange={(event) => {this.props.viewEvaluationState.student_state.grade = event.target.value}}
-                            />
+                        <FormControl style={style}>
+                                <InputLabel id="select-label">Course Grade</InputLabel>
+                                <Select
+                                value={this.state.grade}
+                                style={{width: '100%'}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.grade = event.target.value; this.state.grade = event.target.value}}
+                                >
+                                    <MenuItem value={"A"}>A</MenuItem>
+                                    <MenuItem value={"B"}>B</MenuItem>
+                                    <MenuItem value={"C"}>C</MenuItem>
+                                    <MenuItem value={"D"}>D</MenuItem>
+				                    <MenuItem value={"F"}>F</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
                             <FormControl style={style}>
-                                <InputLabel id="select-label-pr-mom">PR Major or Minor</InputLabel>
+                                <InputLabel id="select-label">PR Major or Minor</InputLabel>
                                 <Select
                                 value={this.state.pr_value}
                                 style = {{width: '100%'}}
