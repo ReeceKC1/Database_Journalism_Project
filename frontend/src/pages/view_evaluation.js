@@ -108,7 +108,8 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     
     isFilled = (component) => {
         for (var key of Object.keys(component)) {
-            if (key != 'already_exists' && key != 'comment_text' && component[key].trim() == ''){
+            if (key != 'already_exists' && key != 'comment_text' && key != 'errors'
+             && component[key].trim() == ''){
                 return false;
             }
         }
@@ -132,7 +133,9 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
 
         let noErrors = true;
-        
+        // will actually set later
+
+
         return allFieldsFilledIn && allQuestionsAnswered && noErrors;
     }
 
