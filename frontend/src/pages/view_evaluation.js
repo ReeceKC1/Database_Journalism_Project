@@ -105,6 +105,36 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             });
         }
     }
+    
+    isFilled = (component) => {
+        for (var key of Object.keys(component)) {
+            if (key != 'already_exists' && key != 'comment_text' && component[key].trim() == ''){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    evalIsSubmittable = () => {
+        let evalState = this.state.viewEvaluationState;
+
+        let allFieldsFilledIn = false;
+        if( this.state.type=='portfolio_eval'){ 
+            allFieldsFilledIn = (this.isFilled(evalState.reviewer_state) && this.isFilled(evalState.student_state));
+        }else {
+            allFieldsFilledIn = (this.isFilled(evalState.company_state) && this.isFilled(evalState.supervisor_state)
+                                && this.isFilled(evalState.student_state) && this.isFilled(evalState.internship_state));
+        }
+
+        let allQuestionsAnswered = true;
+        for (var i =0; i<evalState.answers.length;i++){
+            allQuestionsAnswered = allQuestionsAnswered && this.isFilled(evalState.answers[i]);
+        }
+
+        let noErrors = true;
+        
+        return allFieldsFilledIn && allQuestionsAnswered && noErrors;
+    }
 
     submit = (e) => {
         e.stopPropagation();
@@ -160,7 +190,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
                         </Grid>
                         {!this.state.viewEvaluationState.viewOnly &&
                         <Grid item style={{marginBottom: '25px', marginTop: '10px'}}>
-                            <Button variant="contained" color="primary" onClick={(e) => this.submit(e)}>Submit</Button>
+                            <Button variant="contained" color="primary" onClick={(e) => this.submit(e)} disabled={!this.evalIsSubmittable()}>Submit</Button>
                         </Grid>}
                     </Grid>
                 </div>
