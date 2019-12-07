@@ -52,7 +52,7 @@ def check_student(id):
         return jsonify([i.seralize for i in student]), 200
     return jsonify({'error': 'student not found'}), 400
 
-@app.route('/api/supervisor/check.<string:email>', methods=['GET'])
+@app.route('/api/supervisor/check/<email>', methods=['GET'])
 def supervisor_check(email):
     session = Session()
     supervisor = session.query(Supervisor).filter_by(email=email).one_or_none()
@@ -60,7 +60,7 @@ def supervisor_check(email):
         return jsonify(supervisor.seralize), 200
     return jsonify({'error': 'supervisor not found'}), 400
 
-@app.route('/api/company/check.<string:name>', methods=['GET'])
+@app.route('/api/company/check/<name>', methods=['GET'])
 def company_check(name):
     session = Session()
     company = session.query(Company).filter_by(company_name=name).one_or_none()

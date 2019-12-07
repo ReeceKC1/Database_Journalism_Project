@@ -15,15 +15,16 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
     componentDidMount() {}
 
     checkCompany = (name) => {
-        let url = 'http://localhost:5000/api/company/check.' + name;
+        let url = 'http://localhost:5000/api/company/check/' + name;
         return axios.get(url);
     }
+    
     autoFillCompany = (name) =>{
         clearTimeout(this.state.timeout);
         this.state.timeout = setTimeout(() => {
             this.checkCompany(name).then((response) => {
                 let company = response.data;
-                //console.log(company);
+                console.log(company);
                 this.state.autoFilled = true;
                 this.props.viewEvaluationState.company_state.address = company.address;
                 this.props.viewEvaluationState.company_state.phone = company.phone;
@@ -37,6 +38,8 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
             });
         }, 500);
     }
+
+
     render() {
         let style = {
             width: '90%',

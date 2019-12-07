@@ -15,7 +15,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
     componentDidMount() {}
 
     checkSupervisor = (email) => {
-        let url = 'http://localhost:5000/api/supervisor/check.' + email;
+        let url = 'http://localhost:5000/api/supervisor/check/' + email;
         return axios.get(url);
     }
     autoFillSupervisor = (email) =>{

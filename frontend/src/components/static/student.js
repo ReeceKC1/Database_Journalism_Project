@@ -1,7 +1,8 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { FormControl, Grid, InputLabel, 
+    MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
-import { observable, decorate } from '../../../node_modules/mobx/lib/mobx'
+import { observer } from 'mobx-react';
+import { observable, decorate } from 'mobx'
 import axios from 'axios';
 
 const StudentForm = observer(class StudentForm extends React.Component {
@@ -35,12 +36,14 @@ const StudentForm = observer(class StudentForm extends React.Component {
         let url = 'http://localhost:5000/api/student/check/' + id;
         return axios.get(url);
     }
+
     autoFillStudent= (id) =>{
         clearTimeout(this.state.timeout);
         this.state.timeout = setTimeout(() => {
             this.checkStudent(id).then((response) => {
-                let student = response.data;
-                // console.log(student);
+                let student = response.data[0];
+                console.log(student);
+                this.state.idError = '';
                 this.state.autoFilled = true;
                 this.props.viewEvaluationState.student_state.first_name = student.first_name;
                 this.props.viewEvaluationState.student_state.last_name = student.last_name;
@@ -51,7 +54,9 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.props.viewEvaluationState.student_state.grade = student.grade;
                 this.state.grade = student.grade;
                 this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
-                this.state.pr_value= student.pr_major_minor;
+                this.state.pr_value = student.pr_major_minor;
+
+                this.forceUpdate();
         }).catch((error) => {
             console.log('Get subscriptions error',error.response);
             if (this.state.autoFilled){
@@ -72,15 +77,18 @@ const StudentForm = observer(class StudentForm extends React.Component {
         }, 500);
 
     }
-    idChange = (value) => {
 
+
+    idChange = (value) => {
         if(this.props.viewEvaluationState.student_state.errors == undefined){
             this.props.viewEvaluationState.student_state.errors = {};
         }
         this.props.viewEvaluationState.student_state.student_id = value;
         clearTimeout(this.state.timeout2);
         this.autoFillStudent(value);
-        if (/^\d{9}$/.test(value) || value ==''){
+
+        var pattern = new RegExp("[0-9]+");
+        if (pattern.test(value) || value == ''){
             this.setState({idError:''});
             this.props.viewEvaluationState.student_state.errors.idSubmitable= true;
         }else{
@@ -90,6 +98,8 @@ const StudentForm = observer(class StudentForm extends React.Component {
             }, 1000);
         }
     }
+
+
     emailChange = (value) => {
         if(this.props.viewEvaluationState.student_state.errors == undefined){
             this.props.viewEvaluationState.student_state.errors = {};
@@ -122,6 +132,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
             }, 1000);
         }
     }
+    
     render() {
         let style = {
             width: '90%',

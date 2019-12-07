@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, Grid } from '@material-ui/core/';
+import { Container, Button, Grid, Paper, Typography } from '@material-ui/core/';
 import StudentEvalStatic from '../components/static/studentEvalStatic';
 import InternshipEvalStatic from '../components/static/internshipEvalStatic';
 import PortfolioEvalStatic from '../components/static/portfolioEvalStatic';
@@ -55,6 +55,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             viewEvaluationState: viewEvaluationState,
             type: null,
             year: null,
+            submittedSuccessfully: false,
         };
 
         decorate(viewEvaluationState, {
@@ -148,6 +149,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         final.eval_year = structure.evaluation.year
         final.student = structure.student_state
         delete final.student.already_exists
+        delete final.student.errors
 
         if (structure.evaluation.eval_type === 'portfolio_eval'){
             final.reviewer_name = structure.reviewer_state.reviewer_name
@@ -165,10 +167,28 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
         
         console.log(JSON.stringify(final))
-        axios.post('http://localhost:5000/api/answer/evaluation', final).then(response => {console.log(response)})
+        axios.post('http://localhost:5000/api/answer/evaluation', final).then(response => {
+            console.log(response);
+            this.setState({submittedSuccessfully: true});
+        });
     }
 
     render() {
+        if(this.state.submittedSuccessfully) {
+            return (
+                <div style={{marginLeft: '1%', marginTop: '75px'}}>
+                    <Paper>
+                        <Typography variant="h5" component="h3">
+                            Evaluation Submitted Successfully.
+                        </Typography>
+                        <Typography component="p">
+                            You may now return home or close the page.
+                        </Typography>
+                    </Paper>
+                </div>
+            );
+        }
+
         if(this.state.viewEvaluationState.evaluation != null) {
             return (
                 <div style={{width: '98%', marginLeft: '1%', marginTop: '75px'}}>

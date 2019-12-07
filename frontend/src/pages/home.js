@@ -38,14 +38,14 @@ export default class Home extends React.Component {
                 {alert &&
                     <Snackbar
                     anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
+                        vertical: 'bottom',
+                        horizontal: 'left',
                     }}
                     open={true}
                     autoHideDuration={5000}
                     variant='success'
                     message={<span id="message-id">Evaluation Created Successfully!</span>}
-                />
+                    />
                 }
 
                 {/* Table */}
@@ -109,6 +109,9 @@ export default class Home extends React.Component {
                     ))}
                     </TableBody>
                 </Table>
+
+                {/* Get Student by name or id */}
+                
             </Container>
         );
     }
