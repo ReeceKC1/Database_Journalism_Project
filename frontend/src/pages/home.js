@@ -42,7 +42,8 @@ export default class Home extends React.Component {
                     horizontal: 'left',
                     }}
                     open={true}
-                    autoHideDuration={6000}
+                    autoHideDuration={5000}
+                    variant='success'
                     message={<span id="message-id">Evaluation Created Successfully!</span>}
                 />
                 }

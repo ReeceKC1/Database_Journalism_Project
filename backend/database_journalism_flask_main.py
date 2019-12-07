@@ -7,6 +7,7 @@ from database import *
 from flask_cors import CORS
 import uuid 
 import traceback
+import re
 
 app = Flask(__name__)
 
@@ -15,12 +16,40 @@ CORS(app)
 ############################################################
 # Object api                                               #
 ############################################################
-@app.route('/api/student/check.<string:id>', methods=['GET'])
+# EDIT: Chase 12/6/2019
+# Made function accept both name and student id
+@app.route('/api/student/check/<id>', methods=['GET'])
 def check_student(id):
     session = Session()
-    student = session.query(Student).filter_by(student_id=id).one_or_none()
+    print('Checking student id first')
+    student = session.query(Student).filter_by(student_id=id).all()
+
+    if len(student) == 0:
+        # Split Name
+        name = re.split("\s", id)
+
+        # If only first name is present
+        if len(name) == 1:
+            # Do first name first
+            student = session.query(Student).filter(
+                Student.first_name.like(name[0] + "%")
+                ).all()
+
+            if len(student) == 0:
+                # Do first name first
+                student = session.query(Student).filter(
+                    Student.last_name.like(name[0] + "%")
+                    ).all()
+
+        elif len(name) == 2:
+             student = session.query(Student).filter(
+                Student.first_name.like(name[0] + "%"),
+                Student.last_name.like(name[1] + "%")
+                ).all()
+
     if student:
-        return jsonify(student.seralize), 200
+        # return jsonify(student.seralize), 200
+        return jsonify([i.seralize for i in student]), 200
     return jsonify({'error': 'student not found'}), 400
 
 @app.route('/api/supervisor/check.<string:email>', methods=['GET'])

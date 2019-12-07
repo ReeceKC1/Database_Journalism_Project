@@ -23,7 +23,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
 
     checkStudent = (id) => {
         //   student = axios.get(`http://localhost:5000/api/student/check.${id}`).then(response => {console.log(response)})
-        let url = 'http://localhost:5000/api/student/check.' + id;
+        let url = 'http://localhost:5000/api/student/check/' + id;
         return axios.get(url);
     }
     autoFillStudent= (id) =>{
