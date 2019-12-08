@@ -8,7 +8,9 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
         super(props);
         this.state = {
             autoFilled: false,
-            timeout: null
+            emailError: '',
+            timeout: null,
+            timeout2: null
         }
     }
 
@@ -37,6 +39,24 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
             });
         }, 500);
     }
+
+    emailChange = (value) => {
+        this.props.viewEvaluationState.supervisor_state.email = value;
+        this.autoFillSupervisor(value);
+        clearTimeout(this.state.timeout2);
+        if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
+            this.setState({emailError:''});
+            this.props.viewEvaluationState.supervisor_state.errorFree= true;
+        }else{
+            this.props.viewEvaluationState.supervisor_state.errorFree= false;
+            this.state.timeout2 = setTimeout(() => {
+                    this.setState({emailError:'Invalid email address.'}); 
+            }, 1000);
+        }
+        
+    }
+
+
     render() {
         let style = {
             width: '90%',
@@ -52,9 +72,10 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         <TextField
                         style={style}
                         label="Email"
+                        error = {this.state.emailError != ''}
+                        helperText = {this.state.emailError}
                         InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => {this.props.viewEvaluationState.supervisor_state.email = event.target.value;
-                                              this.autoFillSupervisor(event.target.value)}}
+                        onChange={(event) => {this.emailChange(event.target.value)}}
                         />
                     </Grid>
                     <Grid item style = {{width: '100%'}}>

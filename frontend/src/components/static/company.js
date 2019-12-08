@@ -8,6 +8,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
         super(props);
         this.state = {
             autoFilled: false,
+            phoneError: '',
             timeout: null
         }
     }
@@ -27,19 +28,33 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                 console.log(company);
                 this.state.autoFilled = true;
                 this.props.viewEvaluationState.company_state.address = company.address;
-                this.props.viewEvaluationState.company_state.phone = company.phone;
+                this.phoneChange(company.phone);
             }).catch((error) => {
                 console.log('Get subscriptions error',error.response);
                 if (this.state.autoFilled){
                     this.state.autoFilled = false;
                     this.props.viewEvaluationState.company_state.address = '';
-                    this.props.viewEvaluationState.company_state.phone = '';
+                    this.phoneChange('');
                 }
             });
         }, 500);
     }
 
 
+    phoneChange = (value) => {
+        this.props.viewEvaluationState.company_state.phone = value;
+        clearTimeout(this.state.timeout);
+        if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(value) || value ==''){
+            this.setState({phoneError:''});
+            this.props.viewEvaluationState.company_state.errorFree= true;
+        }else{
+            this.props.viewEvaluationState.company_state.errorFree= false;
+            this.state.timeout = setTimeout(() => {
+                    this.setState({phoneError:'Invalid phone number.'}); 
+            }, 1000);
+        }
+        
+    }
     render() {
         let style = {
             width: '90%',
@@ -73,9 +88,11 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                         <TextField
                         value={this.props.viewEvaluationState.company_state.phone}
                         style={style}
+                        error = {this.state.phoneError != ''}
+                        helperText = {this.state.phoneError}
                         label="Phone Number"
                         InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => {this.props.viewEvaluationState.company_state.phone = event.target.value}}
+                        onChange={(event) => {this.phoneChange(event.target.value)}}
                         />
                     </Grid>
                 </Grid>

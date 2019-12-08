@@ -109,8 +109,8 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     
     isFilled = (component) => {
         for (var key of Object.keys(component)) {
-            if (key != 'already_exists' && key != 'comment_text' && key != 'errorFree'
-             && component[key].trim() == ''){
+            var ignoreList = ['already_exists','comment_text','errorFree'];
+            if (!(ignoreList.includes(key)) && component[key].trim() == ''){
                 return false;
             }
         }
@@ -134,9 +134,19 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
 
         var  errorFree = true;
-        if(this.state.viewEvaluationState.student_state.errorFree != undefined){
-            errorFree = this.state.viewEvaluationState.student_state.errorFree;
+        if(evalState.student_state.errorFree != undefined ){
+            errorFree = errorFree && evalState.student_state.errorFree;
         }
+        if(evalState.company_state.errorFree != undefined ){
+            errorFree = errorFree && evalState.company_state.errorFree;
+        }
+        if(evalState.supervisor_state.errorFree != undefined ){
+            errorFree = errorFree && evalState.supervisor_state.errorFree;
+        }
+        if(evalState.internship_state.errorFree != undefined ){
+            errorFree = errorFree && evalState.internship_state.errorFree;
+        }
+
         return allFieldsFilledIn && allQuestionsAnswered && errorFree;
     }
 
