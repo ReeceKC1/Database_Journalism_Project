@@ -109,7 +109,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     
     isFilled = (component) => {
         for (var key of Object.keys(component)) {
-            if (key != 'already_exists' && key != 'comment_text' && key != 'errors'
+            if (key != 'already_exists' && key != 'comment_text' && key != 'errorFree'
              && component[key].trim() == ''){
                 return false;
             }
@@ -120,7 +120,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     evalIsSubmittable = () => {
         let evalState = this.state.viewEvaluationState;
 
-        let allFieldsFilledIn = false;
+        var allFieldsFilledIn = true;
         if( this.state.type=='portfolio_eval'){ 
             allFieldsFilledIn = (this.isFilled(evalState.reviewer_state) && this.isFilled(evalState.student_state));
         }else {
@@ -128,16 +128,16 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
                                 && this.isFilled(evalState.student_state) && this.isFilled(evalState.internship_state));
         }
 
-        let allQuestionsAnswered = true;
+        var allQuestionsAnswered = true;
         for (var i =0; i<evalState.answers.length;i++){
             allQuestionsAnswered = allQuestionsAnswered && this.isFilled(evalState.answers[i]);
         }
 
-        let noErrors = true;
-        // will actually set later
-
-
-        return allFieldsFilledIn && allQuestionsAnswered && noErrors;
+        var  errorFree = true;
+        if(this.state.viewEvaluationState.student_state.errorFree != undefined){
+            errorFree = this.state.viewEvaluationState.student_state.errorFree;
+        }
+        return allFieldsFilledIn && allQuestionsAnswered && errorFree;
     }
 
     submit = (e) => {
@@ -149,7 +149,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         final.eval_year = structure.evaluation.year
         final.student = structure.student_state
         delete final.student.already_exists
-        delete final.student.errors
+        delete final.student.errorFree
 
         if (structure.evaluation.eval_type === 'portfolio_eval'){
             final.reviewer_name = structure.reviewer_state.reviewer_name

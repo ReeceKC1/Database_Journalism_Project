@@ -14,11 +14,11 @@ const StudentForm = observer(class StudentForm extends React.Component {
             pr_value: '',
             autoFilled: false,
             idError: '',
-            idSubmitable: false,
+            idSubmitable: true,
             emailError: '',
-            emailSubmitable: false,
+            emailSubmitable: true,
             semesterError: '',
-            semesterSubmitable: false,
+            semesterSubmitable: true,
             timeout: null,
             timeout2: null
         }
@@ -47,11 +47,11 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.state.autoFilled = true;
                 this.props.viewEvaluationState.student_state.first_name = student.first_name;
                 this.props.viewEvaluationState.student_state.last_name = student.last_name;
-                this.props.viewEvaluationState.student_state.email = student.email;
+                this.emailChange(student.email);
                 this.props.viewEvaluationState.student_state.class_year = student.class_year;
                 this.state.year_value = student.class_year;
                 this.setState({year_value : student.class_year});
-                this.props.viewEvaluationState.student_state.semester_of_completion = student.semester_of_completion;
+                this.semesterChange(student.semester_of_completion);
                 this.props.viewEvaluationState.student_state.grade = student.grade;
                 this.setState({grade : student.grade});
                 this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
@@ -64,10 +64,10 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.state.autoFilled = false;
                 this.props.viewEvaluationState.student_state.first_name = '';
                 this.props.viewEvaluationState.student_state.last_name = '';
-                this.props.viewEvaluationState.student_state.email = '';
+                this.emailChange('');
                 this.props.viewEvaluationState.student_state.class_year = '';
                 this.setState({year_value : ''});
-                this.props.viewEvaluationState.student_state.semester_of_completion = '';
+                this.semesterChange('');
                 this.props.viewEvaluationState.student_state.grade = '';
                 this.setState({grade : ''});
                 this.props.viewEvaluationState.student_state.pr_major_minor = '';
@@ -81,9 +81,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
 
 
     idChange = (value) => {
-        if(this.props.viewEvaluationState.student_state.errors == undefined){
-            this.props.viewEvaluationState.student_state.errors = {};
-        }
+    
         this.props.viewEvaluationState.student_state.student_id = value;
         clearTimeout(this.state.timeout2);
         this.autoFillStudent(value);
@@ -91,47 +89,50 @@ const StudentForm = observer(class StudentForm extends React.Component {
         var pattern = new RegExp("^[0-9]*$");
         if (pattern.test(value) || value == ''){
             this.setState({idError:''});
-            this.props.viewEvaluationState.student_state.errors.idSubmitable= true;
+            this.state.idSubmitable= true;
         }else{
-            this.props.viewEvaluationState.student_state.errors.idSubmitable= false;
+            this.state.idSubmitable= false;
             this.state.timeout2 = setTimeout(() => {
-                    this.setState({idError:'Invalid Baylor ID number.'}); 
+                    this.setState({idError:'Invalid Baylor ID number.'});
             }, 1000);
         }
+        this.props.viewEvaluationState.student_state.errorFree= (this.state.semesterSubmitable 
+                                                                && this.state.idSubmitable 
+                                                                && this.state.emailSubmitable);
     }
 
 
     emailChange = (value) => {
-        if(this.props.viewEvaluationState.student_state.errors == undefined){
-            this.props.viewEvaluationState.student_state.errors = {};
-        }
         this.props.viewEvaluationState.student_state.email = value;
         clearTimeout(this.state.timeout);
         if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
             this.setState({emailError:''});
-            this.props.viewEvaluationState.student_state.errors.emailSubmitable= true;
+            this.state.emailSubmitable= true;
         }else{
-            this.props.viewEvaluationState.student_state.errors.emailSubmitable= false;
+            this.state.emailSubmitable= false;
             this.state.timeout = setTimeout(() => {
                     this.setState({emailError:'Invalid email address.'}); 
             }, 1000);
         }
+        this.props.viewEvaluationState.student_state.errorFree= (this.state.semesterSubmitable 
+            && this.state.idSubmitable 
+            && this.state.emailSubmitable);
     }
     semesterChange = (value) => {
-        if(this.props.viewEvaluationState.student_state.errors == undefined){
-            this.props.viewEvaluationState.student_state.errors = {};
-        }
         this.props.viewEvaluationState.student_state.semester_of_completion = value;
         clearTimeout(this.state.timeout);
         if (/^((Spring |Summer |Fall )20)\d{2}$/.test(value) || value ==''){
             this.setState({semesterError:''});
-            this.props.viewEvaluationState.student_state.errors.semesterSubmitable= true;
+            this.state.semesterSubmitable= true;
         }else{
-            this.props.viewEvaluationState.student_state.errors.semesterSubmitable= false;
+            this.state.semesterSubmitable= false;
             this.state.timeout = setTimeout(() => {
                     this.setState({semesterError:'Format Ex: Spring 2020'}); 
             }, 1000);
         }
+        this.props.viewEvaluationState.student_state.errorFree= (this.state.semesterSubmitable 
+            && this.state.idSubmitable 
+            && this.state.emailSubmitable);
     }
     
     render() {
