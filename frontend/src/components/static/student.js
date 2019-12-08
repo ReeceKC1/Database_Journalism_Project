@@ -194,7 +194,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                                 <Select
                                 value={this.state.year_value}
                                 style={{width: '100%'}}
-                                onChange={(event) => {this.props.viewEvaluationState.student_state.class_year = event.target.value; this.state.year_value = event.target.value}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.class_year = event.target.value; this.setState({year_value:event.target.value})}}
                                 >
                                     <MenuItem value={"Freshman"}>Freshman</MenuItem>
                                     <MenuItem value={"Sophmore"}>Sophmore</MenuItem>
@@ -220,7 +220,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                                 <Select
                                 value={this.state.grade}
                                 style={{width: '100%'}}
-                                onChange={(event) => {this.props.viewEvaluationState.student_state.grade = event.target.value; this.state.grade = event.target.value}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.grade = event.target.value; this.setState({grade:event.target.value})}}
                                 >
                                     <MenuItem value={"A"}>A</MenuItem>
                                     <MenuItem value={"B"}>B</MenuItem>
@@ -236,7 +236,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                                 <Select
                                 value={this.state.pr_value}
                                 style = {{width: '100%'}}
-                                onChange={(event) => {this.props.viewEvaluationState.student_state.pr_major_minor = event.target.value; this.state.pr_value = event.target.value}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.pr_major_minor = event.target.value; this.setState({pr_value:event.target.value})}}
                                 >
                                     <MenuItem value={"Major"}>Major</MenuItem>
                                     <MenuItem value={"Minor"}>Minor</MenuItem>
