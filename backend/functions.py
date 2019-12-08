@@ -132,7 +132,6 @@ def get_answer_by_type_start_end(request_type, start_year, end_year):
                                           AND eval_year <= '{end_year}'")).fetchall()
 
     obj_answers = []
-    print(answers)
     for answer in answers:
         answer = Evaluation_Answers(**answer)
         obj_answers.append(answer)
@@ -257,12 +256,12 @@ def get_answers(eval_answers, port_answers):
     for answer in port_answers:
         answer = answer.seralize
 
-        answer['student'] = session.query(Student).filter_by(student_id=answer.pop('student_id')).one_or_none()
+        answer['student'] = session.query(Student).filter_by(student_id=answer.pop('student_id')).one_or_none().seralize
         answers = session.query(Port_Answer).filter_by(answer_id=answer['answer_id']).all()
         seralized_answers = []
         for obj in answers:
-            obj.seralize
-            obj['comment_text'] = session.query(Comment).filter_by(comment_id=obj.pop('comment_id')).one_or_none()
+            obj = obj.seralize
+            obj['comment_text'] = session.query(Comment).filter_by(comment_id=obj.pop('comment_id')).one_or_none().seralize
             seralized_answers.append(obj)
         answer['answers'] = seralized_answers
         eval_answers_response.append(answer)

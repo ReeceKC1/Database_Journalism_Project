@@ -6,6 +6,7 @@ import Header from './components/header';
 import CreateEvaluation from './pages/create_evaluation';
 import Home from './pages/home';
 import ViewEvaluation from './pages/view_evaluation';
+import StudentData from './pages/studentData'
 
 const App = observer(class App extends React.Component {
   render() {
@@ -22,7 +23,8 @@ const App = observer(class App extends React.Component {
 
           <Route path="/take-evaluation" exact render = {(props) => <ViewEvaluation {...props}/>}/>
 
-
+          <Route path="/student-info" exact render = {(props) => <StudentData {...props}/>}/>
+          
           {/* Must BE LAST it matches with all routes */}
           <Route path="/" exact render = {(props) => <Home {...props}/>}/>
         </Switch>

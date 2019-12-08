@@ -36,7 +36,7 @@ const Question = observer(class Question extends React.Component {
 
     // Functions to set state
     changeLabel = (event) => {
-        let value = event.target.value;
+        let value = event.target.value.toLowerCase();
         let ndx = this.state.id;
         this.setState({label: value});
         

@@ -83,11 +83,11 @@ const StudentForm = observer(class StudentForm extends React.Component {
         this.autoFillStudent(value);
 
         var pattern = new RegExp("^[0-9]*$");
-        if (pattern.test(value) || value == ''){
+        if (pattern.test(value) || value === ''){
             this.studentState.idError='';
-            this.studentState.idSubmitable= true;
+            this.studentState.idSubmitable = true;
         }else{
-            this.studentState.idSubmitable= false;
+            this.studentState.idSubmitable = false;
             this.studentState.timeout2 = setTimeout(() => {
                     this.studentState.idError='Invalid Baylor ID number.';
             }, 1000);
@@ -126,7 +126,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                     this.studentState.semesterError='Format Ex: Spring 2020'; 
             }, 1000);
         }
-        this.props.viewEvaluationState.student_state.errorFree= (this.studentState.semesterSubmitable 
+        this.props.viewEvaluationState.student_state.errorFree = (this.studentState.semesterSubmitable 
             && this.studentState.idSubmitable 
             && this.studentState.emailSubmitable);
     }
@@ -147,7 +147,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         style={style}
                         value={this.props.viewEvaluationState.student_state.id}
                         label="Baylor ID#"
-                        error = {this.studentState.idError != ''}
+                        error = {this.studentState.idError !== ''}
                         helperText = {this.studentState.idError}
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => this.idChange(event.target.value)}
@@ -177,7 +177,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             <TextField
                             value={this.props.viewEvaluationState.student_state.email}
                             style={style}
-                            error = {this.studentState.emailError != ''}
+                            error = {this.studentState.emailError !== ''}
                             helperText = {this.studentState.emailError}
                             label="Email"
                             InputProps={this.props.viewEvaluationState.readOnly}
@@ -202,7 +202,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         <Grid item style = {{width: '100%'}}>
                             <TextField
                             style={style}
-                            error = {this.studentState.semesterError != ''}
+                            error = {this.studentState.semesterError !== ''}
                             helperText = {this.studentState.semesterError}
                             value={this.props.viewEvaluationState.student_state.semester_of_completion}
                             label="Semester of completion"

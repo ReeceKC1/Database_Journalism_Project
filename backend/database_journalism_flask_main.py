@@ -21,7 +21,6 @@ CORS(app)
 @app.route('/api/student/check/<id>', methods=['GET'])
 def check_student(id):
     session = Session()
-    print('Checking student id first')
     student = session.query(Student).filter_by(student_id=id).all()
 
     if len(student) == 0:
@@ -71,7 +70,6 @@ def company_check(name):
 @app.route('/api/internship', methods=['GET'])
 def get_internship():
     session = Session()
-    print("in")
     student_id = request.args.get('student_id')
     company_name = request.args.get('company_name')
     start_date = request.args.get('start_date')
