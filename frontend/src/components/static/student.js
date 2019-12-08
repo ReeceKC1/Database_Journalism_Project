@@ -50,11 +50,12 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.props.viewEvaluationState.student_state.email = student.email;
                 this.props.viewEvaluationState.student_state.class_year = student.class_year;
                 this.state.year_value = student.class_year;
+                this.setState({year_value : student.class_year});
                 this.props.viewEvaluationState.student_state.semester_of_completion = student.semester_of_completion;
                 this.props.viewEvaluationState.student_state.grade = student.grade;
-                this.state.grade = student.grade;
+                this.setState({grade : student.grade});
                 this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
-                this.state.pr_value = student.pr_major_minor;
+                this.setState({pr_value : student.pr_major_minor});
 
                 this.forceUpdate();
         }).catch((error) => {
@@ -65,12 +66,12 @@ const StudentForm = observer(class StudentForm extends React.Component {
                 this.props.viewEvaluationState.student_state.last_name = '';
                 this.props.viewEvaluationState.student_state.email = '';
                 this.props.viewEvaluationState.student_state.class_year = '';
-                this.state.year_value = '';
+                this.setState({year_value : ''});
                 this.props.viewEvaluationState.student_state.semester_of_completion = '';
                 this.props.viewEvaluationState.student_state.grade = '';
-                this.state.grade ='';
+                this.setState({grade : ''});
                 this.props.viewEvaluationState.student_state.pr_major_minor = '';
-                this.state.pr_value= '';
+                this.setState({pr_value : ''});
             }
 
             });
@@ -87,7 +88,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
         clearTimeout(this.state.timeout2);
         this.autoFillStudent(value);
 
-        var pattern = new RegExp("[0-9]+");
+        var pattern = new RegExp("^[0-9]*$");
         if (pattern.test(value) || value == ''){
             this.setState({idError:''});
             this.props.viewEvaluationState.student_state.errors.idSubmitable= true;
