@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 #  Creating/Getting database
-engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database')
+engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database', pool_size=10, max_overflow=20)
 # Creating metadata object
 # metadata = MetaData()
 # Creating session object

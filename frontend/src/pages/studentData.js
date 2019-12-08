@@ -57,8 +57,13 @@ const StudentData = observer(class StudentData extends React.Component {
                                     {this.dataState.student.first_name} {this.dataState.student.last_name}
                                 </Typography>
                             </Grid>
-                            <Grid item>
-                                <Typography variant="h5"></Typography>
+                            <Grid item style={{width: '100%'}}>
+                                <Typography variant="h6">
+                                    ID
+                                </Typography>
+                                <Typography style={{marginLeft: '10px'}}>
+                                    ID
+                                </Typography>
                             </Grid>
                         </Grid>
                         <Typography>
