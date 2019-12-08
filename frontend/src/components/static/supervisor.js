@@ -1,12 +1,14 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
+import { observer } from 'mobx-react';
 import axios from 'axios';
+import { observable, decorate, toJS } from 'mobx'
 
 const SupervisorForm = observer(class SupervisorForm extends React.Component {
+    supervisorState = {}
     constructor(props) {
         super(props);
-        this.state = {
+        this.supervisorState = {
             autoFilled: false,
             emailError: '',
             timeout: null,
@@ -21,18 +23,18 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
         return axios.get(url);
     }
     autoFillSupervisor = (email) =>{
-        clearTimeout(this.state.timeout);
-        this.state.timeout = setTimeout(() => {
+        clearTimeout(this.supervisorState.timeout);
+        this.supervisorState.timeout = setTimeout(() => {
             this.checkSupervisor(email).then((response) => {
                 let supervisor = response.data;
                 //console.log(supervisor);
-                this.state.autoFilled = true;
+                this.supervisorState.autoFilled = true;
                 this.props.viewEvaluationState.supervisor_state.name = supervisor.name;
                 this.props.viewEvaluationState.supervisor_state.title = supervisor.title;
         }).catch((error) => {
             console.log('Get subscriptions error',error.response);
-            if (this.state.autoFilled){
-                this.state.autoFilled = false;
+            if (this.supervisorState.autoFilled){
+                this.supervisorState.autoFilled = false;
                 this.props.viewEvaluationState.supervisor_state.name = '';
                 this.props.viewEvaluationState.supervisor_state.title = '';
             }
@@ -43,13 +45,13 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
     emailChange = (value) => {
         this.props.viewEvaluationState.supervisor_state.email = value;
         this.autoFillSupervisor(value);
-        clearTimeout(this.state.timeout2);
+        clearTimeout(this.supervisorState.timeout2);
         if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
             this.setState({emailError:''});
             this.props.viewEvaluationState.supervisor_state.errorFree= true;
         }else{
             this.props.viewEvaluationState.supervisor_state.errorFree= false;
-            this.state.timeout2 = setTimeout(() => {
+            this.supervisorState.timeout2 = setTimeout(() => {
                     this.setState({emailError:'Invalid email address.'}); 
             }, 1000);
         }
@@ -72,8 +74,8 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         <TextField
                         style={style}
                         label="Email"
-                        error = {this.state.emailError != ''}
-                        helperText = {this.state.emailError}
+                        error = {this.supervisorState.emailError != ''}
+                        helperText = {this.supervisorState.emailError}
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => {this.emailChange(event.target.value)}}
                         />
@@ -100,6 +102,10 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
             </div>
         ); 
     }
+})
+
+decorate(SupervisorForm, {
+    supervisorState: observable,
 })
 
 export default SupervisorForm

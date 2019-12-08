@@ -2,11 +2,14 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
 import axios from 'axios';
+import { observable, decorate, toJS } from 'mobx'
+
 
 const CompanyForm = observer(class CompanyForm extends React.Component {
+    companyState = {}
     constructor(props) {
         super(props);
-        this.state = {
+        this.companyState = {
             autoFilled: false,
             phoneError: '',
             timeout: null
@@ -21,18 +24,18 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
     }
     
     autoFillCompany = (name) =>{
-        clearTimeout(this.state.timeout);
-        this.state.timeout = setTimeout(() => {
+        clearTimeout(this.companyState.timeout);
+        this.companyState.timeout = setTimeout(() => {
             this.checkCompany(name).then((response) => {
                 let company = response.data;
                 console.log(company);
-                this.state.autoFilled = true;
+                this.companyState.autoFilled = true;
                 this.props.viewEvaluationState.company_state.address = company.address;
                 this.phoneChange(company.phone);
             }).catch((error) => {
                 console.log('Get subscriptions error',error.response);
-                if (this.state.autoFilled){
-                    this.state.autoFilled = false;
+                if (this.companyState.autoFilled){
+                    this.companyState.autoFilled = false;
                     this.props.viewEvaluationState.company_state.address = '';
                     this.phoneChange('');
                 }
@@ -43,13 +46,13 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
 
     phoneChange = (value) => {
         this.props.viewEvaluationState.company_state.phone = value;
-        clearTimeout(this.state.timeout);
+        clearTimeout(this.companyState.timeout);
         if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(value) || value ==''){
             this.setState({phoneError:''});
             this.props.viewEvaluationState.company_state.errorFree= true;
         }else{
             this.props.viewEvaluationState.company_state.errorFree= false;
-            this.state.timeout = setTimeout(() => {
+            this.companyState.timeout = setTimeout(() => {
                     this.setState({phoneError:'Invalid phone number.'}); 
             }, 1000);
         }
@@ -88,8 +91,8 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                         <TextField
                         value={this.props.viewEvaluationState.company_state.phone}
                         style={style}
-                        error = {this.state.phoneError != ''}
-                        helperText = {this.state.phoneError}
+                        error = {this.companyState.phoneError != ''}
+                        helperText = {this.companyState.phoneError}
                         label="Phone Number"
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => {this.phoneChange(event.target.value)}}
@@ -99,6 +102,10 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
             </div>
         );      
     }
+})
+
+decorate(CompanyForm, {
+    companyState: observable,
 })
 
 export default CompanyForm

@@ -6,9 +6,10 @@ import { observable, decorate } from 'mobx'
 import axios from 'axios';
 
 const StudentForm = observer(class StudentForm extends React.Component {
+    studentState = {}
     constructor(props) {
         super(props);
-        this.state = {
+        this.studentState = {
             year_value: '',
             grade: '',
             pr_value: '',
@@ -22,11 +23,6 @@ const StudentForm = observer(class StudentForm extends React.Component {
             timeout: null,
             timeout2: null
         }
-        decorate(this.state, {
-            year_value: observable,
-            grade: observable,
-            pr_value: observable
-        })
     }
 
     componentDidMount() {}
@@ -38,40 +34,40 @@ const StudentForm = observer(class StudentForm extends React.Component {
     }
 
     autoFillStudent= (id) =>{
-        clearTimeout(this.state.timeout);
-        this.state.timeout = setTimeout(() => {
+        clearTimeout(this.studentState.timeout);
+        this.studentState.timeout = setTimeout(() => {
             this.checkStudent(id).then((response) => {
                 let student = response.data[0];
                 console.log(student);
-                this.state.idError = '';
-                this.state.autoFilled = true;
+                this.studentState.idError = '';
+                this.studentState.autoFilled = true;
                 this.props.viewEvaluationState.student_state.first_name = student.first_name;
                 this.props.viewEvaluationState.student_state.last_name = student.last_name;
                 this.emailChange(student.email);
                 this.props.viewEvaluationState.student_state.class_year = student.class_year;
-                this.state.year_value = student.class_year;
-                this.setState({year_value : student.class_year});
+                this.studentState.year_value = student.class_year;
+                this.studentState.year_value = student.class_year;
                 this.semesterChange(student.semester_of_completion);
                 this.props.viewEvaluationState.student_state.grade = student.grade;
-                this.setState({grade : student.grade});
+                this.studentState.grade = student.grade;
                 this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
-                this.setState({pr_value : student.pr_major_minor});
+                this.studentState.pr_value = student.pr_major_minor;
 
                 this.forceUpdate();
         }).catch((error) => {
             console.log('Get subscriptions error',error.response);
-            if (this.state.autoFilled){
-                this.state.autoFilled = false;
+            if (this.studentState.autoFilled){
+                this.studentState.autoFilled = false;
                 this.props.viewEvaluationState.student_state.first_name = '';
                 this.props.viewEvaluationState.student_state.last_name = '';
                 this.emailChange('');
                 this.props.viewEvaluationState.student_state.class_year = '';
-                this.setState({year_value : ''});
+                this.studentState.year_value = '';
                 this.semesterChange('');
                 this.props.viewEvaluationState.student_state.grade = '';
-                this.setState({grade : ''});
+                this.studentState.grade = '';
                 this.props.viewEvaluationState.student_state.pr_major_minor = '';
-                this.setState({pr_value : ''});
+                this.studentState.pr_value = '';
             }
 
             });
@@ -83,56 +79,56 @@ const StudentForm = observer(class StudentForm extends React.Component {
     idChange = (value) => {
     
         this.props.viewEvaluationState.student_state.student_id = value;
-        clearTimeout(this.state.timeout2);
+        clearTimeout(this.studentState.timeout2);
         this.autoFillStudent(value);
 
         var pattern = new RegExp("^[0-9]*$");
         if (pattern.test(value) || value == ''){
-            this.setState({idError:''});
-            this.state.idSubmitable= true;
+            this.studentState.idError='';
+            this.studentState.idSubmitable= true;
         }else{
-            this.state.idSubmitable= false;
-            this.state.timeout2 = setTimeout(() => {
-                    this.setState({idError:'Invalid Baylor ID number.'});
+            this.studentState.idSubmitable= false;
+            this.studentState.timeout2 = setTimeout(() => {
+                    this.studentState.idError='Invalid Baylor ID number.';
             }, 1000);
         }
-        this.props.viewEvaluationState.student_state.errorFree= (this.state.semesterSubmitable 
-                                                                && this.state.idSubmitable 
-                                                                && this.state.emailSubmitable);
+        this.props.viewEvaluationState.student_state.errorFree= (this.studentState.semesterSubmitable 
+                                                                && this.studentState.idSubmitable 
+                                                                && this.studentState.emailSubmitable);
     }
 
 
     emailChange = (value) => {
         this.props.viewEvaluationState.student_state.email = value;
-        clearTimeout(this.state.timeout);
+        clearTimeout(this.studentState.timeout);
         if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
-            this.setState({emailError:''});
-            this.state.emailSubmitable= true;
+            this.studentState.emailError='';
+            this.studentState.emailSubmitable= true;
         }else{
-            this.state.emailSubmitable= false;
-            this.state.timeout = setTimeout(() => {
-                    this.setState({emailError:'Invalid email address.'}); 
+            this.studentState.emailSubmitable= false;
+            this.studentState.timeout = setTimeout(() => {
+                    this.studentState.emailError='Invalid email address.'; 
             }, 1000);
         }
-        this.props.viewEvaluationState.student_state.errorFree= (this.state.semesterSubmitable 
-            && this.state.idSubmitable 
-            && this.state.emailSubmitable);
+        this.props.viewEvaluationState.student_state.errorFree= (this.studentState.semesterSubmitable 
+            && this.studentState.idSubmitable 
+            && this.studentState.emailSubmitable);
     }
     semesterChange = (value) => {
         this.props.viewEvaluationState.student_state.semester_of_completion = value;
-        clearTimeout(this.state.timeout);
+        clearTimeout(this.studentState.timeout);
         if (/^((Spring |Summer |Fall )20)\d{2}$/.test(value) || value ==''){
-            this.setState({semesterError:''});
-            this.state.semesterSubmitable= true;
+            this.studentState.semesterError='';
+            this.studentState.semesterSubmitable= true;
         }else{
-            this.state.semesterSubmitable= false;
-            this.state.timeout = setTimeout(() => {
-                    this.setState({semesterError:'Format Ex: Spring 2020'}); 
+            this.studentState.semesterSubmitable= false;
+            this.studentState.timeout = setTimeout(() => {
+                    this.studentState.semesterError='Format Ex: Spring 2020'; 
             }, 1000);
         }
-        this.props.viewEvaluationState.student_state.errorFree= (this.state.semesterSubmitable 
-            && this.state.idSubmitable 
-            && this.state.emailSubmitable);
+        this.props.viewEvaluationState.student_state.errorFree= (this.studentState.semesterSubmitable 
+            && this.studentState.idSubmitable 
+            && this.studentState.emailSubmitable);
     }
     
     render() {
@@ -151,8 +147,8 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         style={style}
                         value={this.props.viewEvaluationState.student_state.id}
                         label="Baylor ID#"
-                        error = {this.state.idError != ''}
-                        helperText = {this.state.idError}
+                        error = {this.studentState.idError != ''}
+                        helperText = {this.studentState.idError}
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => this.idChange(event.target.value)}
                         />
@@ -181,8 +177,8 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             <TextField
                             value={this.props.viewEvaluationState.student_state.email}
                             style={style}
-                            error = {this.state.emailError != ''}
-                            helperText = {this.state.emailError}
+                            error = {this.studentState.emailError != ''}
+                            helperText = {this.studentState.emailError}
                             label="Email"
                             InputProps={this.props.viewEvaluationState.readOnly}
                             onChange={(event) => this.emailChange(event.target.value)}
@@ -192,9 +188,9 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             <FormControl style={style}>
                                 <InputLabel id="select-label">Class Year</InputLabel>
                                 <Select
-                                value={this.state.year_value}
+                                value={this.studentState.year_value}
                                 style={{width: '100%'}}
-                                onChange={(event) => {this.props.viewEvaluationState.student_state.class_year = event.target.value; this.setState({year_value:event.target.value})}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.class_year = event.target.value; this.studentState.year_value=event.target.value}}
                                 >
                                     <MenuItem value={"Freshman"}>Freshman</MenuItem>
                                     <MenuItem value={"Sophmore"}>Sophmore</MenuItem>
@@ -206,8 +202,8 @@ const StudentForm = observer(class StudentForm extends React.Component {
                         <Grid item style = {{width: '100%'}}>
                             <TextField
                             style={style}
-                            error = {this.state.semesterError != ''}
-                            helperText = {this.state.semesterError}
+                            error = {this.studentState.semesterError != ''}
+                            helperText = {this.studentState.semesterError}
                             value={this.props.viewEvaluationState.student_state.semester_of_completion}
                             label="Semester of completion"
                             InputProps={this.props.viewEvaluationState.readOnly}
@@ -215,12 +211,12 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             />
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
-                        <FormControl style={style}>
+                            <FormControl style={style}>
                                 <InputLabel id="select-label">Course Grade</InputLabel>
                                 <Select
-                                value={this.state.grade}
+                                value={this.studentState.grade}
                                 style={{width: '100%'}}
-                                onChange={(event) => {this.props.viewEvaluationState.student_state.grade = event.target.value; this.setState({grade:event.target.value})}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.grade = event.target.value; this.studentState.grade=event.target.value}}
                                 >
                                     <MenuItem value={"A"}>A</MenuItem>
                                     <MenuItem value={"B"}>B</MenuItem>
@@ -234,9 +230,9 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             <FormControl style={style}>
                                 <InputLabel id="select-label">PR Major or Minor</InputLabel>
                                 <Select
-                                value={this.state.pr_value}
+                                value={this.studentState.pr_value}
                                 style = {{width: '100%'}}
-                                onChange={(event) => {this.props.viewEvaluationState.student_state.pr_major_minor = event.target.value; this.setState({pr_value:event.target.value})}}
+                                onChange={(event) => {this.props.viewEvaluationState.student_state.pr_major_minor = event.target.value; this.studentState.pr_value=event.target.value}}
                                 >
                                     <MenuItem value={"Major"}>Major</MenuItem>
                                     <MenuItem value={"Minor"}>Minor</MenuItem>
@@ -249,6 +245,10 @@ const StudentForm = observer(class StudentForm extends React.Component {
             </div>
         );
     }
+})
+
+decorate(StudentForm, {
+    studentState: observable,
 })
 
 export default StudentForm

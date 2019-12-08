@@ -4,11 +4,12 @@ import StudentEvalStatic from '../components/static/studentEvalStatic';
 import InternshipEvalStatic from '../components/static/internshipEvalStatic';
 import PortfolioEvalStatic from '../components/static/portfolioEvalStatic';
 import * as Evaluation from '../axois/evaluation';
-import { observable, decorate, toJS } from '../../node_modules/mobx/lib/mobx'
-import { observer } from '../../node_modules/mobx-react/dist/mobx-react'
+import { observable, decorate, toJS } from 'mobx'
+import { observer } from 'mobx-react'
 import axios from 'axios';
 
 const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
+    viewState = {}
     constructor(props) {
         super(props);
 
@@ -51,7 +52,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             eval_comment: '',
         }
 
-        this.state = {
+        this.viewState = {
             viewEvaluationState: viewEvaluationState,
             type: null,
             year: null,
@@ -85,22 +86,23 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             var view_take = window.location.href.match("#/(.+)-")[1]
             console.log("Take",view_take)
             // Setting it to the state
-            this.setState({ type: type, year: year});
+            this.viewState.type = type
+            this.viewState.year = year
 
             if (view_take === "view"){
-                this.state.viewEvaluationState.viewOnly = true
-                this.state.viewEvaluationState.readOnly.readOnly = true
+                this.viewState.viewEvaluationState.viewOnly = true
+                this.viewState.viewEvaluationState.readOnly.readOnly = true
             }
             else{
-                this.state.viewEvaluationState.viewOnly = false
-                this.state.viewEvaluationState.readOnly.readOnly = false
+                this.viewState.viewEvaluationState.viewOnly = false
+                this.viewState.viewEvaluationState.readOnly.readOnly = false
             }
             
             Evaluation.getEvaluationByKey(type, year).then(response => {
                 let data = response.data;
                 console.log('Got Eval', response);
 
-                this.state.viewEvaluationState.evaluation = data
+                this.viewState.viewEvaluationState.evaluation = data
             }).catch(error => {
                 console.log(error);
             });
@@ -118,10 +120,10 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     }
 
     evalIsSubmittable = () => {
-        let evalState = this.state.viewEvaluationState;
+        let evalState = this.viewState.viewEvaluationState;
 
         var allFieldsFilledIn = true;
-        if( this.state.type=='portfolio_eval'){ 
+        if( this.viewState.type=='portfolio_eval'){ 
             allFieldsFilledIn = (this.isFilled(evalState.reviewer_state) && this.isFilled(evalState.student_state));
         }else {
             allFieldsFilledIn = (this.isFilled(evalState.company_state) && this.isFilled(evalState.supervisor_state)
@@ -152,7 +154,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
 
     submit = (e) => {
         e.stopPropagation();
-        let structure = toJS(this.state.viewEvaluationState)
+        let structure = toJS(this.viewState.viewEvaluationState)
         let final = {}
         
         final.eval_type = structure.evaluation.eval_type
@@ -167,12 +169,8 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
         else{
             final.company = structure.company_state
-            delete final.company.errorFree
             final.supervisor = structure.supervisor_state
-            delete final.supervisor.errorFree
             final.internship = structure.internship_state
-            delete final.internship.errorFree
-
             for (let i = 0; i < structure.answers.length; i++){
                 delete structure.answers[i].comment_text
             }
@@ -183,12 +181,12 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         console.log(JSON.stringify(final))
         axios.post('http://localhost:5000/api/answer/evaluation', final).then(response => {
             console.log(response);
-            this.setState({submittedSuccessfully: true});
+            this.viewState.submittedSuccessfully = true;
         });
     }
 
     render() {
-        if(this.state.submittedSuccessfully) {
+        if(this.viewState.submittedSuccessfully) {
             return (
                 <div style={{marginLeft: '1%', marginTop: '75px'}}>
                     <Paper>
@@ -203,29 +201,29 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             );
         }
 
-        if(this.state.viewEvaluationState.evaluation != null) {
+        if(this.viewState.viewEvaluationState.evaluation != null) {
             return (
                 <div style={{width: '98%', marginLeft: '1%', marginTop: '75px'}}>
                     <Grid container spacing={1} alignItems ="center" direction="column">
                         {/* Rendering the header */}
                         <Grid item style={{width: '100%'}}>
-                            {this.state.type === 'student_eval' && 
-                                <StudentEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
+                            {this.viewState.type === 'student_eval' && 
+                                <StudentEvalStatic viewEvaluationState={this.viewState.viewEvaluationState}/>
                             }
 
-                            {this.state.type === 'student_onsite_eval' && 
-                                <StudentEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
+                            {this.viewState.type === 'student_onsite_eval' && 
+                                <StudentEvalStatic viewEvaluationState={this.viewState.viewEvaluationState}/>
                             }
 
-                            {this.state.type === 'internship_eval' && 
-                                <InternshipEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
+                            {this.viewState.type === 'internship_eval' && 
+                                <InternshipEvalStatic viewEvaluationState={this.viewState.viewEvaluationState}/>
                             }
                             
-                            {this.state.type === 'portfolio_eval' && 
-                                <PortfolioEvalStatic viewEvaluationState={this.state.viewEvaluationState}/>
+                            {this.viewState.type === 'portfolio_eval' && 
+                                <PortfolioEvalStatic viewEvaluationState={this.viewState.viewEvaluationState}/>
                             }
                         </Grid>
-                        {!this.state.viewEvaluationState.viewOnly &&
+                        {!this.viewState.viewEvaluationState.viewOnly &&
                         <Grid item style={{marginBottom: '25px', marginTop: '10px'}}>
                             <Button variant="contained" color="primary" onClick={(e) => this.submit(e)} disabled={!this.evalIsSubmittable()}>Submit</Button>
                         </Grid>}
@@ -241,6 +239,10 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
         
     }
+})
+
+decorate(ViewEvaluation, {
+    viewState: observable,
 })
 
 export default ViewEvaluation
