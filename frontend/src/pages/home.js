@@ -33,86 +33,93 @@ export default class Home extends React.Component {
         }
         
         return (
-            <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
-                {/* Alert Bar */}
-                {alert &&
-                    <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={true}
-                    autoHideDuration={5000}
-                    variant='success'
-                    message={<span id="message-id">Evaluation Created Successfully!</span>}
-                    />
-                }
+            <div>
+                <div style={{width: '50%', overflow: 'hidden'}}>
+                <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                    {/* Alert Bar */}
+                    {alert &&
+                        <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={true}
+                        autoHideDuration={5000}
+                        variant='success'
+                        message={<span id="message-id">Evaluation Created Successfully!</span>}
+                        />
+                    }
 
-                {/* Table */}
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Evaluation Type</TableCell>
-                            <TableCell>Year</TableCell>
-                            <TableCell>Version</TableCell>
-                            <TableCell>Duplicate</TableCell>
-                            <TableCell>View Evaluation</TableCell>
-                            <TableCell>Take Evaluation</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {rows.map(row => (
-                        <TableRow key={row.year + row.eval_type}>
-                            <TableCell>{row.title}</TableCell>
-                            <TableCell>{row.eval_type}</TableCell>
-                            <TableCell>{row.year}</TableCell>
-                            <TableCell>{row.version}</TableCell>
-                            <TableCell>
-                                <Button variant="outlined" color="primary"
-                                    component={Link}
-                                    to={{
-                                        pathname: "/create",
-                                        state: {
-                                            year: row.year,
-                                            type: row.eval_type
-                                        }
-                                        
-                                    }}
-                                >
-                                    Duplicate
-                                </Button>
-                            </TableCell>
-                            <TableCell>
-                                <Button variant="outlined" color="primary"
-                                    component={Link}
-                                    to={{
-                                        pathname: "/view-evaluation",
-                                        search: "?type=" + row.eval_type + "&year=" + row.year
-                                    }}
-                                >
-                                    View Evaluation
-                                </Button>
-                            </TableCell>
-                            <TableCell>
-                                <Button variant="outlined" color="primary"
-                                    component={Link}
-                                    to={{
-                                        pathname: "/take-evaluation",
-                                        search: "?type=" + row.eval_type + "&year=" + row.year
-                                    }}
-                                >
-                                    Take Evaluation
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
+                    {/* Table */}
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Title</TableCell>
+                                <TableCell>Evaluation Type</TableCell>
+                                <TableCell>Year</TableCell>
+                                <TableCell>Version</TableCell>
+                                <TableCell>Duplicate</TableCell>
+                                <TableCell>View Evaluation</TableCell>
+                                <TableCell>Take Evaluation</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {rows.map(row => (
+                            <TableRow key={row.year + row.eval_type}>
+                                <TableCell>{row.title}</TableCell>
+                                <TableCell>{row.eval_type}</TableCell>
+                                <TableCell>{row.year}</TableCell>
+                                <TableCell>{row.version}</TableCell>
+                                <TableCell>
+                                    <Button variant="outlined" color="primary"
+                                        component={Link}
+                                        to={{
+                                            pathname: "/create",
+                                            state: {
+                                                year: row.year,
+                                                type: row.eval_type
+                                            }
+                                            
+                                        }}
+                                    >
+                                        Duplicate
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <Button variant="outlined" color="primary"
+                                        component={Link}
+                                        to={{
+                                            pathname: "/view-evaluation",
+                                            search: "?type=" + row.eval_type + "&year=" + row.year
+                                        }}
+                                    >
+                                        View Evaluation
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <Button variant="outlined" color="primary"
+                                        component={Link}
+                                        to={{
+                                            pathname: "/take-evaluation",
+                                            search: "?type=" + row.eval_type + "&year=" + row.year
+                                        }}
+                                    >
+                                        Take Evaluation
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
 
-                {/* Get Student by name or id */}
-                
-            </Container>
+                    {/* Get Student by name or id */}
+                    
+                </Container>
+                </div>
+                <div style={{width: '50%'}}>
+
+                </div>
+            </div>
         );
     }
 }

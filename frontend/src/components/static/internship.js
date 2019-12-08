@@ -1,12 +1,14 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
+import { observer } from 'mobx-react';
 import axios from 'axios';
+import { observable, decorate, toJS } from 'mobx'
 
 const InternshipForm = observer(class InternshipForm extends React.Component {
+    internshipState = {}
     constructor(props) {
         super(props);
-        this.state = {
+        this.internshipState = {
             hoursError: '',
             timeout: null
         }
@@ -21,13 +23,13 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
     
     hoursChange = (value) => {
         this.props.viewEvaluationState.internship_state.hours = value;
-        clearTimeout(this.state.timeout);
+        clearTimeout(this.internshipState.timeout);
         if (/^([1-9][0-9]?[0-9]?)$/.test(value) || value ==''){
             this.setState({hoursError:''});
             this.props.viewEvaluationState.internship_state.errorFree= true;
         }else{
             this.props.viewEvaluationState.internship_state.errorFree= false;
-            this.state.timeout = setTimeout(() => {
+            this.internshipState.timeout = setTimeout(() => {
                     this.setState({hoursError:'Invalid number of hours.'}); 
             }, 1000);
         }
@@ -65,8 +67,8 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
                         <TextField
                         value= {this.props.viewEvaluationState.internship_state.hours}
                         style={style}
-                        error = {this.state.hoursError != ''}
-                        helperText = {this.state.hoursError}
+                        error = {this.internshipState.hoursError != ''}
+                        helperText = {this.internshipState.hoursError}
                         label="Hours"
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => {this.hoursChange(event.target.value)}}
@@ -76,6 +78,10 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
             </div>
         );
     }
+})
+
+decorate(InternshipForm, {
+    internshipState: observable,
 })
 
 export default InternshipForm

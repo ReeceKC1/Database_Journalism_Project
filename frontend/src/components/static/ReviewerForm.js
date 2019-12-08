@@ -1,14 +1,8 @@
 import { Grid, Paper, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
+import { observer } from 'mobx-react';
 
 const ReviewerForm = observer(class RevewerForm extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {}
-
     render() {
         let style = {
             width: '90%',
@@ -25,7 +19,7 @@ const ReviewerForm = observer(class RevewerForm extends React.Component {
                         style={style}
                         label="Reviewer Name"
                         InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => {this.props.viewEvaluationState.reviewer_state.reviewer_name = event.target.value; console.log(this.props.viewEvaluationState.reviewer_state.reviewer_name)}}
+                        onChange={(event) => {this.props.viewEvaluationState.reviewer_state.reviewer_name = event.target.value}}
                         />
                     </Grid>
                 </Grid>

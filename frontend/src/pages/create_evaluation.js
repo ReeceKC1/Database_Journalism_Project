@@ -10,6 +10,7 @@ import { observer } from 'mobx-react';
 import { Redirect } from 'react-router-dom';
 
 const CreateEvaluation =  observer(class CreateEvaluation extends React.Component {
+    createState = {}
     constructor(props) {
         super(props);
 
@@ -28,7 +29,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
            questions: observable
         });
 
-        this.state = {
+        this.createState = {
             redirectOnSuccess: false,
             yearError: '',
             yearSubmitable: false,
@@ -101,9 +102,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                 };
 
                 // Update the State
-                this.setState({
-                    createEvaluationState: dupeState
-                });
+                this.createState.createEvaluationState= dupeState;
             }).catch(error => {
                 console.log(error);
             });
@@ -113,51 +112,51 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     // Functions to change state
     titleChange = (event) => {
         let value = event.target.value;
-        this.setState({ title: value });
-        this.state.createEvaluationState.title = value;
+        this.createState.title= value ;
+        this.createState.createEvaluationState.title = value;
     };
 
     typeChange = (event) => {
         let value = event.target.value;
-        this.setState({ eval_type: value });
-        this.state.createEvaluationState.eval_type = value;
+        this.createState. eval_type = value;
+        this.createState.createEvaluationState.eval_type = value;
     };
     
     yearChange = (event) => {
         let value = event.target.value;
-        this.setState({ year: value });
-        clearTimeout(this.state.timeout);
+        this.createState.year= value;
+        clearTimeout(this.createState.timeout);
         if (/^(20)\d{2}$/.test(value) || value ==''){
-            this.setState({yearError:''});
-            this.setState({yearSubmitable: true });
+            this.createState.yearError='';
+            this.createState.yearSubmitable = true;
         }else{
-            this.setState({yearSubmitable: false});
-            this.state.timeout = setTimeout(() => {
-                    this.setState({yearError:'Invalid Year'}); 
+            this.createState.yearSubmitable = false;
+            this.createState.timeout = setTimeout(() => {
+                    this.createState.yearError = 'Invalid Year'; 
             }, 1000);
         }
-        this.state.createEvaluationState.year = value;
+        this.createState.createEvaluationState.year = value;
     };
 
     // Add a question
     addQuestion = () => {
         let templateQuestion = {
-            id: this.state.createEvaluationState.questions.length,
+            id: this.createState.createEvaluationState.questions.length,
             label: '',
             question_text: '',
             options: [], 
         }
 
-        let questions = this.state.createEvaluationState.questions;
+        let questions = this.createState.createEvaluationState.questions;
         questions.push(templateQuestion);
 
-        // this.setState({ questions: questions});
+        // this.createState. questions: questions});
 
-        this.state.createEvaluationState.questions = questions;
+        this.createState.createEvaluationState.questions = questions;
         this.forceUpdate();
     };
     questionsAreSubmitable = () => {//this function searches through and makes sure no fields are blank
-        let questions = this.state.createEvaluationState.questions;
+        let questions = this.createState.createEvaluationState.questions;
         if(questions.length ==0){
             return false;
         }
@@ -166,7 +165,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             if (question.label.trim() == '' || question.question_text.trim() == ''){
                 return false;
             }
-            let options = toJS(this.state.createEvaluationState.questions[i].options);
+            let options = toJS(this.createState.createEvaluationState.questions[i].options);
             if(options.length == 0){
                 return false;
             }
@@ -179,9 +178,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         return true;
     }
     isSubmitable = () => {
-        let title = this.state.createEvaluationState.title.trim();
-        let year = this.state.yearSubmitable && (this.state.year);
-        let type = this.state.createEvaluationState.eval_type;
+        let title = this.createState.createEvaluationState.title.trim();
+        let year = this.createState.yearSubmitable && (this.createState.year);
+        let type = this.createState.createEvaluationState.eval_type;
         return (title && year && type && this.questionsAreSubmitable());
     }
 
@@ -191,8 +190,8 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         
         // Need to go through each question and option to clean up data 
         // in case it has been imported
-        // console.log(this.state);
-        let state = this.state.createEvaluationState;
+        // console.log(this.createState);
+        let state = this.createState.createEvaluationState;
         let payload = {
             title: state.title,
             eval_type: state.eval_type,
@@ -240,7 +239,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         axios.post('http://localhost:5000/api/evaluation/create', payload)
         .then(response => {
             console.log(response);
-            this.setState({redirectOnSuccess: true});
+            this.createState.redirectOnSuccess = true;
           }).catch(error => console.log('here',error));
     };
 
@@ -250,7 +249,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             marginLeft: '5%',
           }
 
-          if(this.state.redirectOnSuccess) {
+          if(this.createState.redirectOnSuccess) {
               return(
                 <Redirect to={{
                     pathname: '/',
@@ -282,7 +281,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             margin="normal"
                             style={style}
                             onChange={(event) => this.titleChange(event)}
-                            value={this.state.createEvaluationState.title}
+                            value={this.createState.createEvaluationState.title}
                             />
                         </Grid> 
 
@@ -293,7 +292,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             <Select
                             labelId="type"
                             style={{width: '100%'}}
-                            value={this.state.createEvaluationState.eval_type}
+                            value={this.createState.createEvaluationState.eval_type}
                             onChange={(event) => this.typeChange(event)}
                             >
                                 <MenuItem value="student_eval">Student Evaluation</MenuItem>
@@ -310,11 +309,11 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Year"
                             margin="normal"
-                            error = {this.state.yearError != ""}
-                            helperText = {this.state.yearError}
+                            error = {this.createState.yearError != ""}
+                            helperText = {this.createState.yearError}
                             style={style}
                             onChange={(event) => this.yearChange(event)}
-                            value={this.state.createEvaluationState.year}
+                            value={this.createState.createEvaluationState.year}
                             />
                         </Grid>
 
@@ -325,7 +324,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             label="Version"
                             margin="normal"
                             style={style}
-                            value={this.state.createEvaluationState.version}
+                            value={this.createState.createEvaluationState.version}
                             readOnly
                             disabled
                             />
@@ -333,11 +332,11 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                         {/* The real meat and potatoes of the builder */}
 
                         <Grid item style = {{width: '100%'}}>
-                            {this.state.createEvaluationState.questions.map((question) => 
+                            {this.createState.createEvaluationState.questions.map((question) => 
                                 <Question 
                                     question={question} 
                                     key={question.id}
-                                    createEvaluationState={this.state.createEvaluationState}
+                                    createEvaluationState={this.createState.createEvaluationState}
                                 />
                                 
                             )}
@@ -362,6 +361,10 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             </div>
         );
     }
+})
+
+decorate(CreateEvaluation, {
+    createState: observable,
 })
 
 export default CreateEvaluation;
