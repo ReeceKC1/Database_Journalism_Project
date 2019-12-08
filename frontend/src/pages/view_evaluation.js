@@ -167,8 +167,12 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
         else{
             final.company = structure.company_state
+            delete final.company.errorFree
             final.supervisor = structure.supervisor_state
+            delete final.supervisor.errorFree
             final.internship = structure.internship_state
+            delete final.internship.errorFree
+
             for (let i = 0; i < structure.answers.length; i++){
                 delete structure.answers[i].comment_text
             }
