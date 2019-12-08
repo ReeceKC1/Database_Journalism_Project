@@ -258,6 +258,7 @@ def get_answer():
         start_year = request.args.get('start_year')
         end_year = request.args.get('end_year')
         label = request.args.get('label')
+        question_id = request.args.get('question_id')
 
         if request_type and start_year and end_year:
             return get_answer_by_type_start_end(request_type, start_year, end_year)
@@ -273,6 +274,9 @@ def get_answer():
 
         if student_id:
             return get_answer_by_id(student_id)
+            
+        if question_id:
+            return get_answer_by_question_id(question_id)
         
         return jsonify({'error': 'invalid url'}), 400
         

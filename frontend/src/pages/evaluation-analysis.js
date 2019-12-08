@@ -37,7 +37,7 @@ export default class EvaluationAnalysis extends React.Component {
                     this.setState({evaluationList: response.data});
                     this.setState({eval_type: type});
                     console.log(response.data);
-                }).catch(error => console.log(error));
+                }).catch(error => console.log(error.response));
             }
         } else {
             this.setState({valid_eval_type: false});

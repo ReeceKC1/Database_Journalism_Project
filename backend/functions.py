@@ -267,3 +267,13 @@ def get_answers(eval_answers, port_answers):
         eval_answers_response.append(answer)
     
     return jsonify(eval_answers_response), 200
+
+def get_answer_by_question_id(q_id):
+    session = Session()
+
+    answers = session.query(Port_Answer).filter_by(question_id=q_id).all()
+
+    if len(answers) == 0:
+        answers = session.query(Eval_Answer).filter_by(question_id=q_id).all()
+
+    return jsonify([i.seralize for i in answers]), 200
