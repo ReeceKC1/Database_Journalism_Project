@@ -6,6 +6,7 @@ import Header from './components/header';
 import CreateEvaluation from './pages/create_evaluation';
 import Home from './pages/home';
 import ViewEvaluation from './pages/view_evaluation';
+import EvaluationAnalysis from './pages/evaluation-analysis';
 
 const App = observer(class App extends React.Component {
   render() {
@@ -22,6 +23,7 @@ const App = observer(class App extends React.Component {
 
           <Route path="/take-evaluation" exact render = {(props) => <ViewEvaluation {...props}/>}/>
 
+          <Route path="/evaluation-analysis" exact render = {(props) => <EvaluationAnalysis {...props}/>}/>
 
           {/* Must BE LAST it matches with all routes */}
           <Route path="/" exact render = {(props) => <Home {...props}/>}/>
