@@ -146,7 +146,7 @@ def get_evaluation():
             return get_evaluation_by_year(param_year)
 
         if param_type:
-            return get_evaluation_by_type(param_type)
+            return get_evaluation_by_type(param_type, session)
 
         q = session.query(Evaluation).order_by(Evaluation.year.desc())
         return jsonify([i.seralize for i in q]), 200
@@ -154,6 +154,8 @@ def get_evaluation():
         print(e)
         print(traceback.format_exc())
         return jsonify({'error': str(e)}), 400
+    finally:
+        session.close()
 
 ############################################################
 # Answer api                                               #
@@ -261,22 +263,22 @@ def get_answer():
         question_id = request.args.get('question_id')
 
         if request_type and start_year and end_year:
-            return get_answer_by_type_start_end(request_type, start_year, end_year)
+            return get_answer_by_type_start_end(request_type, start_year, end_year, session)
 
         if start_year and end_year and label:
-            return get_answer_by_start_end_label(start_year, end_year, label)
+            return get_answer_by_start_end_label(start_year, end_year, label, session)
 
         if request_year and student_id:
-            return get_answer_by_year_id(request_year, student_id)
+            return get_answer_by_year_id(request_year, student_id, session)
 
         if request_type and request_year:
-            return get_answer_by_type_year(request_type, request_year)
+            return get_answer_by_type_year(request_type, request_year, session)
 
         if student_id:
-            return get_answer_by_id(student_id)
+            return get_answer_by_id(student_id, session)
             
         if question_id:
-            return get_answer_by_question_id(question_id)
+            return get_answer_by_question_id(question_id, session)
         
         return jsonify({'error': 'invalid url'}), 400
         
@@ -284,6 +286,8 @@ def get_answer():
         print(e)
         print(traceback.format_exc())
         return jsonify({'error': str(e)}), 400
+    finally:
+        session.close()
 
 ############################################################
 # Error Handling                                           #

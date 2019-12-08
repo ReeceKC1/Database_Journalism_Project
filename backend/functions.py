@@ -78,8 +78,7 @@ def get_evaluation_by_year(year):
 
     return return_multiple_evaluations(evaluations)
 
-def get_evaluation_by_type(param_type):
-    session = Session()
+def get_evaluation_by_type(param_type, session):
 
     evaluations = session.query(Evaluation).filter_by(eval_type=param_type).all()
 
@@ -117,9 +116,7 @@ def return_multiple_evaluations(evaluations):
 ############################################################
 # Answer Functions                                         #
 ############################################################
-def get_answer_by_type_start_end(request_type, start_year, end_year):
-    session = Session()
-
+def get_answer_by_type_start_end(request_type, start_year, end_year, session):
     answers = session.execute(text(f"SELECT * \
                                      FROM evaluation_answers \
                                      WHERE eval_type = '{request_type}' \
@@ -143,8 +140,7 @@ def get_answer_by_type_start_end(request_type, start_year, end_year):
 
     return get_answers(obj_answers, obj_port_answers)
 
-def get_answer_by_start_end_label(start_year, end_year, label):
-    session = Session()
+def get_answer_by_start_end_label(start_year, end_year, label, session):
 
     answers = session.execute(text(f"SELECT * \
                                      FROM evaluation_answers \
@@ -212,32 +208,28 @@ def get_answer_by_start_end_label(start_year, end_year, label):
     
     return jsonify(eval_answers_response), 200
 
-def get_answer_by_year_id(year, student_id):
-    session = Session()
+def get_answer_by_year_id(year, student_id, session):
 
     answers = session.query(Evaluation_Answers).filter_by(eval_year=year, student_id=student_id).all()
     port_answers = session.query(Portfolio_Answers).filter_by(eval_year=year, student_id=student_id).all()
 
     return get_answers(answers, port_answers)
 
-def get_answer_by_type_year(request_type, year):
-    session = Session()
+def get_answer_by_type_year(request_type, year, session):
 
     answers = session.query(Evaluation_Answers).filter_by(eval_year=year, eval_type=request_type).all()
     port_answers = session.query(Portfolio_Answers).filter_by(eval_year=year, eval_type=request_type).all()
 
     return get_answers(answers, port_answers)
 
-def get_answer_by_id(student_id):
-    session = Session()
+def get_answer_by_id(student_id, session):
 
     answers = session.query(Evaluation_Answers).filter_by(student_id=student_id).all()
     port_answers = session.query(Portfolio_Answers).filter_by(student_id=student_id).all()
 
     return get_answers(answers, port_answers)
 
-def get_answers(eval_answers, port_answers):
-    session = Session()
+def get_answers(eval_answers, port_answers, session):
 
     eval_answers_response = []
     for answer in eval_answers:
@@ -268,8 +260,7 @@ def get_answers(eval_answers, port_answers):
     
     return jsonify(eval_answers_response), 200
 
-def get_answer_by_question_id(q_id):
-    session = Session()
+def get_answer_by_question_id(q_id, session):
 
     answers = session.query(Port_Answer).filter_by(question_id=q_id).all()
 
