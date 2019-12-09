@@ -14,11 +14,6 @@ export default class EvalExpansionPanel extends React.Component {
         };
     }
 
-    // Passing object through params
-    componentDidMount() {
-
-    }
-
     render() {
         const evl = this.props.evaluation;
 

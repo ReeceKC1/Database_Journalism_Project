@@ -1,9 +1,10 @@
 import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
-    Button, Snackbar } from '@material-ui/core/';
+    Button, Snackbar, Grid, Paper, } from '@material-ui/core/';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import * as Evaluation from '../axois/evaluation';
+import ViewEvalByType from '../components/home/viewEvalByType';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -33,8 +34,6 @@ export default class Home extends React.Component {
         }
         
         return (
-            <div>
-                <div style={{width: '50%', overflow: 'hidden'}}>
                 <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
                     {/* Alert Bar */}
                     {alert &&
@@ -113,13 +112,18 @@ export default class Home extends React.Component {
                     </Table>
 
                     {/* Get Student by name or id */}
+                    <Grid container spacing={3} style={{marginTop: '75px'}}>
+                        <Grid item xs={6}>
+                            <Paper>
+                                This is the student info section
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <ViewEvalByType/>
+                        </Grid>
+                    </Grid>
                     
                 </Container>
-                </div>
-                <div style={{width: '50%'}}>
-
-                </div>
-            </div>
         );
     }
 }

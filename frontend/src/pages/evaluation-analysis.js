@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography
+import { Container, Typography, Paper
 } from '@material-ui/core/';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
@@ -11,7 +11,7 @@ export default class EvaluationAnalysis extends React.Component {
         super(props);
 
         this.state = {
-            evaluationList: [],
+            evaluationList: null,
             valid_eval_type: true,
             eval_type: ''
         };
@@ -31,13 +31,16 @@ export default class EvaluationAnalysis extends React.Component {
             } else {
                 var type = regex[0].substr(1, regex[0].length);
 
+                this.setState({eval_type: type});
                 console.log(type);
 
                 Evaluation.getEvaluationsByType(type).then(response => {
                     this.setState({evaluationList: response.data});
-                    this.setState({eval_type: type});
                     console.log(response.data);
-                }).catch(error => console.log(error.response));
+                }).catch(error => {
+                    this.setState({evaluationList: []});
+                    console.log(error.response)
+                });
             }
         } else {
             this.setState({valid_eval_type: false});
@@ -59,30 +62,40 @@ export default class EvaluationAnalysis extends React.Component {
             );
         } 
         
-        
-        else if(this.state.evaluationList.length !== 0) {
-            return(
-                <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
-                    <Typography variant="h5" component="h3">
-                        Evaluation Type: {this.state.eval_type}
-                    </Typography>
-
-                    {/* The Actual Drawer for the Evaluations */}
-                    {/* {this.state.evaluationList.map((evaluation) => (
-                        <EvalExpansionPanel
-                            key={evaluation.eval_type + evaluation.yaer}
-                        />
-                    )} */}
-                    {this.state.evaluationList.map((evaluation) => 
-                        <EvalExpansionPanel 
-                            evaluation={evaluation} 
-                            key={evaluation.eval_type + evaluation.year}
-                        />
-                    )}
-                    
-                    
-                </Container>
-            );
+        // Check if the object is null could be still loading
+        else if(this.state.evaluationList !== null) {
+            // Check if the list is empty
+            if(this.state.evaluationList.length !== 0) {
+                return(
+                    <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                        <Typography variant="h5" component="h3">
+                            Evaluation Type: {this.state.eval_type}
+                        </Typography>
+    
+                        {this.state.evaluationList.map((evaluation) => 
+                            <EvalExpansionPanel 
+                                evaluation={evaluation} 
+                                key={evaluation.eval_type + evaluation.year}
+                            />
+                        )}
+                        
+                        
+                    </Container>
+                );
+            } else {
+                return(
+                    <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                        <Typography variant="h5" component="h3">
+                            Evaluation Type: {this.state.eval_type}
+                        </Typography>
+    
+                        <Paper style={{padding: '10px'}}>
+                            No reviews found!
+                        </Paper>     
+                    </Container>
+                );
+            }
+            
         } else {
             return (
                 <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
