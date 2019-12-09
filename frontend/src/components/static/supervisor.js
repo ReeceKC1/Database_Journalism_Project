@@ -47,12 +47,12 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
         this.autoFillSupervisor(value);
         clearTimeout(this.supervisorState.timeout2);
         if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
-            this.setState({emailError:''});
+            this.supervisorState.emailError = '';
             this.props.viewEvaluationState.supervisor_state.errorFree= true;
         }else{
             this.props.viewEvaluationState.supervisor_state.errorFree= false;
             this.supervisorState.timeout2 = setTimeout(() => {
-                    this.setState({emailError:'Invalid email address.'}); 
+                this.supervisorState.emailError = 'Invalid email address.';
             }, 1000);
         }
         

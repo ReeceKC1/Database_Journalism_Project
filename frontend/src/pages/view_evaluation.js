@@ -163,6 +163,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         delete final.student.already_exists
         delete final.student.errorFree
 
+
         if (structure.evaluation.eval_type === 'portfolio_eval'){
             final.reviewer_name = structure.reviewer_state.reviewer_name
             final.answers = structure.answers
@@ -176,6 +177,9 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             }
             final.answers = structure.answers
             final.comment_text = structure.eval_comment
+            delete final.company.errorFree
+            delete final.internship.errorFree
+            delete final.supervisor.errorFree
         }
         
         console.log(JSON.stringify(final))

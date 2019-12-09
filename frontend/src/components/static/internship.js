@@ -25,12 +25,12 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         this.props.viewEvaluationState.internship_state.hours = value;
         clearTimeout(this.internshipState.timeout);
         if (/^([1-9][0-9]?[0-9]?)$/.test(value) || value ==''){
-            this.setState({hoursError:''});
+            this.internshipState.hoursError = '';
             this.props.viewEvaluationState.internship_state.errorFree= true;
         }else{
             this.props.viewEvaluationState.internship_state.errorFree= false;
             this.internshipState.timeout = setTimeout(() => {
-                    this.setState({hoursError:'Invalid number of hours.'}); 
+                this.internshipState.hoursError = 'Invalid number of hours.';
             }, 1000);
         }
         

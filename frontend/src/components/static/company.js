@@ -48,15 +48,14 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
         this.props.viewEvaluationState.company_state.phone = value;
         clearTimeout(this.companyState.timeout);
         if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(value) || value ==''){
-            this.setState({phoneError:''});
+            this.companyState.phoneError='';
             this.props.viewEvaluationState.company_state.errorFree= true;
         }else{
             this.props.viewEvaluationState.company_state.errorFree= false;
             this.companyState.timeout = setTimeout(() => {
-                    this.setState({phoneError:'Invalid phone number.'}); 
+                this.companyState.phoneError = 'Invalid phone number.';
             }, 1000);
         }
-        
     }
     render() {
         let style = {
