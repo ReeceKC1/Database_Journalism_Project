@@ -46,6 +46,9 @@ def check_student(id):
                 Student.last_name.like(name[1] + "%")
                 ).all()
 
+    session.close()
+
+    # Returning data
     if student:
         # return jsonify(student.seralize), 200
         return jsonify([i.seralize for i in student]), 200
@@ -55,6 +58,8 @@ def check_student(id):
 def supervisor_check(email):
     session = Session()
     supervisor = session.query(Supervisor).filter_by(email=email).one_or_none()
+
+    session.close()
     if supervisor:
         return jsonify(supervisor.seralize), 200
     return jsonify({'error': 'supervisor not found'}), 400
@@ -63,6 +68,8 @@ def supervisor_check(email):
 def company_check(name):
     session = Session()
     company = session.query(Company).filter_by(company_name=name).one_or_none()
+
+    session.close()
     if company:
         return jsonify(company.seralize), 200
     return jsonify({'error': 'company not found'}), 400
@@ -74,6 +81,8 @@ def get_internship():
     company_name = request.args.get('company_name')
     start_date = request.args.get('start_date')
     internship = session.query(Internship).filter_by(student_id=student_id,company_name=company_name,start_date=start_date).one_or_none()
+    
+    session.close()
     if internship:
         return jsonify(internship.seralize), 200
     return jsonify({'error': 'internship not found'}), 400
@@ -120,6 +129,8 @@ def create_evaluation():
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 400
+    finally:
+        session.close()
 
     return jsonify({'status': 'saved'}), 200
 
@@ -133,17 +144,17 @@ def get_evaluation():
         end_year = request.args.get('end_year')
 
         if param_type and start_year and end_year:
-            return get_evaluation_by_type_start_end(param_type, start_year, end_year)
+            return get_evaluation_by_type_start_end(param_type, start_year, end_year, session)
 
         # Get an Evaluation based on type and year
         if param_type and param_year:
-            return get_evaluation_by_key(param_type, param_year)
+            return get_evaluation_by_key(param_type, param_year, session)
 
         if start_year and end_year:
-            return get_evaluation_by_start_end(start_year, end_year)
+            return get_evaluation_by_start_end(start_year, end_year, session)
 
         if param_year:
-            return get_evaluation_by_year(param_year)
+            return get_evaluation_by_year(param_year, session)
 
         if param_type:
             return get_evaluation_by_type(param_type, session)
@@ -247,6 +258,8 @@ def create_answer():
         print(e)
         print(traceback.format_exc())
         return jsonify({'error': str(e)}), 400
+    finally:
+        session.close()
 
     return jsonify({'status': 'saved'}), 200
 

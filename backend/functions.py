@@ -9,9 +9,7 @@ import uuid
 ############################################################
 # Evaluation Functions                                     #
 ############################################################
-def get_evaluation_by_key(param_type, param_year):
-    session = Session()
-    
+def get_evaluation_by_key(param_type, param_year, session):  
     # Query for evaluation and questions
     evaluation = session.query(Evaluation).filter_by(eval_type=param_type, year=param_year).one_or_none()
     
@@ -40,9 +38,7 @@ def get_evaluation_by_key(param_type, param_year):
         
     return jsonify(evaluation), 200
 
-def get_evaluation_by_type_start_end(param_type, start_year, end_year):
-    session = Session()
-
+def get_evaluation_by_type_start_end(param_type, start_year, end_year, session):
     evaluations = session.execute(text(f"SELECT * \
                                         FROM evaluation \
                                         WHERE eval_type = '{param_type}' \
@@ -54,11 +50,9 @@ def get_evaluation_by_type_start_end(param_type, start_year, end_year):
         evaluation = Evaluation(**evaluation)
         obj_evaluations.append(evaluation)
 
-    return return_multiple_evaluations(obj_evaluations)
+    return return_multiple_evaluations(obj_evaluations, session)
 
-def get_evaluation_by_start_end(start_year, end_year):
-    session = Session()
-
+def get_evaluation_by_start_end(start_year, end_year, session):
     evaluations = session.execute(text(f"SELECT * \
                                         FROM evaluation \
                                         WHERE year >= '{start_year}' \
@@ -69,23 +63,20 @@ def get_evaluation_by_start_end(start_year, end_year):
         evaluation = Evaluation(**evaluation)
         obj_evaluations.append(evaluation)
 
-    return return_multiple_evaluations(obj_evaluations)
+    return return_multiple_evaluations(obj_evaluations, session)
 
-def get_evaluation_by_year(year):
-    session = Session()
-
+def get_evaluation_by_year(year, session):
     evaluations = session.query(Evaluation).filter_by(year=year).all()
 
-    return return_multiple_evaluations(evaluations)
+    return return_multiple_evaluations(evaluations, session)
 
 def get_evaluation_by_type(param_type, session):
 
     evaluations = session.query(Evaluation).filter_by(eval_type=param_type).all()
 
-    return return_multiple_evaluations(evaluations)
+    return return_multiple_evaluations(evaluations, session)
 
-def return_multiple_evaluations(evaluations):
-    session = Session()
+def return_multiple_evaluations(evaluations, session):
     eval_response = []
     if not evaluations:
         return jsonify({'error': 'evaluations not found'}), 400
