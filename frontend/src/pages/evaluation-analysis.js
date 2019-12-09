@@ -1,8 +1,6 @@
 import React from 'react';
 import { Container, Typography, Paper
 } from '@material-ui/core/';
-import axios from 'axios';
-import {Link} from 'react-router-dom';
 import * as Evaluation from '../axois/evaluation';
 import EvalExpansionPanel from '../components/evaluationAnaylsis/evalExpansionPanel';
 
@@ -45,9 +43,6 @@ export default class EvaluationAnalysis extends React.Component {
         } else {
             this.setState({valid_eval_type: false});
         }
-        
-        
-
     }
 
 

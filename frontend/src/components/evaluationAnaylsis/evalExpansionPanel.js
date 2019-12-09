@@ -18,10 +18,10 @@ export default class EvalExpansionPanel extends React.Component {
         const evl = this.props.evaluation;
 
         return (
-            <ExpansionPanel>
+            <ExpansionPanel style={{backgroundColor: '#3f51b5', color: 'white'}}>
                 {/* Header */}
                 <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon style={{ color: 'white' }}/>}
                 aria-controls={evl.eval_type + evl.year + '-content'}
                 id={evl.eval_type + evl.year + '-header'}
                 >

@@ -182,7 +182,7 @@ export default class ShowQuestion extends React.Component {
                                         cy={200} 
                                         innerRadius={60}
                                         outerRadius={80} 
-                                        fill="#8884d8"
+                                        fill="#3f51b5"
                                         onMouseEnter={this.onPieEnter}
                                     />
                                 </PieChart>
