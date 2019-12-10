@@ -259,7 +259,6 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                 }}></Redirect>
               );
           }
-          console.log('questions', toJS(this.createState.createEvaluationState.questions));
         return (
             <div style={{width: '50%', marginLeft: '25%', marginTop: '75px'}}>
                 <Typography variant="h3">

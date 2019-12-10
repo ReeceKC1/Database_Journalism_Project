@@ -127,13 +127,10 @@ const Question = observer(class Question extends React.Component {
     removeQuestion = () => {
         let id = this.state.id;
         let questions = this.props.createEvaluationState.questions;
-        console.log('before questions', toJS(questions));
         questions.splice(id,1);
         for (var i =id; i < questions.length; i++){
             (questions[i].id)--;
         }
-        console.log('after questions', toJS(questions));
-
         this.props.createEvaluationState.questions = questions;
         this.forceUpdate();
     };
@@ -153,6 +150,7 @@ const Question = observer(class Question extends React.Component {
                 // }
                 // that.setState({ options });
                 that.props.question.options = options;
+                this.props.createEvaluationState.questions[this.state.id].options=options;
             }, 
             nodeSelector: 'div',
             handleSelector: 'a'
@@ -181,7 +179,7 @@ const Question = observer(class Question extends React.Component {
                         margin="normal"
                         style={style}
                         onChange={(event) => this.changeLabel(event)}
-                        value={this.state.label}
+                        value={this.props.createEvaluationState.questions[this.state.id].label}
                         autoFocus 
                         />
                     </Grid>
@@ -193,7 +191,7 @@ const Question = observer(class Question extends React.Component {
                         margin="normal"
                         style={style}
                         onChange={(event) => this.changeQuestion(event)}
-                        value={this.state.question_text}
+                        value={this.props.createEvaluationState.questions[this.state.id].question_text }
                         />
                     </Grid>
 
@@ -222,9 +220,9 @@ const Question = observer(class Question extends React.Component {
                     <hr></hr>
 
                     {/* {renderOptions} */}
-                    <Grid item style={{width: '100%', height: `calc(100px * ${this.props.question.options.length})`}}>
+                    <Grid item style={{width: '100%', height: `calc(100px * ${this.props.createEvaluationState.questions[this.state.id].options.length})`}}>
                     <ReactDragListView {...dragProps}>
-                        {this.props.question.options.map((option) => ( 
+                        {this.props.createEvaluationState.questions[this.state.id].options.map((option) => ( 
                             <div key={option.id} style={{padding: '8px', height: '100px', width: '100%'}}>
                                 {/* Need to keep this drag element */}
                                 <IconButton variant="contained" color="primary" type="button" style={{margin: '4px', float: 'left'}}>
