@@ -43,4 +43,3 @@ decorate(App, {
 })
 
 export default App
-

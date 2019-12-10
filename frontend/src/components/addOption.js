@@ -33,7 +33,7 @@ const Option = observer(class Option extends React.Component {
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
         if (this.props !== prevProps) {
-            if(this.props.value.option_weight != undefined) {
+            if(this.props.value.option_weight !== undefined) {
                 this.setState({id: Number(this.props.value.option_weight)});
                 this.setState({option_label: 'Option ' + (Number(this.props.value.option_weight) + 1)});
                 this.setState({option_text: this.props.value.option_text});

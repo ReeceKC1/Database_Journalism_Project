@@ -2,7 +2,7 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from 'mobx-react';
 import axios from 'axios';
-import { observable, decorate, toJS } from 'mobx'
+import { observable, decorate } from 'mobx'
 
 const SupervisorForm = observer(class SupervisorForm extends React.Component {
     supervisorState = {}
@@ -46,7 +46,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
         this.props.viewEvaluationState.supervisor_state.email = value;
         this.autoFillSupervisor(value);
         clearTimeout(this.supervisorState.timeout2);
-        if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
+        if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value === ''){
             this.supervisorState.emailError = '';
             this.props.viewEvaluationState.supervisor_state.errorFree= true;
         }else{
@@ -74,7 +74,7 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
                         <TextField
                         style={style}
                         label="Email"
-                        error = {this.supervisorState.emailError != ''}
+                        error = {this.supervisorState.emailError !== ''}
                         helperText = {this.supervisorState.emailError}
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => {this.emailChange(event.target.value)}}

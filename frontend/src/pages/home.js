@@ -3,8 +3,8 @@ import { Container, Table, TableHead, TableRow, TableCell, TableBody,
     Button, Snackbar, Grid, Paper, } from '@material-ui/core/';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import * as Evaluation from '../axois/evaluation';
 import ViewEvalByType from '../components/home/viewEvalByType';
+import LabelAnalysisForm from '../components/home/labelAnalysis';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -29,7 +29,7 @@ export default class Home extends React.Component {
         var alert = false;
 
         // Alert on successful submit
-        if(this.props.location.state != undefined && this.props.location.state.eval_created) {
+        if(this.props.location.state !== undefined && this.props.location.state.eval_created) {
             alert = true;
         }
         
@@ -120,6 +120,15 @@ export default class Home extends React.Component {
                         </Grid>
                         <Grid item xs={6}>
                             <ViewEvalByType/>
+                        </Grid>
+                    </Grid>
+
+                    {/* Get Label review aggregation thing */}
+                    <Grid container spacing={0} style={{marginTop: '75px'}}>
+                        <Grid item xs={12}>
+                            <Paper style={{padding: '10px'}}>
+                                    <LabelAnalysisForm />
+                            </Paper>
                         </Grid>
                     </Grid>
                     
