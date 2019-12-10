@@ -4,6 +4,7 @@ import Option from '../components/addOption';
 import ReactDragListView from 'react-drag-listview';
 import { observer } from 'mobx-react';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
+import { toJS } from 'mobx';
 
 const Question = observer(class Question extends React.Component {
     constructor(props) {
@@ -123,6 +124,19 @@ const Question = observer(class Question extends React.Component {
         this.setState({options: options});
         this.props.createEvaluationState.questions[ndx].options = options;
     };
+    removeQuestion = () => {
+        let id = this.state.id;
+        let questions = this.props.createEvaluationState.questions;
+        console.log('before questions', toJS(questions));
+        questions.splice(id,1);
+        for (var i =id; i < questions.length; i++){
+            (questions[i].id)--;
+        }
+        console.log('after questions', toJS(questions));
+
+        this.props.createEvaluationState.questions = questions;
+        this.forceUpdate();
+    };
 
     render() {
         // Sortable option list
@@ -150,11 +164,15 @@ const Question = observer(class Question extends React.Component {
         return (
             
                 <Grid container spacing={1} direction = "column" >
-                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length}) + 330px)`, marginBottom: '20px', padding: '15px'}}>
+                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length}) + 370px)`, marginBottom: '20px', padding: '15px'}}>
                     {/* Question Number */}
+                    
                     <Typography>
                         Question: {this.state.id}
                     </Typography>
+                    <Button className ="float-right text-secondary" type="button" title= "Remove Question" onClick={() => this.removeQuestion()}>
+                        X   
+                    </Button>
                     {/* Question Label */}
                     <Grid item style = {{width: '100%'}}>
                         <TextField
