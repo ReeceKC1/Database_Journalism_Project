@@ -5,6 +5,7 @@ import axios from 'axios';
 import {Link} from 'react-router-dom';
 import * as Evaluation from '../axois/evaluation';
 import ViewEvalByType from '../components/home/viewEvalByType';
+import StudentLookup from '../components/studentData/studentLookup'
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -115,14 +116,13 @@ export default class Home extends React.Component {
                     <Grid container spacing={3} style={{marginTop: '75px'}}>
                         <Grid item xs={6}>
                             <Paper>
-                                This is the student info section
+                                <StudentLookup/>
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
                             <ViewEvalByType/>
                         </Grid>
                     </Grid>
-                    
                 </Container>
         );
     }
