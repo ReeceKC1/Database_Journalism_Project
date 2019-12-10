@@ -7,6 +7,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddAnswer from '../components/studentData/addAnswer'
 
 const StudentData = observer(class StudentData extends React.Component {
     dataState = {}
@@ -17,13 +18,15 @@ const StudentData = observer(class StudentData extends React.Component {
         this.dataState = {
             student: {},
             evaluations: [],
-            answers: []
+            answers: [],
+            loading: false
         }
 
         decorate(this.dataState, {
             student: observable,
             answers: observable,
             evaluation: observable,
+            loading: observable
         })
     }
 
@@ -35,37 +38,43 @@ const StudentData = observer(class StudentData extends React.Component {
         return axios.get(`http://localhost:5000/api/answer/get?student_id=${id}`)
     }
 
+    getEvaluationByAnswers = (type, year) => {
+        return axios.get(`http://localhost:5000/api/evaluation/get?type=${type}&year=${year}`)
+    }
+
     async componentDidMount() {
+        this.dataState.loading = true
         let search = this.props.location.search
         var id = search.match("id=(.+)")[1]
-        console.log(id)
         var student = await this.getStudentData(id).then(response => {return response.data[0]})
-
-        console.log("student", student)
 
         this.dataState.student = student
 
-        var answers = await this.getAnswersByStudent(id).then(response => {return response.data[0]})
-        console.log(answers)
+        var answers = await this.getAnswersByStudent(id).then(response => {return response.data})
+
         this.dataState.answers = answers
+
+        for (let i = 0; i < answers.length; i++){
+            this.dataState.evaluations.push(await this.getEvaluationByAnswers(answers[i].eval_type, answers[i].eval_year).then(response => {return response.data}))
+        }
+        console.log('evaluations', this.dataState.evaluations)
+        this.dataState.loading = false
     }
 
     makeEvals = () => {
         let evals = []
         for (let i = 0; i < this.dataState.answers.length; i++) {
             evals.push(
-                <ExpansionPanel>
+                <ExpansionPanel key={i} style={{marginBottom: '5px', backgroundColor: '#3f51b5', color: 'white'}}>
                     <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     >
                         <Typography>
-                            {this.dataState.answers.eval_type} {this.dataState.answers.eval_year}
+                            {this.dataState.answers[i].eval_type} {this.dataState.answers[i].eval_year}
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                    <Typography>
-                        Panel
-                    </Typography>
+                        <AddAnswer answer={this.dataState.answers[i]} questions={this.dataState.evaluations[i].questions}/>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             )
@@ -74,6 +83,7 @@ const StudentData = observer(class StudentData extends React.Component {
     }
 
     render() {
+        if (!this.dataState.loading){
         return (
             <div style={{marginTop: '65px', height: 'calc(100vh - 65px)'}}>
                 <div style={{padding: '15px', width: '300px', height: '100%', float: 'left'}}>
@@ -137,11 +147,19 @@ const StudentData = observer(class StudentData extends React.Component {
                         </Grid>
                     </Paper>
                 </div>
-                <div style={{overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
+                <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
                     {this.makeEvals()}
                 </div>
             </div>
         );
+        }
+        else{
+            return (
+                <div>
+                    Loading...
+                </div>
+            )
+        }
     }
 })
 

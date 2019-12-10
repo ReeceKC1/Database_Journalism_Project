@@ -129,7 +129,7 @@ def get_answer_by_type_start_end(request_type, start_year, end_year, session):
         answer = Portfolio_Answers(**answer)
         obj_port_answers.append(answer)
 
-    return get_answers(obj_answers, obj_port_answers)
+    return get_answers(obj_answers, obj_port_answers, session)
 
 def get_answer_by_start_end_label(start_year, end_year, label, session):
 
@@ -204,21 +204,21 @@ def get_answer_by_year_id(year, student_id, session):
     answers = session.query(Evaluation_Answers).filter_by(eval_year=year, student_id=student_id).all()
     port_answers = session.query(Portfolio_Answers).filter_by(eval_year=year, student_id=student_id).all()
 
-    return get_answers(answers, port_answers)
+    return get_answers(answers, port_answers, session)
 
 def get_answer_by_type_year(request_type, year, session):
 
     answers = session.query(Evaluation_Answers).filter_by(eval_year=year, eval_type=request_type).all()
     port_answers = session.query(Portfolio_Answers).filter_by(eval_year=year, eval_type=request_type).all()
 
-    return get_answers(answers, port_answers)
+    return get_answers(answers, port_answers, session)
 
 def get_answer_by_id(student_id, session):
 
     answers = session.query(Evaluation_Answers).filter_by(student_id=student_id).all()
     port_answers = session.query(Portfolio_Answers).filter_by(student_id=student_id).all()
 
-    return get_answers(answers, port_answers)
+    return get_answers(answers, port_answers, session)
 
 def get_answers(eval_answers, port_answers, session):
 
