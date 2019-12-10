@@ -29,7 +29,9 @@ export default class Home extends React.Component {
         var alert = false;
 
         // Alert on successful submit
-        if(this.props.location.state !== undefined && this.props.location.state.eval_created) {
+        if(this.props.location.state !== null && 
+            this.props.location.state !== undefined && 
+            this.props.location.state.eval_created) {
             alert = true;
         }
         
