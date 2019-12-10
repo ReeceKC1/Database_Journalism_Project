@@ -19,14 +19,16 @@ const StudentData = observer(class StudentData extends React.Component {
             student: {},
             evaluations: [],
             answers: [],
-            loading: false
+            loading: false,
+            studentLoading: false
         }
 
         decorate(this.dataState, {
             student: observable,
             answers: observable,
             evaluation: observable,
-            loading: observable
+            loading: observable,
+            studentLoading: observable
         })
     }
 
@@ -44,11 +46,13 @@ const StudentData = observer(class StudentData extends React.Component {
 
     async componentDidMount() {
         this.dataState.loading = true
+        this.dataState.studentLoading = true
         let search = this.props.location.search
         var id = search.match("id=(.+)")[1]
         var student = await this.getStudentData(id).then(response => {return response.data[0]})
 
         this.dataState.student = student
+        this.dataState.studentLoading = false
 
         var answers = await this.getAnswersByStudent(id).then(response => {return response.data})
 
@@ -57,7 +61,6 @@ const StudentData = observer(class StudentData extends React.Component {
         for (let i = 0; i < answers.length; i++){
             this.dataState.evaluations.push(await this.getEvaluationByAnswers(answers[i].eval_type, answers[i].eval_year).then(response => {return response.data}))
         }
-        console.log('evaluations', this.dataState.evaluations)
         this.dataState.loading = false
     }
 
@@ -83,11 +86,11 @@ const StudentData = observer(class StudentData extends React.Component {
     }
 
     render() {
-        if (!this.dataState.loading){
         return (
             <div style={{marginTop: '65px', height: 'calc(100vh - 65px)'}}>
+                {!this.dataState.studentLoading &&
                 <div style={{padding: '15px', width: '300px', height: '100%', float: 'left'}}>
-                    <Paper style={{height: '100%', padding: '10px'}}>
+                    <Paper style={{height: '100%', padding: '10px', overflow: 'auto'}}>
                         <Grid container spacing={1} alignItems ="center" direction="column">
                             <Grid item>
                                 <Typography variant="h5">
@@ -146,20 +149,13 @@ const StudentData = observer(class StudentData extends React.Component {
                             </Grid>
                         </Grid>
                     </Paper>
-                </div>
+                </div>}
+                {!this.dataState.loading &&
                 <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
                     {this.makeEvals()}
-                </div>
+                </div>}
             </div>
         );
-        }
-        else{
-            return (
-                <div>
-                    Loading...
-                </div>
-            )
-        }
     }
 })
 

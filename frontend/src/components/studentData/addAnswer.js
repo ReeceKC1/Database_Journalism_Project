@@ -14,6 +14,11 @@ const AddAnswer = observer(class AddAnswer extends React.Component {
                     <Typography style={{marginLeft: '20px'}}>
                         > {this.props.answer.answers[i].option_text}
                     </Typography>
+                    {this.props.answer.eval_type === 'portfolio_eval' &&
+                    <Typography style={{marginLeft: '20px'}}>
+                        > {this.props.answer.answers[i].comment_text.comment_text}
+                    </Typography>
+                    }
                 </Paper>
             )
         }
@@ -21,27 +26,30 @@ const AddAnswer = observer(class AddAnswer extends React.Component {
     }
 
     render() {
-        console.log('eval_type', this.props.answer)
         return(
             <div style={{width: '100%'}}>
                 <Paper style={{width: '100%', marginBottom: '5px', padding: '5px', backgroundColor: '#cfe8fc'}}>
-                    
-                        {this.props.answer.eval_type === 'portfolio_eval' &&
-                        <Typography variant='h6'>
-                            Reviewed by {this.props.answer.reviewer_name}
-                        </Typography>
-                        }
-                        {this.props.answer.eval_type !== 'portfolio_eval' &&
-                        <div>
-                        <Typography variant='h6'>
-                            {this.props.answer.supervisor.name}
-                        </Typography>
-                        <Typography variant='h6'>
-                            From {this.props.answer.company.company_name}
-                        </Typography>
-                        </div>
-                        }
-                {this.buildAnswers()}
+                    {this.props.answer.eval_type === 'portfolio_eval' &&
+                    <Typography variant='h6'>
+                        Reviewed by {this.props.answer.reviewer_name}
+                    </Typography>
+                    }
+                    {this.props.answer.eval_type !== 'portfolio_eval' &&
+                    <div>
+                    <Typography variant='h6'>
+                        {this.props.answer.supervisor.name}
+                    </Typography>
+                    <Typography variant='h6'>
+                        From {this.props.answer.company.company_name}
+                    </Typography>
+                    </div>
+                    }
+                    {this.buildAnswers()}
+                    {this.props.answer.eval_type !== 'portfolio_eval' &&
+                    <Typography>
+                        > {this.props.answer.comment_text}
+                    </Typography>
+                    }
                 </Paper>
             </div>
         )

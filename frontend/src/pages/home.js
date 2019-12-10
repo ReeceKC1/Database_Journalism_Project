@@ -4,6 +4,7 @@ import { Container, Table, TableHead, TableRow, TableCell, TableBody,
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import ViewEvalByType from '../components/home/viewEvalByType';
+import StudentLookup from '../components/studentData/studentLookup'
 import LabelAnalysisForm from '../components/home/labelAnalysis';
 
 export default class Home extends React.Component {
@@ -117,7 +118,7 @@ export default class Home extends React.Component {
                     <Grid container spacing={3} style={{marginTop: '75px'}}>
                         <Grid item xs={6}>
                             <Paper>
-                                This is the student info section
+                                <StudentLookup/>
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
