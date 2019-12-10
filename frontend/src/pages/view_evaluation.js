@@ -68,7 +68,6 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             supervisor_state: observable,
             evaluation: observable,
             answers: observable,
-            evaluation: observable,
             viewOnly: observable,
         })
     }
@@ -112,7 +111,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     isFilled = (component) => {
         for (var key of Object.keys(component)) {
             var ignoreList = ['already_exists','comment_text','errorFree'];
-            if (!(ignoreList.includes(key)) && component[key].trim() == ''){
+            if (!(ignoreList.includes(key)) && component[key].trim() === ''){
                 return false;
             }
         }
@@ -123,29 +122,29 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         let evalState = this.viewState.viewEvaluationState;
 
         var allFieldsFilledIn = true;
-        if( this.viewState.type=='portfolio_eval'){ 
+        if (this.viewState.type === 'portfolio_eval'){ 
             allFieldsFilledIn = (this.isFilled(evalState.reviewer_state) && this.isFilled(evalState.student_state));
-        }else {
+        } else {
             allFieldsFilledIn = (this.isFilled(evalState.company_state) && this.isFilled(evalState.supervisor_state)
                                 && this.isFilled(evalState.student_state) && this.isFilled(evalState.internship_state));
         }
 
         var allQuestionsAnswered = true;
-        for (var i =0; i<evalState.answers.length;i++){
+        for (var i = 0; i < evalState.answers.length; i++){
             allQuestionsAnswered = allQuestionsAnswered && this.isFilled(evalState.answers[i]);
         }
 
         var  errorFree = true;
-        if(evalState.student_state.errorFree != undefined ){
+        if (evalState.student_state.errorFree !== undefined ){
             errorFree = errorFree && evalState.student_state.errorFree;
         }
-        if(evalState.company_state.errorFree != undefined ){
+        if (evalState.company_state.errorFree !== undefined ){
             errorFree = errorFree && evalState.company_state.errorFree;
         }
-        if(evalState.supervisor_state.errorFree != undefined ){
+        if (evalState.supervisor_state.errorFree !== undefined ){
             errorFree = errorFree && evalState.supervisor_state.errorFree;
         }
-        if(evalState.internship_state.errorFree != undefined ){
+        if (evalState.internship_state.errorFree !== undefined ){
             errorFree = errorFree && evalState.internship_state.errorFree;
         }
 
@@ -205,7 +204,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             );
         }
 
-        if(this.viewState.viewEvaluationState.evaluation != null) {
+        if(this.viewState.viewEvaluationState.evaluation !== null) {
             return (
                 <div style={{width: '98%', marginLeft: '1%', marginTop: '75px'}}>
                     <Grid container spacing={1} alignItems ="center" direction="column">

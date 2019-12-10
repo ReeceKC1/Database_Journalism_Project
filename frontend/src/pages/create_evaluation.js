@@ -1,7 +1,6 @@
 import React from 'react';
-import { Container, TextField, Button, FormControl, InputLabel, Select,
+import {TextField, Button, FormControl, InputLabel, Select,
     MenuItem, Typography, Grid } from '@material-ui/core/';
-import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
 import axios from 'axios';
 import * as Evaluation from '../axois/evaluation';
@@ -126,7 +125,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         let value = event.target.value;
         this.createState.year= value;
         clearTimeout(this.createState.timeout);
-        if (/^(20)\d{2}$/.test(value) || value ==''){
+        if (/^(20)\d{2}$/.test(value) || value === ''){
             this.createState.yearError='';
             this.createState.yearSubmitable = true;
         }else{
@@ -157,20 +156,20 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     };
     questionsAreSubmitable = () => {//this function searches through and makes sure no fields are blank
         let questions = this.createState.createEvaluationState.questions;
-        if(questions.length ==0){
+        if(questions.length === 0){
             return false;
         }
-        for(var i = 0; i<questions.length;i++){
+        for(var i = 0; i < questions.length; i++){
             let question = questions[i];
-            if (question.label.trim() == '' || question.question_text.trim() == ''){
+            if (question.label.trim() === '' || question.question_text.trim() == ''){
                 return false;
             }
             let options = toJS(this.createState.createEvaluationState.questions[i].options);
-            if(options.length == 0){
+            if(options.length === 0){
                 return false;
             }
-            for (var j=0; j<options.length;j++){
-                if(options[j].option_text.trim()==''){
+            for (var j = 0; j < options.length; j++){
+                if(options[j].option_text.trim() === ''){
                     return false;
                 }
             }
@@ -308,7 +307,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Year"
                             margin="normal"
-                            error = {this.createState.yearError != ""}
+                            error = {this.createState.yearError !== ""}
                             helperText = {this.createState.yearError}
                             style={style}
                             onChange={(event) => this.yearChange(event)}

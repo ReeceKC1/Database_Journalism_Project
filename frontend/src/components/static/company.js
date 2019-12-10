@@ -2,7 +2,7 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
 import axios from 'axios';
-import { observable, decorate, toJS } from 'mobx'
+import { observable, decorate } from 'mobx'
 
 
 const CompanyForm = observer(class CompanyForm extends React.Component {
@@ -47,7 +47,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
     phoneChange = (value) => {
         this.props.viewEvaluationState.company_state.phone = value;
         clearTimeout(this.companyState.timeout);
-        if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(value) || value ==''){
+        if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(value) || value === ''){
             this.companyState.phoneError='';
             this.props.viewEvaluationState.company_state.errorFree= true;
         }else{
@@ -63,7 +63,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
             marginLeft: '5%',
         }
         return (
-            <div style={{width: '100%', padding: '10px', width: '100%'}}>
+            <div style={{width: '100%', padding: '10px'}}>
                 <Typography variant="h5">
                     Company Information
                 </Typography>
@@ -90,7 +90,7 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
                         <TextField
                         value={this.props.viewEvaluationState.company_state.phone}
                         style={style}
-                        error = {this.companyState.phoneError != ''}
+                        error = {this.companyState.phoneError !== ''}
                         helperText = {this.companyState.phoneError}
                         label="Phone Number"
                         InputProps={this.props.viewEvaluationState.readOnly}

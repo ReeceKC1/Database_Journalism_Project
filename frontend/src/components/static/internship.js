@@ -2,7 +2,7 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from 'mobx-react';
 import axios from 'axios';
-import { observable, decorate, toJS } from 'mobx'
+import { observable, decorate } from 'mobx'
 
 const InternshipForm = observer(class InternshipForm extends React.Component {
     internshipState = {}
@@ -24,7 +24,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
     hoursChange = (value) => {
         this.props.viewEvaluationState.internship_state.hours = value;
         clearTimeout(this.internshipState.timeout);
-        if (/^([1-9][0-9]?[0-9]?)$/.test(value) || value ==''){
+        if (/^([1-9][0-9]?[0-9]?)$/.test(value) || value === ''){
             this.internshipState.hoursError = '';
             this.props.viewEvaluationState.internship_state.errorFree= true;
         }else{
@@ -67,7 +67,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
                         <TextField
                         value= {this.props.viewEvaluationState.internship_state.hours}
                         style={style}
-                        error = {this.internshipState.hoursError != ''}
+                        error = {this.internshipState.hoursError !== ''}
                         helperText = {this.internshipState.hoursError}
                         label="Hours"
                         InputProps={this.props.viewEvaluationState.readOnly}
