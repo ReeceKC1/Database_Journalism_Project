@@ -17,18 +17,18 @@ const StudentData = observer(class StudentData extends React.Component {
 
         this.dataState = {
             student: {},
-            evaluations: [],
             answers: [],
             loading: false,
-            studentLoading: false
+            studentLoading: false,
+            filteredAnswers: []
         }
 
         decorate(this.dataState, {
             student: observable,
             answers: observable,
-            evaluation: observable,
             loading: observable,
-            studentLoading: observable
+            studentLoading: observable,
+            filteredAnswers: observable,
         })
     }
 
@@ -56,33 +56,52 @@ const StudentData = observer(class StudentData extends React.Component {
 
         var answers = await this.getAnswersByStudent(id).then(response => {return response.data})
 
-        this.dataState.answers = answers
-
+        let evaluation = undefined
         for (let i = 0; i < answers.length; i++){
-            this.dataState.evaluations.push(await this.getEvaluationByAnswers(answers[i].eval_type, answers[i].eval_year).then(response => {return response.data}))
+            evaluation = await this.getEvaluationByAnswers(answers[i].eval_type, answers[i].eval_year)
+            evaluation = evaluation.data
+            console.log(evaluation)
+            this.dataState.answers.push({
+                answer: answers[i],
+                evaluation: evaluation
+            })
         }
+
+        this.dataState.filteredAnswers = this.dataState.answers
+
         this.dataState.loading = false
     }
 
     makeEvals = () => {
         let evals = []
-        for (let i = 0; i < this.dataState.answers.length; i++) {
+        for (let i = 0; i < this.dataState.filteredAnswers.length; i++) {
             evals.push(
                 <ExpansionPanel key={i} style={{marginBottom: '5px', backgroundColor: '#3f51b5', color: 'white'}}>
                     <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     >
                         <Typography>
-                            {this.dataState.answers[i].eval_type} {this.dataState.answers[i].eval_year}
+                            {this.dataState.filteredAnswers[i].answer.eval_type} {this.dataState.filteredAnswers[i].answer.eval_year}
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <AddAnswer answer={this.dataState.answers[i]} questions={this.dataState.evaluations[i].questions}/>
+                        <AddAnswer answer={this.dataState.filteredAnswers[i].answer} questions={this.dataState.filteredAnswers[i].evaluation.questions}/>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             )
         }
         return evals
+    }
+
+    filterEvals = (e) => {
+        console.log('e',e)
+        this.dataState.filteredAnswers = []
+        for (let i = 0; i < this.dataState.answers.length; i++) {
+            if (this.dataState.answers[i].answer.eval_type.includes(e) || this.dataState.answers[i].answer.eval_year.includes(e)){
+                this.dataState.filteredAnswers.push(this.dataState.answers[i])
+            }
+        }
+        console.log(this.dataState.filteredAnswers)
     }
 
     render() {
@@ -152,6 +171,13 @@ const StudentData = observer(class StudentData extends React.Component {
                 </div>}
                 {!this.dataState.loading &&
                 <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
+                    <Paper style={{width: '100%', backgroundColor: '#cfe8fc', marginBottom: '5px'}}>
+                        <TextField
+                        style={{width: 'calc(100% - 30px)', marginLeft: '15px', marginBottom: '15px'}}
+                        label="Filter by year or type"
+                        onChange={(e) => {this.filterEvals(e.target.value)}}
+                        />
+                    </Paper>
                     {this.makeEvals()}
                 </div>}
             </div>
