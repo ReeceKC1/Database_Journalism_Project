@@ -150,7 +150,7 @@ const Question = observer(class Question extends React.Component {
                 // }
                 // that.setState({ options });
                 that.props.question.options = options;
-                this.props.createEvaluationState.questions[this.state.id].options=options;
+                that.props.createEvaluationState.questions[that.state.id].options=options;
             }, 
             nodeSelector: 'div',
             handleSelector: 'a'
