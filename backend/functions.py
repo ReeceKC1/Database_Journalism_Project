@@ -9,6 +9,7 @@ import uuid
 ############################################################
 # Evaluation Functions                                     #
 ############################################################
+# Returns single evaluation by its key
 def get_evaluation_by_key(param_type, param_year, session):  
     # Query for evaluation and questions
     evaluation = session.query(Evaluation).filter_by(eval_type=param_type, year=param_year).one_or_none()
@@ -28,16 +29,13 @@ def get_evaluation_by_key(param_type, param_year, session):
         options.sort(key=lambda x : x.option_weight)
 
         # Query and format options for question
-        serialized_options = []
-        for opt in options:
-            opt = opt.seralize
-            serialized_options.append(opt)
-        obj['options'] = serialized_options
+        obj['options'] = [x.seralize for x in options]
         seralized_questions.append(obj)
     evaluation['questions'] = seralized_questions
         
     return jsonify(evaluation), 200
 
+# Returns evaluations by type and window of time
 def get_evaluation_by_type_start_end(param_type, start_year, end_year, session):
     evaluations = session.execute(text(f"SELECT * \
                                         FROM evaluation \
@@ -45,37 +43,30 @@ def get_evaluation_by_type_start_end(param_type, start_year, end_year, session):
                                         AND year >= '{start_year}' \
                                         AND year <= '{end_year}'")).fetchall()
 
-    obj_evaluations = []
-    for evaluation in evaluations:
-        evaluation = Evaluation(**evaluation)
-        obj_evaluations.append(evaluation)
+    return return_multiple_evaluations([Evaluation(**x) for x in evaluations], session)
 
-    return return_multiple_evaluations(obj_evaluations, session)
-
+# Returns evaluations by window of time
 def get_evaluation_by_start_end(start_year, end_year, session):
     evaluations = session.execute(text(f"SELECT * \
                                         FROM evaluation \
                                         WHERE year >= '{start_year}' \
                                         AND year <= '{end_year}'")).fetchall()
-    
-    obj_evaluations = []
-    for evaluation in evaluations:
-        evaluation = Evaluation(**evaluation)
-        obj_evaluations.append(evaluation)
 
-    return return_multiple_evaluations(obj_evaluations, session)
+    return return_multiple_evaluations([Evaluation(**x) for x in evaluations], session)
 
+# Returns ev by year
 def get_evaluation_by_year(year, session):
     evaluations = session.query(Evaluation).filter_by(year=year).all()
 
     return return_multiple_evaluations(evaluations, session)
 
+# Returns evaluations by type
 def get_evaluation_by_type(param_type, session):
-
     evaluations = session.query(Evaluation).filter_by(eval_type=param_type).all()
 
     return return_multiple_evaluations(evaluations, session)
 
+# Takes evaluations and returns questions/options associated
 def return_multiple_evaluations(evaluations, session):
     eval_response = []
     if not evaluations:
@@ -93,11 +84,7 @@ def return_multiple_evaluations(evaluations, session):
             options.sort(key=lambda x : x.option_weight)
 
             # Query and format options for question
-            serialized_options = []
-            for option in options:
-                option = option.seralize
-                serialized_options.append(option)
-            question['options'] = serialized_options
+            question['options'] = [x.seralize for x in options]
             seralized_questions.append(question)
         evaluation['questions'] = seralized_questions
         eval_response.append(evaluation)
