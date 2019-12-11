@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, MenuItem, InputLabel, TextField, Grid, FormControl, Button, FormHelperText
+import { Typography, Select, MenuItem, InputLabel, TextField, Grid, FormControl, Button, FormHelperText
 } from '@material-ui/core/';
 import {Redirect} from 'react-router-dom';
 
@@ -99,6 +99,10 @@ export default class LabelAnalysisForm extends React.Component {
         }
 
         return(
+            <div style={{height: '100%', width: '100%'}}>
+            <Typography variant='h5'>
+                Label Analysis
+            </Typography>
             <Grid container spacing={2}>
                 {/* Label */}
                 <Grid item xs={2}>
@@ -206,6 +210,7 @@ export default class LabelAnalysisForm extends React.Component {
                     </Button>
                 </Grid>
             </Grid>
+            </div>
         );
     }
 }
