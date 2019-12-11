@@ -117,7 +117,7 @@ export default class Home extends React.Component {
                     {/* Get Student by name or id */}
                     <Grid container spacing={3} style={{marginTop: '75px'}}>
                         <Grid item xs={6}>
-                            <Paper>
+                            <Paper style={{padding: '10px'}}>
                                 <StudentLookup/>
                             </Paper>
                         </Grid>

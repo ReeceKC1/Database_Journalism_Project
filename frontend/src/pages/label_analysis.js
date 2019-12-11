@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, MenuItem, InputLabel, TextField, Grid, FormControl, Button, FormHelperText
 } from '@material-ui/core/';
-import {Redirect} from 'react-router-dom';
+import * as Answers from '../axois/answer';
 
 export default class LabelAnalysis extends React.Component {
     constructor(props) {
@@ -36,7 +36,7 @@ export default class LabelAnalysis extends React.Component {
         }
         var endYear = search.match(endYearRegex);
 
-        // Just trying to store the appropriate values in the state
+        // If label and endYear are null
         if(label === null && endYear === null) {
             // console.log(type[1], year[1], label, endYear);
             this.setState({
@@ -44,6 +44,7 @@ export default class LabelAnalysis extends React.Component {
                 year: year[1],
             });
         }
+        // If just the label is null
          else if(label === null) {
             // console.log(type[1], year[1], label, endYear[1]);
             this.setState({
@@ -51,14 +52,24 @@ export default class LabelAnalysis extends React.Component {
                 year: year[1],
                 end_year: endYear[1],
             });
-        } else if(endYear === null) {
+        } 
+        // if just the endYear is null
+        else if(endYear === null) {
             // console.log(type[1], year[1], label[1], endYear);
             this.setState({
                 type: type[1],
                 year: year[1],
                 label: label[1],
             });
-        } else {
+
+            Answers.getAnswersByQuestionLabelAndEvalYear(type[1], label[1], year[1], year[1])
+                .then(response => {
+                    // console.log(response.data);
+                    this.formatSingleLabel(response.data);
+                }).catch(err => console.log('Failed to get Answers', err));
+        } 
+        // All attributes are present
+        else {
             // console.log(type[1], year[1], label[1], endYear[1]);
             this.setState({
                 type: type[1],
@@ -68,6 +79,15 @@ export default class LabelAnalysis extends React.Component {
             });
         }
     }
+
+
+    // Going through a single labels data and formatting it
+    formatSingleLabel = (data) => {
+        console.log('the function got it',data);
+    };
+
+
+    // Going through many labels data and formatting it
 
     render() {
         return (
