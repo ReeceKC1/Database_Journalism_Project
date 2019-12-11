@@ -140,17 +140,18 @@ const Question = observer(class Question extends React.Component {
         const that = this;
         const dragProps = {
             onDragEnd(fromIndex, toIndex) {
-                const options = that.props.question.options;
+                const options = that.props.createEvaluationState.questions[that.state.id].options;
                 const item = options.splice(fromIndex, 1)[0];
                 options.splice(toIndex, 0, item);
-                console.log("I am trying to update shit");
-
-                // for(var i = 0; i < options.length; i++) {
-                //     options[i].id = i;
-                // }
+                for(var i = 0; i < options.length; i++) {// this is jank but it avoids having duplicate errors
+                    options[i].id +=100;
+                }
+                for(var i = 0; i < options.length; i++) {
+                    options[i].id = i;
+                }
                 // that.setState({ options });
                 that.props.question.options = options;
-                this.props.createEvaluationState.questions[this.state.id].options=options;
+                that.props.createEvaluationState.questions[that.state.id].options=options;
             }, 
             nodeSelector: 'div',
             handleSelector: 'a'

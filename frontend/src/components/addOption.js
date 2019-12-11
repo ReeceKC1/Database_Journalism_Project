@@ -1,4 +1,4 @@
-import { Paper, TextField } from '@material-ui/core/';
+import { Paper, TextField, Button } from '@material-ui/core/';
 import { observer } from 'mobx-react';
 import React from 'react';
 
@@ -56,19 +56,41 @@ const Option = observer(class Option extends React.Component {
         // this.notifyParentOnChange(value);
     };
 
+    removeOption = () => {
+        let id = this.state.id;
+        let questionID = this.props.questionID;
+        let options =this.props.createEvaluationState.questions[questionID].options;
+        options.splice(id,1);
+        for (var i =id; i < options.length; i++){
+            (options[i].id)--;
+        }
+        this.props.createEvaluationState.questions[questionID].options = options;
+        this.forceUpdate();
+    }
+
     render() {
         return (
                 <Paper style={{width: '80%', marginRight: '5%', float: 'right'}}>
-                        <TextField
-                        id="standard-basic"
-                        label={this.state.option_label}
-                        margin="normal"
-                        onChange={(event) => this.changeOptionText(event)}
-                        autoFocus
-                        style={{width: '96%', marginLeft: '2%', marginBottom: '20px'}}
-                        value={this.state.option_text}
-                        />
+                    <div className="row">
+                        <div className ="col-11">
+                            <TextField
+                            id="standard-basic"
+                            label={this.state.option_label}
+                            margin="normal"
+                            onChange={(event) => this.changeOptionText(event)}
+                            autoFocus
+			                style={{width: '98%', marginLeft: '2%', marginBottom: '20px'}}
+                            value={this.state.option_text}
+                            />
+                        </div>
+                        <div className="col-1">
+                            <Button className ="float-right text-secondary" type="button" title= "Remove Option" onClick={() => this.removeOption()}>
+                                X   
+                            </Button>
+                        </div>
+                    </div>
                 </Paper>
+                
         );
     };
 })
