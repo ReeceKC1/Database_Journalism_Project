@@ -105,7 +105,6 @@ def create_evaluation():
             if len([q for q in questions if q['label'] == question['label']]) > 1:
                 print('error duplicate labels')
                 return jsonify({'error': 'error duplicate labels'}), 400
-            # print(question)
             question['order_value'] = question.pop('id')
             question['question_id'] = str(uuid.uuid1())
             question['evaluation_year'] = evaluation.year
@@ -119,10 +118,8 @@ def create_evaluation():
             for option in options:
                 option['option_weight'] = str(option.pop('id'))
                 option['question_id'] = question_obj.question_id
-                # print(option)
                 option_obj = Option(**option)
                 session.add(option_obj)
-                # session.commit()
 
         # Saving the objects to the DB
         session.commit()

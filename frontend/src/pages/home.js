@@ -37,7 +37,7 @@ export default class Home extends React.Component {
         }
         
         return (
-                <div style={{backgroundColor: 'green', marginTop: '65px', height: 'calc(100vh - 65px)', width: '100%', overflowX: 'hidden', overflowY: 'hidden'}}>
+                <div style={{marginTop: '65px', height: 'calc(100vh - 65px)', width: '100%', overflowX: 'hidden', overflowY: 'hidden'}}>
                     {/* Alert Bar */}
                     {alert &&
                         <Snackbar
