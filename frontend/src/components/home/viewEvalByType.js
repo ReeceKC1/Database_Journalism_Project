@@ -57,7 +57,7 @@ export default class ViewEvalByType extends React.Component {
                         Search Reviews by Type
                     </Typography>
                     <Grid container spacing={2}>
-                        <Grid item>
+                        <Grid item style={{width: 'calc(100% - 80px)'}}>
                             {/* Select Type */}
                             <FormControl style={{width: '100%'}}>
                                 <InputLabel id="type_label">Evaluation Type</InputLabel>
