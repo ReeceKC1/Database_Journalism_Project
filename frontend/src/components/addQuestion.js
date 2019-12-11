@@ -204,7 +204,7 @@ const Question = observer(class Question extends React.Component {
                     <hr></hr>
 
                     {/* Button to add defaults */}
-                    <Grid item style = {{width: '100%'}} id="foo">
+                    <Grid item style = {{width: '100%'}}>
                         <Typography>
                             Question Options
                         </Typography>
