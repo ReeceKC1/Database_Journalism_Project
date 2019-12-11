@@ -163,7 +163,7 @@ const Question = observer(class Question extends React.Component {
         return (
             
                 <Grid container spacing={1} direction = "column" >
-                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length}) + 370px)`, marginBottom: '20px', padding: '15px'}}>
+                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length}) + 380px)`, marginBottom: '20px', padding: '15px'}}>
                     {/* Question Number */}
                     
                     <Typography>

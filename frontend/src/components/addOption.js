@@ -71,8 +71,7 @@ const Option = observer(class Option extends React.Component {
     render() {
         return (
                 <Paper style={{width: '80%', marginRight: '5%', float: 'right'}}>
-                    <div className="row">
-                        <div className ="col-11">
+                    <div style={{display: 'flex'}}>
                             <TextField
                             id="standard-basic"
                             label={this.state.option_label}
@@ -82,12 +81,9 @@ const Option = observer(class Option extends React.Component {
 			                style={{width: '98%', marginLeft: '2%', marginBottom: '20px'}}
                             value={this.state.option_text}
                             />
-                        </div>
-                        <div className="col-1">
-                            <Button className ="float-right text-secondary" type="button" title= "Remove Option" onClick={() => this.removeOption()}>
+                            <Button className ="text-secondary" type="button" title= "Remove Option" onClick={() => this.removeOption()}>
                                 X   
                             </Button>
-                        </div>
                     </div>
                 </Paper>
                 
