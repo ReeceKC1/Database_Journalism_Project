@@ -1,6 +1,6 @@
 import React from 'react';
 import { Paper, Grid, MenuItem, Select, InputLabel, FormControl, Button,
-    FormHelperText, 
+    FormHelperText, Typography
 } from '@material-ui/core/';
 import {Redirect} from 'react-router-dom';
 
@@ -52,11 +52,12 @@ export default class ViewEvalByType extends React.Component {
 
         if(!this.state.error) {
             return (
-                <Paper style={{padding: '10px'}}>
-                    This is the view review by type thing
-    
+                <div style={{padding: '10px'}}>
+                    <Typography variant="h5">
+                        Search Reviews by Type
+                    </Typography>
                     <Grid container spacing={2}>
-                        <Grid item xs={8}>
+                        <Grid item style={{width: 'calc(100% - 80px)'}}>
                             {/* Select Type */}
                             <FormControl style={{width: '100%'}}>
                                 <InputLabel id="type_label">Evaluation Type</InputLabel>
@@ -75,19 +76,21 @@ export default class ViewEvalByType extends React.Component {
                         </Grid>
     
                         {/* Button */}
-                        <Grid item xs={4}>
+                        <Grid item>
                             <Button variant="outlined" color="primary" style={{marginTop: '15px'}}
                                 onClick={() => this.goToType()}>
                                 Go
                             </Button>
                         </Grid>
                     </Grid>
-                </Paper>
+                </div>
             );
         } else {
             return (
-                <Paper style={{padding: '10px'}}>
-                    This is the view review by type thing
+                <div style={{padding: '10px'}}>
+                    <Typography variant="h5">
+                        Search Reviews by Type
+                    </Typography>
     
                     <Grid container spacing={2}>
                         <Grid item xs={8}>
@@ -117,7 +120,7 @@ export default class ViewEvalByType extends React.Component {
                             </Button>
                         </Grid>
                     </Grid>
-                </Paper>
+                </div>
             );
         }
         

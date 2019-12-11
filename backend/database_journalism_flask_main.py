@@ -275,11 +275,11 @@ def get_answer():
         label = request.args.get('label')
         question_id = request.args.get('question_id')
 
+        if start_year and end_year and label and request_type:
+            return get_answer_by_start_end_label_type(start_year, end_year, label, request_type, session)
+
         if request_type and start_year and end_year:
             return get_answer_by_type_start_end(request_type, start_year, end_year, session)
-
-        if start_year and end_year and label:
-            return get_answer_by_start_end_label(start_year, end_year, label, session)
 
         if request_year and student_id:
             return get_answer_by_year_id(request_year, student_id, session)

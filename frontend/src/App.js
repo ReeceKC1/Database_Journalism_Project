@@ -7,7 +7,8 @@ import CreateEvaluation from './pages/create_evaluation';
 import Home from './pages/home';
 import ViewEvaluation from './pages/view_evaluation';
 import EvaluationAnalysis from './pages/evaluation-analysis';
-import StudentData from './pages/studentData'
+import StudentData from './pages/studentData';
+import LabelAnalysis from './pages/label_analysis';
 
 const App = observer(class App extends React.Component {
   render() {
@@ -27,6 +28,8 @@ const App = observer(class App extends React.Component {
           <Route path="/evaluation-analysis" exact render = {(props) => <EvaluationAnalysis {...props}/>}/>
 
           <Route path="/student-info" exact render = {(props) => <StudentData {...props}/>}/>
+
+          <Route path="/label-analysis" exact render = {(props) => <LabelAnalysis {...props}/>}/>
           
           {/* Must BE LAST it matches with all routes */}
           <Route path="/" exact render = {(props) => <Home {...props}/>}/>
