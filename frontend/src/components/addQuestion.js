@@ -160,10 +160,14 @@ const Question = observer(class Question extends React.Component {
             width: '90%',
             marginLeft: '5%',
         }
+        let extraHeight = 0;
+        if(window.innerWidth < 450 ){
+            extraHeight = 100;
+        }
         return (
-            
+             
                 <Grid container spacing={1} direction = "column" >
-                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length}) + 380px)`, marginBottom: '20px', padding: '15px'}}>
+                    <Paper style={{backgroundColor: '#cfe8fc', height: `calc((100px * ${this.props.question.options.length})+ ${extraHeight} + 380px)`, marginBottom: '20px', padding: '15px'}}>
                     {/* Question Number */}
                     
                     <Typography>
@@ -200,7 +204,7 @@ const Question = observer(class Question extends React.Component {
                     <hr></hr>
 
                     {/* Button to add defaults */}
-                    <Grid item style = {{width: '100%'}}>
+                    <Grid item style = {{width: '100%'}} id="foo">
                         <Typography>
                             Question Options
                         </Typography>
@@ -224,7 +228,7 @@ const Question = observer(class Question extends React.Component {
                     <Grid item style={{width: '100%', height: `calc(100px * ${this.props.createEvaluationState.questions[this.state.id].options.length})`}}>
                     <ReactDragListView {...dragProps}>
                         {this.props.createEvaluationState.questions[this.state.id].options.map((option) => ( 
-                            <div key={option.id} style={{padding: '8px', height: '100px', width: '100%'}}>
+                            <div key={option.id} style={{padding: '8px', height: '100px', width: '100%',display: 'flex'}}>
                                 {/* Need to keep this drag element */}
                                 <IconButton variant="contained" color="primary" type="button" style={{margin: '4px', float: 'left'}}>
                                     <a href="#"><DragHandleIcon/></a>

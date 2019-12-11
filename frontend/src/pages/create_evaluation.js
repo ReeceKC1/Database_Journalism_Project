@@ -306,10 +306,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
               );
           }
         return (
-            <div style={{width: '50%', marginLeft: '25%', marginTop: '75px'}}>
+            <div className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
                 <Typography variant="h3">
                         Create Evaluation
-                        
                 </Typography>
                 
                 <form style={{padding: '10px'}} noValidate autoComplete="off" onSubmit={() => this.handleSubmit()} >
