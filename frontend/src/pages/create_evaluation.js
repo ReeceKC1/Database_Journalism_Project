@@ -1,6 +1,7 @@
 import React from 'react';
-import {TextField, Button, FormControl, InputLabel, Select,
+import { Container, TextField, Button, FormControl, InputLabel, Select,
     MenuItem, Typography, Grid } from '@material-ui/core/';
+import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
 import axios from 'axios';
 import * as Evaluation from '../axois/evaluation';
@@ -125,7 +126,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         let value = event.target.value;
         this.createState.year= value;
         clearTimeout(this.createState.timeout);
-        if (/^(20)\d{2}$/.test(value) || value === ''){
+        if (/^(20)\d{2}$/.test(value) || value ==''){
             this.createState.yearError='';
             this.createState.yearSubmitable = true;
         }else{
@@ -156,20 +157,20 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     };
     questionsAreSubmitable = () => {//this function searches through and makes sure no fields are blank
         let questions = this.createState.createEvaluationState.questions;
-        if(questions.length === 0){
+        if(questions.length ==0){
             return false;
         }
-        for(var i = 0; i < questions.length; i++){
+        for(var i = 0; i<questions.length;i++){
             let question = questions[i];
-            if (question.label.trim() === '' || question.question_text.trim() == ''){
+            if (question.label.trim() == '' || question.question_text.trim() == ''){
                 return false;
             }
             let options = toJS(this.createState.createEvaluationState.questions[i].options);
-            if(options.length === 0){
+            if(options.length == 0){
                 return false;
             }
-            for (var j = 0; j < options.length; j++){
-                if(options[j].option_text.trim() === ''){
+            for (var j=0; j<options.length;j++){
+                if(options[j].option_text.trim()==''){
                     return false;
                 }
             }
@@ -242,6 +243,52 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
           }).catch(error => console.log('here',error));
     };
 
+
+    // tester = () => {
+    //     let state = this.createState.createEvaluationState;
+    //     let payload = {
+    //         title: state.title,
+    //         eval_type: state.eval_type,
+    //         year: state.year,
+    //         version: state.version,
+    //         questions: []
+    //     };
+
+    //     // Question / Option Data
+    //     for(var i = 0; i < state.questions.length; i++) {
+    //         let question = state.questions[i];
+
+    //         let newQuestion = {
+    //             id: question.id,
+    //             label: question.label,
+    //             question_text: question.question_text,
+    //             options: []
+    //         };
+            
+    //         for(var j = 0; j < question.options.length; j++) {
+    //             let option = question.options[j];
+
+    //             let newOption;
+    //             if(option.id !== undefined) {
+    //                 newOption = {
+    //                     id: j,
+    //                     option_text: option.option_text
+    //                 };
+    //             } else {
+    //                 newOption = {
+    //                     id: Number(option.option_weight),
+    //                     option_text: option.option_text
+    //                 };
+    //             }
+
+    //             newQuestion.options.push(newOption);
+    //         }
+
+    //         payload.questions.push(newQuestion);
+    //     }
+
+    //     console.log(payload);
+    // }
     render() {
           let style = {
             width: '90%',
@@ -307,7 +354,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             id="standard-basic"
                             label="Year"
                             margin="normal"
-                            error = {this.createState.yearError !== ""}
+                            error = {this.createState.yearError != ""}
                             helperText = {this.createState.yearError}
                             style={style}
                             onChange={(event) => this.yearChange(event)}
@@ -350,6 +397,9 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             <Button style = {{margin: '5px'}} variant="contained" color="primary" type="submit" disabled={!this.isSubmitable()}>
                                 Create Evaluation
                             </Button>
+                            {/* <Button style = {{margin: '5px'}}color="primary"  onClick={() => this.tester()}>
+                                tester
+                            </Button> */}
                         </Grid>
 
                     
