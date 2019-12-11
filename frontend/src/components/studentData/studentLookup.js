@@ -21,11 +21,12 @@ const StudentLookup = observer(class StudentLookup extends React.Component {
     }
 
     async submit() {
-        var students = await axios.get(`http://localhost:5000/api/student/check/${this.studentLookupState.id}`)
-        if (this.studentLookupState.validID){
-            this.props.history.push(`/student-info?id=${this.studentLookupState.id}`)
+        var students = await axios.get(`http://localhost:5000/api/student/check/${this.studentLookupState.id}`).catch((error) => {
+            this.studentLookupState.students = []
+        })
+        if (students){
+            this.studentLookupState.students = students.data
         }
-        this.studentLookupState.students = students.data
     }
 
     makeStudentButtons = () => {
@@ -36,6 +37,7 @@ const StudentLookup = observer(class StudentLookup extends React.Component {
                     key={i}
                     variant="outlined" 
                     color="primary"
+                    style={{width: '100%', marginBottom: '5px'}}
                     component={Link}
                     to={{
                         pathname: "/student-info",
@@ -51,18 +53,20 @@ const StudentLookup = observer(class StudentLookup extends React.Component {
 
     render() {
         return(
-          <div>
-              <Typography>
-                  Enter a Students Name or ID
+          <div style={{height: '100%', width: '100%', padding: '10px'}}>
+              <Typography variant='h5'>
+                  Student Lookup
               </Typography>
               <TextField
+              style={{width: 'calc(100% - 95px)'}}
+              label="ID or Name"
                 onChange={(e) => {this.studentLookupState.id = e.target.value}}
               />
-              <Button variant="outlined" color="primary"
+              <Button variant="outlined" color="primary" style={{marginLeft: '5px', marginTop: '12px'}}
               onClick={() => this.submit()}>
                 Lookup
               </Button>
-              <Paper>
+              <Paper style={{backgroundColor: '#cfe8fc', height: 'calc(100% - 90px)', width: '100%', marginTop: '10px', padding: '10px', overflow: 'auto'}}>
                 {this.makeStudentButtons()}
               </Paper>
           </div>  

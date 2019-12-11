@@ -37,7 +37,7 @@ export default class Home extends React.Component {
         }
         
         return (
-                <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                <div style={{backgroundColor: 'green', marginTop: '65px', height: 'calc(100vh - 65px)', width: '100%', overflowX: 'hidden', overflowY: 'hidden'}}>
                     {/* Alert Bar */}
                     {alert &&
                         <Snackbar
@@ -53,89 +53,89 @@ export default class Home extends React.Component {
                     }
 
                     {/* Table */}
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Evaluation Type</TableCell>
-                                <TableCell>Year</TableCell>
-                                <TableCell>Version</TableCell>
-                                <TableCell>Duplicate</TableCell>
-                                <TableCell>View Evaluation</TableCell>
-                                <TableCell>Take Evaluation</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {rows.map(row => (
-                            <TableRow key={row.year + row.eval_type}>
-                                <TableCell>{row.title}</TableCell>
-                                <TableCell>{row.eval_type}</TableCell>
-                                <TableCell>{row.year}</TableCell>
-                                <TableCell>{row.version}</TableCell>
-                                <TableCell>
-                                    <Button variant="outlined" color="primary"
-                                        component={Link}
-                                        to={{
-                                            pathname: "/create",
-                                            state: {
-                                                year: row.year,
-                                                type: row.eval_type
-                                            }
-                                            
-                                        }}
-                                    >
-                                        Duplicate
-                                    </Button>
-                                </TableCell>
-                                <TableCell>
-                                    <Button variant="outlined" color="primary"
-                                        component={Link}
-                                        to={{
-                                            pathname: "/view-evaluation",
-                                            search: "?type=" + row.eval_type + "&year=" + row.year
-                                        }}
-                                    >
-                                        View Evaluation
-                                    </Button>
-                                </TableCell>
-                                <TableCell>
-                                    <Button variant="outlined" color="primary"
-                                        component={Link}
-                                        to={{
-                                            pathname: "/take-evaluation",
-                                            search: "?type=" + row.eval_type + "&year=" + row.year
-                                        }}
-                                    >
-                                        Take Evaluation
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-
-                    {/* Get Student by name or id */}
-                    <Grid container spacing={3} style={{marginTop: '75px'}}>
-                        <Grid item xs={6}>
-                            <Paper style={{padding: '10px'}}>
-                                <StudentLookup/>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <ViewEvalByType/>
-                        </Grid>
-                    </Grid>
-
-                    {/* Get Label review aggregation thing */}
-                    <Grid container spacing={0} style={{marginTop: '75px'}}>
-                        <Grid item xs={12}>
-                            <Paper style={{padding: '10px'}}>
+                    <div  style={{height: '50%', width: '100%'}}>
+                        <Table aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Title</TableCell>
+                                    <TableCell>Evaluation Type</TableCell>
+                                    <TableCell>Year</TableCell>
+                                    <TableCell>Version</TableCell>
+                                    <TableCell>Duplicate</TableCell>
+                                    <TableCell>View Evaluation</TableCell>
+                                    <TableCell>Take Evaluation</TableCell>
+                                </TableRow>
+                            </TableHead>
+                        </Table>
+                        <div style={{overflowY: 'scroll', height: 'calc(100% - 60px)'}}>
+                            <Table>
+                                <TableBody >
+                                {rows.map(row => (
+                                    <TableRow key={row.year + row.eval_type}>
+                                        <TableCell>{row.title}</TableCell>
+                                        <TableCell>{row.eval_type}</TableCell>
+                                        <TableCell>{row.year}</TableCell>
+                                        <TableCell>{row.version}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" color="primary"
+                                                component={Link}
+                                                to={{
+                                                    pathname: "/create",
+                                                    state: {
+                                                        year: row.year,
+                                                        type: row.eval_type
+                                                    }
+                                                    
+                                                }}
+                                            >
+                                                Duplicate
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" color="primary"
+                                                component={Link}
+                                                to={{
+                                                    pathname: "/view-evaluation",
+                                                    search: "?type=" + row.eval_type + "&year=" + row.year
+                                                }}
+                                            >
+                                                View Evaluation
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" color="primary"
+                                                component={Link}
+                                                to={{
+                                                    pathname: "/take-evaluation",
+                                                    search: "?type=" + row.eval_type + "&year=" + row.year
+                                                }}
+                                            >
+                                                Take Evaluation
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+                    <div style={{height: '50%'}}>
+                            <div style={{float: 'left', width: 'calc(50% - 10px)', margin: '5px', height: '100%'}}>
+                                <Paper style={{padding: '10px', marginBottom: '5px'}}>
                                     <LabelAnalysisForm />
-                            </Paper>
-                        </Grid>
-                    </Grid>
-                    
-                </Container>
+                                </Paper>
+                                <Paper style={{padding: '10px'}}>
+                                    <ViewEvalByType/>
+                                </Paper>
+                            </div>
+
+                            <div style={{float: 'right', width: 'calc(50% - 10px)', margin: '5px', height: '100%'}}>
+                                <Paper style={{padding: '10px', height: 'calc(100% - 15px)'}}>
+                                        <StudentLookup/>
+                                </Paper>
+                            </div>
+                    </div>
+                </div>
         );
     }
 }
