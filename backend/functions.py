@@ -96,22 +96,29 @@ def return_multiple_evaluations(evaluations, session):
 ############################################################
 # Returns all evaluations matching the parameters and all answers for them
 def get_answer_by_type_start_end(request_type, start_year, end_year, session):
-    answers = session.execute(text(f"SELECT * \
-                                     FROM evaluation_answers \
-                                     WHERE eval_type = '{request_type}' \
-                                     AND eval_year >= '{start_year}' \
-                                     AND eval_year <= '{end_year}'")).fetchall()
-    port_answers = session.execute(text(f"SELECT * \
-                                          FROM portfolio_answers \
-                                          WHERE eval_type = '{request_type}' \
-                                          AND eval_year >= '{start_year}' \
-                                          AND eval_year <= '{end_year}'")).fetchall()
+    questions = session.execute(text(f"SELECT * \
+                                     FROM question \
+                                     WHERE evaluation_type = '{request_type}' \
+                                     AND evaluation_year >= '{start_year}' \
+                                     AND evaluation_year <= '{end_year}'")).fetchall()
 
-    answers = [Evaluation_Answers(**x) for x in answers]
+    questions_response = []
+    for question in questions:
+        question = Question(**question)
+        question = question.seralize
 
-    port_answers = [Portfolio_Answers(**x) for x in port_answers]
+        options = session.query(Option).filter_by(question_id=question['question_id']).all()
+        question['options'] = [x.seralize for x in options]
+
+        if request_type == 'portfolio_eval':
+            answers = session.query(Port_Answer).filter_by(question_id=question['question_id']).all()
+        else:
+            answers = session.query(Eval_Answer).filter_by(question_id=question['question_id']).all()
+
+        question['answers'] = [x.seralize for x in answers]
+        questions_response.append(question)
     
-    return get_answers(answers, port_answers, session)
+    return jsonify(questions_response), 200
 
 # Returns all questions that have match the parameters and all answers to the questions
 def get_answer_by_start_end_label_type(start_year, end_year, label, request_type, session):
