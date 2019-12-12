@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
-    Button, Snackbar, Grid, Paper, } from '@material-ui/core/';
+    Button, Snackbar, Typography, Paper, } from '@material-ui/core/';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import ViewEvalByType from '../components/home/viewEvalByType';
@@ -147,6 +147,9 @@ export default class Home extends React.Component {
                     <div style={{height: '50%'}}>
                             <div style={{float: 'left', width: 'calc(50% - 10px)', margin: '5px', height: '100%'}}>
                                 <Paper style={{padding: '10px', marginBottom: '5px'}}>
+                                    <Typography variant='h5'>
+                                        Label Analysis
+                                    </Typography>
                                     <LabelAnalysisForm />
                                 </Paper>
                                 <Paper style={{padding: '10px'}}>
