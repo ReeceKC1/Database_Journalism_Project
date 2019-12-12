@@ -103,6 +103,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
 
                 // Update the State
                 this.createState.createEvaluationState= dupeState;
+                this.yearChange (this.createState.createEvaluationState.year); //this gets the errors to display
             }).catch(error => {
                 console.log(error);
             });
@@ -120,20 +121,54 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         let value = event.target.value;
         this.createState.eval_type = value;
         this.createState.createEvaluationState.eval_type = value;
+        this.yearChange (this.createState.createEvaluationState.year); 
     };
     
-    yearChange = (event) => {
-        let value = event.target.value;
-        this.createState.year= value;
+    yearChange = (value) => {
         clearTimeout(this.createState.timeout);
-        if (/^(20)\d{2}$/.test(value) || value ==''){
+        this.createState.year= value;
+        var type = this.createState.createEvaluationState.eval_type;
+        var displayType = '';
+        if(type =='student_eval'){
+            displayType = 'Student Evaluation';
+        }
+        if(type =='student_onsite_eval'){
+            displayType = 'Student On-Site Evaluation';
+        }
+        if(type =='internship_eval'){
+            displayType = 'Internship Evaluation';
+        }
+        if(type =='portfolio_eval'){
+            displayType = 'Portfolio Evaluation';
+        }
+        console.log('type',type);
+        if (/^(20)\d{2}$/.test(value)){
+            if (type == ''){
+                this.createState.yearError='';
+                this.createState.yearSubmitable = true;
+            }else{
+                let url = 'http://localhost:5000/api/evaluation/get?type=' +type+'&year='+ value;
+                axios.get(url).then(response => {
+                    console.log(response);
+                    this.createState.yearSubmitable = false;             
+                    this.createState.yearError = displayType +  ' for ' + value + ' already exists.'; 
+                }).catch(error => {
+                    console.log('here',error);
+                    this.createState.yearError='';
+                    this.createState.yearSubmitable = true;
+                });
+            } 
+        }else if (value ==''){
             this.createState.yearError='';
-            this.createState.yearSubmitable = true;
         }else{
             this.createState.yearSubmitable = false;
-            this.createState.timeout = setTimeout(() => {
+            if(this.createState.yearError == ''){
+                this.createState.timeout = setTimeout(() => {
                     this.createState.yearError = 'Invalid Year'; 
-            }, 1000);
+                }, 1000);
+            }else{
+                this.createState.yearError = 'Invalid Year'; 
+            }
         }
         this.createState.createEvaluationState.year = value;
     };
@@ -356,7 +391,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                             error = {this.createState.yearError != ""}
                             helperText = {this.createState.yearError}
                             style={style}
-                            onChange={(event) => this.yearChange(event)}
+                            onChange={(event) => this.yearChange(event.target.value)}
                             value={this.createState.createEvaluationState.year}
                             />
                         </Grid>

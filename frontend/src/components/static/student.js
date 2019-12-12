@@ -21,71 +21,82 @@ const StudentForm = observer(class StudentForm extends React.Component {
             semesterError: '',
             semesterSubmitable: true,
             timeout: null,
-            timeout2: null
+            timeout2: null,
+            fieldSelected: ''
         }
     }
 
     componentDidMount() {}
 
-    checkStudent = (id) => {
+    checkStudent = (value) => {
         //   student = axios.get(`http://localhost:5000/api/student/check.${id}`).then(response => {console.log(response)})
-        let url = 'http://localhost:5000/api/student/check/' + id;
+        let url = 'http://localhost:5000/api/student/check/' + value;
         return axios.get(url);
     }
 
-    autoFillStudent= (id) =>{
+    autoFillStudent= (value) =>{
         clearTimeout(this.studentState.timeout);
         this.studentState.timeout = setTimeout(() => {
-            this.checkStudent(id).then((response) => {
-                let student = response.data[0];
-                console.log(student);
-                this.studentState.idError = '';
-                this.studentState.autoFilled = true;
-                this.props.viewEvaluationState.student_state.first_name = student.first_name;
-                this.props.viewEvaluationState.student_state.last_name = student.last_name;
-                this.emailChange(student.email);
-                this.props.viewEvaluationState.student_state.class_year = student.class_year;
-                this.studentState.year_value = student.class_year;
-                this.studentState.year_value = student.class_year;
-                this.semesterChange(student.semester_of_completion);
-                this.props.viewEvaluationState.student_state.grade = student.grade;
-                this.studentState.grade = student.grade;
-                this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
-                this.studentState.pr_value = student.pr_major_minor;
-
-                this.forceUpdate();
-        }).catch((error) => {
-            console.log('Get subscriptions error',error.response);
-            if (this.studentState.autoFilled){
-                this.studentState.autoFilled = false;
-                this.props.viewEvaluationState.student_state.first_name = '';
-                this.props.viewEvaluationState.student_state.last_name = '';
-                this.emailChange('');
-                this.props.viewEvaluationState.student_state.class_year = '';
-                this.studentState.year_value = '';
-                this.semesterChange('');
-                this.props.viewEvaluationState.student_state.grade = '';
-                this.studentState.grade = '';
-                this.props.viewEvaluationState.student_state.pr_major_minor = '';
-                this.studentState.pr_value = '';
-            }
-
+            this.checkStudent(value).then((response) => {
+                if(response.data.length == 1){
+                    let student = response.data[0];
+                    this.studentState.idError = '';
+                    this.studentState.autoFilled = true;
+                    this.props.viewEvaluationState.student_state.student_id = student.student_id;
+                    this.props.viewEvaluationState.student_state.last_name = student.last_name;
+                    this.props.viewEvaluationState.student_state.first_name = student.first_name;
+                    this.props.viewEvaluationState.student_state.last_name = student.last_name;
+                    this.emailChange(student.email);
+                    this.props.viewEvaluationState.student_state.class_year = student.class_year;
+                    this.studentState.year_value = student.class_year;
+                    this.studentState.year_value = student.class_year;
+                    this.semesterChange(student.semester_of_completion);
+                    this.props.viewEvaluationState.student_state.grade = student.grade;
+                    this.studentState.grade = student.grade;
+                    this.props.viewEvaluationState.student_state.pr_major_minor = student.pr_major_minor;
+                    this.studentState.pr_value = student.pr_major_minor;
+                    this.forceUpdate();
+                }else{
+                    this.clearOutAutoFilled();
+                }
+            }).catch((error) => {
+                console.log('Get subscriptions error',error.response);
+                this.clearOutAutoFilled();
             });
         }, 500);
 
     }
 
-
+    clearOutAutoFilled = () => {
+        if (this.studentState.autoFilled){
+            this.studentState.autoFilled = false;
+            if(this.studentState.fieldSelected != 'student_id'){
+                this.props.viewEvaluationState.student_state.student_id = '';
+            }
+            if(this.studentState.fieldSelected != 'first_name' && this.studentState.fieldSelected != 'last_name'){
+                this.props.viewEvaluationState.student_state.first_name = '';
+                this.props.viewEvaluationState.student_state.last_name = '';
+            }
+            this.studentState.fieldSelected ='';
+            this.emailChange('');
+            this.props.viewEvaluationState.student_state.class_year = '';
+            this.studentState.year_value = '';
+            this.semesterChange('');
+            this.props.viewEvaluationState.student_state.grade = '';
+            this.studentState.grade = '';
+            this.props.viewEvaluationState.student_state.pr_major_minor = '';
+            this.studentState.pr_value = '';
+        }
+    }
     idChange = (value) => {
-    
+        this.studentState.fieldSelected = 'student_id';
         this.props.viewEvaluationState.student_state.student_id = value;
         clearTimeout(this.studentState.timeout2);
-        this.autoFillStudent(value);
-
         var pattern = new RegExp("^[0-9]*$");
         if (pattern.test(value) || value === ''){
             this.studentState.idError='';
             this.studentState.idSubmitable = true;
+            this.autoFillStudent(value);
         }else{
             this.studentState.idSubmitable = false;
             this.studentState.timeout2 = setTimeout(() => {
@@ -130,6 +141,24 @@ const StudentForm = observer(class StudentForm extends React.Component {
             && this.studentState.idSubmitable 
             && this.studentState.emailSubmitable);
     }
+    firstNameChange = (value) => {
+        this.props.viewEvaluationState.student_state.first_name = value;
+        this.studentState.fieldSelected = 'first_name';
+        if(value && this.props.viewEvaluationState.student_state.last_name){
+            this.autoFillStudent(value + ' '+ this.props.viewEvaluationState.student_state.last_name);
+        }else{
+            this.clearOutAutoFilled();
+        }
+    }
+    lastNameChange = (value) => {
+        this.props.viewEvaluationState.student_state.last_name = value;
+        this.studentState.fieldSelected = 'last_name';
+        if(value && this.props.viewEvaluationState.student_state.first_name){
+            this.autoFillStudent(this.props.viewEvaluationState.student_state.first_name + ' ' + value);
+        }else{
+            this.clearOutAutoFilled();
+        }
+    }
     
     render() {
         let style = {
@@ -142,17 +171,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                     Student Information
                 </Typography>
                 <Grid container spacing={1} alignItems = "center" direction = "column">
-                    <Grid item style = {{width: '100%'}}>
-                        <TextField
-                        style={style}
-                        value={this.props.viewEvaluationState.student_state.id}
-                        label="Baylor ID#"
-                        error = {this.studentState.idError !== ''}
-                        helperText = {this.studentState.idError}
-                        InputProps={this.props.viewEvaluationState.readOnly}
-                        onChange={(event) => this.idChange(event.target.value)}
-                        />
-                    </Grid>
+                    
                     {/* {!this.props.viewEvaluationState.already_exists &&
                     <div style={{width: '100%'}}> */}
                         <Grid item style = {{width: '100%'}}>
@@ -161,7 +180,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             style={style}
                             label="First Name"
                             InputProps={this.props.viewEvaluationState.readOnly}
-                            onChange={(event) => {this.props.viewEvaluationState.student_state.first_name = event.target.value}}
+                            onChange={(event) => this.firstNameChange(event.target.value.trim())}
                             />
                         </Grid>
                         <Grid item style = {{width: '100%'}}>
@@ -170,7 +189,18 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             style={style}
                             label="Last Name"
                             InputProps={this.props.viewEvaluationState.readOnly}
-                            onChange={(event) => {this.props.viewEvaluationState.student_state.last_name = event.target.value}}
+                            onChange={(event) => this.lastNameChange(event.target.value.trim())}
+                            />
+                        </Grid>
+                        <Grid item style = {{width: '100%'}}>
+                        <TextField
+                            style={style}
+                            value={this.props.viewEvaluationState.student_state.student_id}
+                            label="Baylor ID#"
+                            error = {this.studentState.idError !== ''}
+                            helperText = {this.studentState.idError}
+                            InputProps={this.props.viewEvaluationState.readOnly}
+                            onChange={(event) => this.idChange(event.target.value.trim())}
                             />
                         </Grid>
                         <Grid item style = {{width: '100%'}}>

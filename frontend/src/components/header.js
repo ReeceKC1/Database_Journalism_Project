@@ -44,7 +44,7 @@ import { setCurrentTab } from '../state';
                         <div style={{width: '100%'}}>
                             <div style={{float: 'left'}}>
                                 <Typography variant="body1" style={{marginTop: '13px'}}>
-                                    Peepee Poopoo Site
+                                    Baylor Journalism Internships Site
                                 </Typography>
                             </div>
                             <div style={{float: 'right'}}>
