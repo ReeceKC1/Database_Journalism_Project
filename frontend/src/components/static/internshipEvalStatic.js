@@ -12,7 +12,7 @@ export default class InternshipEvalStatic extends React.Component {
 
     render() {
         return (
-            <div style={{width: '50%', marginLeft: '25%'}}>
+            <div className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
                 <Typography variant="h3">
                     Internship Evaluation: {this.props.viewEvaluationState.evaluation.title} {this.props.viewEvaluationState.evaluation.year}
                 </Typography>
