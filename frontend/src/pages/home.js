@@ -12,7 +12,8 @@ export default class Home extends React.Component {
         super(props);
 
         this.state = {
-            evaluations: []
+            evaluations: [],
+            alertOpen : true
         };
     }
 
@@ -83,9 +84,10 @@ export default class Home extends React.Component {
                             vertical: 'bottom',
                             horizontal: 'left',
                         }}
-                        open={true}
+                        open={this.state.alertOpen}
                         autoHideDuration={5000}
                         variant='success'
+                        onClose={() => this.setState({alertOpen: false})}
                         message={<span id="message-id">Evaluation Created Successfully!</span>}
                         />
                     }
