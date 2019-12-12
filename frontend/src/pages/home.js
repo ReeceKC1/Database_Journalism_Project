@@ -24,28 +24,44 @@ export default class Home extends React.Component {
         }).catch(error => console.log(error));
     }
 
+    convertTypeToName = (type) =>{
+        var displayType = '';
+        if(type =='student_eval'){
+            displayType = 'Student Evaluation';
+        }
+        if(type =='student_onsite_eval'){
+            displayType = 'Student On-Site Evaluation';
+        }
+        if(type =='internship_eval'){
+            displayType = 'Internship Evaluation';
+        }
+        if(type =='portfolio_eval'){
+            displayType = 'Portfolio Evaluation';
+        }
+        return displayType;
+    }
 
-     loadFileAsText(year, type){
-        var fileToLoad = document.getElementById("fileToLoad").files[0];
-        let payload ={
-            eval_type: type,
-            eval_year: year,
-            file: 'no data'
-         }
-        var fileReader = new FileReader();
-        fileReader.onload = function(fileLoadedEvent){
-            var textFromFileLoaded = fileLoadedEvent.target.result;
-            payload.file = textFromFileLoaded;
-            console.log('loaded',payload);
+    loadFileAsText(year, type){
+    var fileToLoad = document.getElementById("fileToLoad").files[0];
+    let payload ={
+        eval_type: type,
+        eval_year: year,
+        file: 'no data'
+        }
+    var fileReader = new FileReader();
+    fileReader.onload = function(fileLoadedEvent){
+        var textFromFileLoaded = fileLoadedEvent.target.result;
+        payload.file = textFromFileLoaded;
+        console.log('loaded',payload);
 
-            axios.post('http://localhost:5000/api/file-upload', payload)
-            .then(response => {
-                console.log(response);
-            }).catch(error => console.log('here',error));
-        };
-        
-        fileReader.readAsText(fileToLoad, "UTF-8");
-      }
+        axios.post('http://localhost:5000/api/file-upload', payload)
+        .then(response => {
+            console.log(response);
+        }).catch(error => console.log('here',error));
+    };
+
+    fileReader.readAsText(fileToLoad, "UTF-8");
+    }
 
     render() {
         const rows = this.state.evaluations;
@@ -95,7 +111,7 @@ export default class Home extends React.Component {
                                 {rows.map(row => (
                                     <TableRow key={row.year + row.eval_type}>
                                         <TableCell>{row.title}</TableCell>
-                                        <TableCell>{row.eval_type}</TableCell>
+                                        <TableCell>{this.convertTypeToName(row.eval_type)}</TableCell>
                                         <TableCell>{row.year}</TableCell>
                                         <TableCell>{row.version}</TableCell>
                                         <TableCell>
