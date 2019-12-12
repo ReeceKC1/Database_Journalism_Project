@@ -20,7 +20,7 @@ const BuildEvaluation = observer(class BuildEvaluation extends React.Component {
         })
 
         for(let i = 0; i < this.evaluation.questions.length; i++) {
-            this.state.radio_values.push()
+            this.state.radio_values.push('')
             this.props.viewEvaluationState.answers.push({
                 question_id: this.evaluation.questions[i].question_id,
                 option_text: '',
