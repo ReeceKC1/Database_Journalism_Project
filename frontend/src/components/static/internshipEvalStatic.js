@@ -14,11 +14,12 @@ export default class InternshipEvalStatic extends React.Component {
         return (
             <div className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
                 <Typography variant="h3">
-                    Internship Evaluation: {this.props.viewEvaluationState.evaluation.title} {this.props.viewEvaluationState.evaluation.year}
+                    Internship Evaluation: 
+                    {/* {this.props.viewEvaluationState.evaluation.title} {this.props.viewEvaluationState.evaluation.year} */}
                 </Typography>
-                <Typography variant="h4">
+                {/* <Typography variant="h4">
                     Version {this.props.viewEvaluationState.evaluation.version}
-                </Typography>
+                </Typography> */}
                 <StudentForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <CompanyForm viewEvaluationState={this.props.viewEvaluationState}/>
                 <SupervisorForm viewEvaluationState={this.props.viewEvaluationState}/>
