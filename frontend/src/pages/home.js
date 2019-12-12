@@ -24,6 +24,10 @@ export default class Home extends React.Component {
         }).catch(error => console.log(error));
     }
 
+    handleUploadFile = (e) => {
+
+    }
+
     render() {
 
         const rows = this.state.evaluations;
@@ -90,6 +94,11 @@ export default class Home extends React.Component {
                                             >
                                                 Duplicate
                                             </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <input type='file' accept='csv' name='file' onChange={(e) => {this.handleUploadFile(e)}}>
+                                                
+                                            </input>
                                         </TableCell>
                                         <TableCell>
                                             <Button variant="outlined" color="primary"
