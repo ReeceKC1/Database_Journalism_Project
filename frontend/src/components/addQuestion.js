@@ -171,7 +171,7 @@ const Question = observer(class Question extends React.Component {
                     {/* Question Number */}
                     
                     <Typography>
-                        Question: {this.state.id}
+                        Question: {this.state.id + 1} 
                     </Typography>
                     <Button className ="float-right text-secondary" type="button" title= "Remove Question" onClick={() => this.removeQuestion()}>
                         X   

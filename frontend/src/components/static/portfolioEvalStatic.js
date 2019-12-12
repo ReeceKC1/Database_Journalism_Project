@@ -10,7 +10,7 @@ export default class PortfolioEvalStatic extends React.Component {
 
     render() {
         return (
-            <div style={{width: '50%', marginLeft: '25%'}}>
+            <div className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
                 <Typography variant="h3">
                     Portfolio Evaluation
                 </Typography>
