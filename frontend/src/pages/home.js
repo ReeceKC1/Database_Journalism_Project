@@ -25,7 +25,7 @@ export default class Home extends React.Component {
     }
 
     handleUploadFile = (e) => {
-
+        e.target.files
     }
 
     render() {
