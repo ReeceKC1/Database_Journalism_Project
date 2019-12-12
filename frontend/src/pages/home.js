@@ -24,12 +24,30 @@ export default class Home extends React.Component {
         }).catch(error => console.log(error));
     }
 
-    handleUploadFile = (e) => {
+
+     loadFileAsText(year, type){
+        var fileToLoad = document.getElementById("fileToLoad").files[0];
+        let payload ={
+            eval_type: type,
+            eval_year: year,
+            file: 'no data'
+         }
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent){
+            var textFromFileLoaded = fileLoadedEvent.target.result;
+            payload.file = textFromFileLoaded;
+            console.log('loaded',payload);
+
+            axios.post('http://localhost:5000/api/file-upload', payload)
+            .then(response => {
+                console.log(response);
+            }).catch(error => console.log('here',error));
+        };
         
-    }
+        fileReader.readAsText(fileToLoad, "UTF-8");
+      }
 
     render() {
-
         const rows = this.state.evaluations;
         var alert = false;
 
@@ -96,9 +114,7 @@ export default class Home extends React.Component {
                                             </Button>
                                         </TableCell>
                                         <TableCell>
-                                            <input type='file' accept='csv' name='file' onChange={(e) => {this.handleUploadFile(e)}}>
-                                                
-                                            </input>
+                                            <input type='file' id='fileToLoad' accept='csv' name='file' onChange={(e) => {this.loadFileAsText(row.year,row.eval_type)}}></input>
                                         </TableCell>
                                         <TableCell>
                                             <Button variant="outlined" color="primary"
