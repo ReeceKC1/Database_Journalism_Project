@@ -66,6 +66,7 @@ export default class Home extends React.Component {
                                     <TableCell>Year</TableCell>
                                     <TableCell>Version</TableCell>
                                     <TableCell>Duplicate</TableCell>
+                                    <TableCell>Upload</TableCell>
                                     <TableCell>View Evaluation</TableCell>
                                     <TableCell>Take Evaluation</TableCell>
                                 </TableRow>

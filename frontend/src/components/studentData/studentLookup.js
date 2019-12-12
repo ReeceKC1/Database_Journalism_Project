@@ -44,7 +44,7 @@ const StudentLookup = observer(class StudentLookup extends React.Component {
                         search: "?id=" + this.studentLookupState.students[i].student_id
                     }}
                 >
-                    {this.studentLookupState.students[i].first_name} {this.studentLookupState.students[i].last_name}
+                    {this.studentLookupState.students[i].first_name} {this.studentLookupState.students[i].last_name} {this.studentLookupState.students[i].student_id}
                 </Button>
             )
         }

@@ -300,6 +300,161 @@ def get_answer():
         session.close()
 
 ############################################################
+# File Upload                                              #
+############################################################
+@app.route('/api/file-upload', methods=['POST'])
+def upload_file():
+    session = Session()
+
+    try:
+        json = request.json
+        eval_type = json['eval_type']
+        eval_year = json['eval_year']
+        file_data = json['file']
+
+        answers = file_data.split('\n')
+
+        for answer in answers:
+            answer_id = str(uuid.uuid1())
+            attributes = answer.split(',')
+            student_attributes = attributes[0:8]
+            attributes = attributes[8:]
+
+            student = {
+                'student_id': student_attributes[0],
+                'first_name': student_attributes[1],
+                'last_name': student_attributes[2],
+                'email': student_attributes[3],
+                'class_year': student_attributes[4],
+                'semester_of_completion': student_attributes[5],
+                'grade': student_attributes[6],
+                'pr_major_minor': student_attributes[7]
+            }
+            student = Student(**student)
+            if not session.query(Student).filter_by(student_id=student.student_id).one_or_none():
+                session.add(student)
+            session.commit()
+
+            if eval_type == 'portfolio_eval':
+                reviewer_name = attributes[0]
+                attributes = attributes[1:]
+
+                portfolio_answers = {
+                    'eval_type': eval_type,
+                    'eval_year': eval_year,
+                    'reviewer_name': reviewer_name,
+                    'date_reviewed': func.current_date(),
+                    'student_id': student_attributes[0],
+                    'answer_id': answer_id
+                }
+                portfolio_answers = Portfolio_Answers(**portfolio_answers)
+                session.add(portfolio_answers)
+                session.commit()
+
+                port_answers = []
+                attr_answers = attributes[0::2]
+                attr_comments = attributes[1::2]
+
+                for attr_answer, attr_comment, index in zip(attr_answers, attr_comments, range(len(attr_answers))):
+                    question = session.query(Question).filter_by(evaluation_type=eval_type,evaluation_year=eval_year,order_value=index).one_or_none()
+
+                    comment_id = str(uuid.uuid1())
+                    comment_obj = {
+                        'comment_text': attr_comment,
+                        'comment_id': comment_id
+                    }
+                    comment_obj = Comment(**comment_obj)
+                    session.add(comment_obj)
+                    session.commit()
+                    
+                    answer_obj = {
+                        'answer_id': answer_id,
+                        'option_text': attr_answer,
+                        'question_id': question.question_id,
+                        'comment_id': comment_id,
+                    }
+                    answer_obj = Port_Answer(**answer_obj)
+                    session.add(answer_obj)
+                    session.commit()
+
+            else:
+                company = {
+                    'company_name': attributes[0],
+                    'address': attributes[1],
+                    'phone': attributes[2]
+                }
+                attributes = attributes[3:]
+                company = Company(**company)
+                if not session.query(Company).filter_by(company_name=company.company_name).one_or_none():
+                    session.add(company)
+
+                supervisor = {
+                    'email': attributes[0],
+                    'name': attributes[1],
+                    'title': attributes[2]
+                }
+                attributes = attributes[3:]
+                supervisor = Supervisor(**supervisor)
+                if not session.query(Supervisor).filter_by(email=supervisor.email).one_or_none():
+                    session.add(supervisor)
+                session.commit()
+
+                internship = {
+                    'student_id': student.student_id,
+                    'company_name': company.company_name,
+                    'start_date': attributes[0],
+                    'end_date': attributes[1],
+                    'hours': attributes[2],
+                    'supervisor_email': supervisor.email
+                }
+                attributes = attributes[3:]
+                internship = Internship(**internship)
+                if not session.query(Internship).filter_by(student_id=internship.student_id,company_name=internship.company_name,start_date=internship.start_date).one_or_none():
+                    session.add(internship)
+
+                comment = {
+                    'comment_text': attributes[0],
+                    'comment_id': str(uuid.uuid1())
+                }
+                attributes = attributes[1:]
+                comment = Comment(**comment)
+                session.add(comment)
+                session.commit()
+
+                evaluation_answers = {
+                    'eval_type': eval_type,
+                    'eval_year': eval_year,
+                    'student_id': student_attributes[0],
+                    'company_name': company.company_name,
+                    'supervisor_email': supervisor.email,
+                    'answer_id': answer_id,
+                    'comment_id': comment.comment_id
+                }
+                evaluation_answers = Evaluation_Answers(**evaluation_answers)
+                session.add(evaluation_answers)
+                session.commit()
+
+                for attr, index in zip(attributes, range(len(attributes))):
+                    question = session.query(Question).filter_by(evaluation_type=eval_type,evaluation_year=eval_year,order_value=index).one_or_none()
+                    answer_obj = {
+                        'answer_id': answer_id,
+                        'option_text': attr,
+                        'question_id': question.question_id,
+                    }
+                    answer_obj = Eval_Answer(**answer_obj)
+                    session.add(answer_obj)
+                session.commit()
+            
+            return jsonify({'success': True}), 200
+
+    except Exception as e:
+        print(e)
+        print(traceback.format_exc())
+        return jsonify({'error': str(e)}), 400
+    finally:
+        session.close()
+
+############################################################
 # Error Handling                                           #
 ############################################################
 @app.errorhandler(404)

@@ -43,9 +43,11 @@ import { setCurrentTab } from '../state';
                     <Toolbar>
                         <div style={{width: '100%'}}>
                             <div style={{float: 'left'}}>
+                                <a href="/" style={{float: 'left', color: 'white'}}>
                                 <Typography variant="body1" style={{marginTop: '13px'}}>
                                     Baylor Journalism Internships Site
                                 </Typography>
+                                </a>
                             </div>
                             <div style={{float: 'right'}}>
                                 <IconButton component={NavLink} to={"/"}>
