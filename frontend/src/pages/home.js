@@ -103,7 +103,7 @@ export default class Home extends React.Component {
                                     <TableCell style={{width: '75px'}}>Year</TableCell>
                                     <TableCell style={{width: '100px'}}>Version</TableCell>
                                     <TableCell style={{width: '200px'}}>Duplicate</TableCell>
-                                    <TableCell>Upload</TableCell>
+                                    <TableCell>CSV Upload</TableCell>
                                     <TableCell>View Evaluation</TableCell>
                                     <TableCell>Take Evaluation</TableCell>
                                 </TableRow>
