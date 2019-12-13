@@ -231,7 +231,7 @@ const Question = observer(class Question extends React.Component {
                             <div key={option.id} style={{padding: '8px', height: '100px', width: '100%',display: 'flex'}}>
                                 {/* Need to keep this drag element */}
                                 <IconButton variant="contained" color="primary" type="button" style={{margin: '4px', float: 'left'}}>
-                                    <a href="#"><DragHandleIcon/></a>
+                                    <a><DragHandleIcon/></a>
                                 </IconButton>
                                 <Option id={option.id} 
                                 value={option}
