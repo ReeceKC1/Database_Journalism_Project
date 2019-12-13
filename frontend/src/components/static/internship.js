@@ -73,7 +73,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         }else{
             this.internshipState.startSubmitable= false;
             this.internshipState.startDateTimeout = setTimeout(() => {
-                this.internshipState.startError = 'Format Ex: Jan 2020';
+                this.internshipState.startError = 'Invalid Format. Ex: Jan 2020';
             }, 1000);
         }
         this.props.viewEvaluationState.internship_state.errorFree= (this.internshipState.hoursSubmitable 
@@ -98,7 +98,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         }else{
             this.internshipState.endSubmitable= false;
             this.internshipState.endDateTimeout = setTimeout(() => {
-                this.internshipState.endError = 'Format Ex: Jan 2020';
+                this.internshipState.endError = 'Invalid Format. Ex: Jan 2020';
             }, 1000);
         }
         this.props.viewEvaluationState.internship_state.errorFree= (this.internshipState.hoursSubmitable 
@@ -123,6 +123,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
                         label="Start Month"
                         error = {this.internshipState.startError !== ''}
                         helperText = {this.internshipState.startError}
+                        placeholder="Jan 2020"
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => {this.startChange(event.target.value)}}
                         />
@@ -133,6 +134,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
                         style={style}
                         error = {this.internshipState.endError !== ''}
                         helperText = {this.internshipState.endError}
+                        placeholder="Jan 2020"
                         label="End Month"
                         InputProps={this.props.viewEvaluationState.readOnly}
                         onChange={(event) => {this.endChange(event.target.value)}}

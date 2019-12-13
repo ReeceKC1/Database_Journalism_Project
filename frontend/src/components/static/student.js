@@ -136,7 +136,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
         }else{
             this.studentState.semesterSubmitable= false;
             this.studentState.semesterTimeout = setTimeout(() => {
-                    this.studentState.semesterError='Format Ex: Spring 2020'; 
+                    this.studentState.semesterError='Invalid Format. Ex: Fall 2020'; 
             }, 1000);
         }
         this.props.viewEvaluationState.student_state.errorFree = (this.studentState.semesterSubmitable 
@@ -236,6 +236,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             style={style}
                             error = {this.studentState.semesterError !== ''}
                             helperText = {this.studentState.semesterError}
+                            placeholder = "Fall 2020"
                             value={this.props.viewEvaluationState.student_state.semester_of_completion}
                             label="Semester of completion"
                             InputProps={this.props.viewEvaluationState.readOnly}
