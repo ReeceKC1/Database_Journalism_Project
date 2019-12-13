@@ -53,7 +53,7 @@ import { setCurrentTab } from '../state';
                                 <IconButton component={NavLink} to={"/"}>
                                     <HomeIcon style={{color: 'white'}}/>
                                 </IconButton>
-                                <IconButton component={NavLink} to={"/create"}>
+                                <IconButton component={NavLink} to={"/create"} title="Create new evaluation">
                                     <AddIcon style={{color: 'white'}}/>
                                 </IconButton>
                             </div>
