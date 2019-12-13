@@ -15,7 +15,9 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
             hoursSubmitable: true,
             startSubmitable: true,
             endSubmitable: true,
-            timeout: null
+            startDateTimeout: null,
+            endDateTimeout : null,
+            hoursTimeout : null
         }
     }
 
@@ -46,13 +48,13 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
 
     hoursChange = (value) => {
         this.props.viewEvaluationState.internship_state.hours = value;
-        clearTimeout(this.internshipState.timeout);
+        clearTimeout(this.internshipState.hoursTimeout);
         if (/^([1-9][0-9]?[0-9]?)$/.test(value) || value === ''){
             this.internshipState.hoursError = '';
             this.internshipState.hoursSubmitable= true;
         }else{
             this.internshipState.hoursSubmitable= false;
-            this.internshipState.timeout = setTimeout(() => {
+            this.internshipState.hoursTimeout = setTimeout(() => {
                 this.internshipState.hoursError = 'Invalid number of hours.';
             }, 1000);
         }
@@ -63,14 +65,14 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
 
     startChange = (value) => {
         this.props.viewEvaluationState.internship_state.start_date = value;
-        clearTimeout(this.internshipState.timeout);
+        clearTimeout(this.internshipState.startDateTimeout);
         if (/^((Jan |Feb |Mar |Apr |May |Jun |Jul |Aug |Sep |Oct |Nov |Dec )20)\d{2}$/.test(value) || value === ''){
             this.internshipState.startError = '';
             this.internshipState.startSubmitable= true;
             this.endChange(this.props.viewEvaluationState.internship_state.end_date);//to update if time range is bad
         }else{
             this.internshipState.startSubmitable= false;
-            this.internshipState.timeout = setTimeout(() => {
+            this.internshipState.startDateTimeout = setTimeout(() => {
                 this.internshipState.startError = 'Format Ex: Jan 2020';
             }, 1000);
         }
@@ -82,20 +84,20 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
 
     endChange = (value) => {
         this.props.viewEvaluationState.internship_state.end_date = value;
-        clearTimeout(this.internshipState.timeout);
+        clearTimeout(this.internshipState.endDateTimeout);
         if (/^((Jan |Feb |Mar |Apr |May |Jun |Jul |Aug |Sep |Oct |Nov |Dec )20)\d{2}$/.test(value) || value === ''){ 
             if(this.isGoodRange(value)){
                 this.internshipState.endError = '';
                 this.internshipState.endSubmitable= true;
             }else{
                 this.internshipState.endSubmitable= false;
-                this.internshipState.timeout = setTimeout(() => {
+                this.internshipState.endDateTimeout = setTimeout(() => {
                     this.internshipState.endError = 'Internship must end after it begins.';
                 }, 1000);
             }
         }else{
             this.internshipState.endSubmitable= false;
-            this.internshipState.timeout = setTimeout(() => {
+            this.internshipState.endDateTimeout = setTimeout(() => {
                 this.internshipState.endError = 'Format Ex: Jan 2020';
             }, 1000);
         }
