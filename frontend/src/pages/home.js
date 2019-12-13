@@ -134,7 +134,7 @@ export default class Home extends React.Component {
                                             </Button>
                                         </TableCell>
                                         <TableCell>
-                                            <input type='file' id='fileToLoad' accept='csv' name='file' onChange={(e) => {this.loadFileAsText(row.year,row.eval_type, e)}}></input>
+                                            <input style={{width: '90px'}} type='file' id='fileToLoad' accept='csv' name='file' onChange={(e) => {this.loadFileAsText(row.year,row.eval_type, e); e.target.value = null}}/>
                                         </TableCell>
                                         <TableCell>
                                             <Button variant="outlined" color="primary"

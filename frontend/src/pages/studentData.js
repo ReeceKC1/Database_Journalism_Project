@@ -94,14 +94,12 @@ const StudentData = observer(class StudentData extends React.Component {
     }
 
     filterEvals = (e) => {
-        console.log('e',e)
         this.dataState.filteredAnswers = []
         for (let i = 0; i < this.dataState.answers.length; i++) {
             if (this.dataState.answers[i].answer.eval_type.includes(e) || this.dataState.answers[i].answer.eval_year.includes(e)){
                 this.dataState.filteredAnswers.push(this.dataState.answers[i])
             }
         }
-        console.log(this.dataState.filteredAnswers)
     }
 
     render() {
