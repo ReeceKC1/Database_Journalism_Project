@@ -306,6 +306,8 @@ def get_answer():
 def upload_file():
     session = Session()
 
+    print(request.json)
+
     try:
         json = request.json
         eval_type = json['eval_type']

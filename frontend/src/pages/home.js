@@ -42,26 +42,27 @@ export default class Home extends React.Component {
         return displayType;
     }
 
-    loadFileAsText(year, type){
-    var fileToLoad = document.getElementById("fileToLoad").files[0];
-    let payload ={
-        eval_type: type,
-        eval_year: year,
-        file: 'no data'
-        }
-    var fileReader = new FileReader();
-    fileReader.onload = function(fileLoadedEvent){
-        var textFromFileLoaded = fileLoadedEvent.target.result;
-        payload.file = textFromFileLoaded;
-        console.log('loaded',payload);
+    loadFileAsText(year, type, e){
+        var fileToLoad = e.target.files[0];
+        let payload ={
+            eval_type: type,
+            eval_year: year,
+            file: 'no data'
+            }
+        var fileReader = new FileReader();
+        fileReader.readAsText(new Blob([fileToLoad]), "UTF-8");
+        fileReader.onload = function(fileLoadedEvent){
+            var textFromFileLoaded = fileLoadedEvent.target.result;
+            payload.file = textFromFileLoaded;
+            console.log('loaded',payload);
 
-        axios.post('http://localhost:5000/api/file-upload', payload)
-        .then(response => {
-            console.log(response);
-        }).catch(error => console.log('here',error));
-    };
+            axios.post('http://localhost:5000/api/file-upload', payload)
+            .then(response => {
+                console.log(response);
+            }).catch(error => console.log('here',error));
+        };
 
-    fileReader.readAsText(fileToLoad, "UTF-8");
+       
     }
 
     render() {
@@ -133,7 +134,7 @@ export default class Home extends React.Component {
                                             </Button>
                                         </TableCell>
                                         <TableCell>
-                                            <input type='file' id='fileToLoad' accept='csv' name='file' onChange={(e) => {this.loadFileAsText(row.year,row.eval_type)}}></input>
+                                            <input type='file' id='fileToLoad' accept='csv' name='file' onChange={(e) => {this.loadFileAsText(row.year,row.eval_type, e)}}></input>
                                         </TableCell>
                                         <TableCell>
                                             <Button variant="outlined" color="primary"

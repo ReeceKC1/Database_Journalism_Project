@@ -5,22 +5,26 @@ import { observer } from 'mobx-react';
 const AddAnswer = observer(class AddAnswer extends React.Component {
     buildAnswers = () => {
         let answers = []
-        for (let i = 0; i < this.props.answer.answers.length; i++) {
-            answers.push(
-                <Paper key={i} style={{padding: '5px', width: '100%', marginBottom: '5px'}}>
-                    <Typography variant='h6'>
-                        {this.props.questions[i].question_text}
-                    </Typography>
-                    <Typography style={{marginLeft: '20px'}}>
-                        > {this.props.answer.answers[i].option_text}
-                    </Typography>
-                    {this.props.answer.eval_type === 'portfolio_eval' &&
-                    <Typography style={{marginLeft: '20px'}}>
-                        > {this.props.answer.answers[i].comment_text.comment_text}
-                    </Typography>
-                    }
-                </Paper>
-            )
+        for(let j = 0; j < this.props.questions.length; j++){
+            for (let i = 0; i < this.props.answer.answers.length; i++) {
+                if (this.props.questions[j].question_id === this.props.answer.answers[i].question_id){
+                    answers.push(
+                        <Paper key={i} style={{padding: '5px', width: '100%', marginBottom: '5px'}}>
+                            <Typography variant='h6'>
+                                {this.props.questions[j].question_text}
+                            </Typography>
+                            <Typography style={{marginLeft: '20px'}}>
+                                > {this.props.answer.answers[i].option_text}
+                            </Typography>
+                            {this.props.answer.eval_type === 'portfolio_eval' &&
+                            <Typography style={{marginLeft: '20px'}}>
+                                > {this.props.answer.answers[i].comment_text.comment_text}
+                            </Typography>
+                            }
+                        </Paper>
+                    )
+                }
+            }
         }
         return answers
     }
