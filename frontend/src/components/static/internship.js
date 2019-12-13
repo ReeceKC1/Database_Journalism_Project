@@ -25,7 +25,25 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         return axios.get(url);
     }
 
-    
+    isGoodRange = (end) => {
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let start = this.props.viewEvaluationState.internship_state.start_date;
+        if (start === '' || end === '' || (!this.internshipState.startSubmitable)){
+            return true;
+        }
+        let startYear = parseInt(start.substring(4,8));
+        let endYear = parseInt(end.substring(4,8));
+        if (startYear > endYear){
+            return false;
+        }
+        if (startYear === endYear){
+            let startMonth = start.substring(0,3);
+            let endMonth = end.substring(0,3)
+            return months.indexOf(startMonth) < months.indexOf(endMonth);
+        }
+        return true;
+    }
+
     hoursChange = (value) => {
         this.props.viewEvaluationState.internship_state.hours = value;
         clearTimeout(this.internshipState.timeout);
@@ -42,6 +60,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
             && this.internshipState.startSubmitable 
             && this.internshipState.endSubmitable);
     }
+
     startChange = (value) => {
         this.props.viewEvaluationState.internship_state.start_date = value;
         clearTimeout(this.internshipState.timeout);
@@ -57,13 +76,22 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         this.props.viewEvaluationState.internship_state.errorFree= (this.internshipState.hoursSubmitable 
             && this.internshipState.startSubmitable 
             && this.internshipState.endSubmitable);
+        this.endChange(this.props.viewEvaluationState.internship_state.end_date);//to update if time range is bad
     }
+
     endChange = (value) => {
         this.props.viewEvaluationState.internship_state.end_date = value;
         clearTimeout(this.internshipState.timeout);
-        if (/^((Jan |Feb |Mar |Apr |May |Jun |Jul |Aug |Sep |Oct |Nov |Dec )20)\d{2}$/.test(value) || value === ''){
-            this.internshipState.endError = '';
-            this.internshipState.endSubmitable= true;
+        if (/^((Jan |Feb |Mar |Apr |May |Jun |Jul |Aug |Sep |Oct |Nov |Dec )20)\d{2}$/.test(value) || value === ''){ 
+            if(this.isGoodRange(value)){
+                this.internshipState.endError = '';
+                this.internshipState.endSubmitable= true;
+            }else{
+                this.internshipState.endSubmitable= false;
+                this.internshipState.timeout = setTimeout(() => {
+                    this.internshipState.endError = 'Internship must end after it begins.';
+                }, 1000);
+            }
         }else{
             this.internshipState.endSubmitable= false;
             this.internshipState.timeout = setTimeout(() => {
@@ -74,6 +102,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
             && this.internshipState.startSubmitable 
             && this.internshipState.endSubmitable);
     }
+
     render() {
         let style = {
             width: '90%',
