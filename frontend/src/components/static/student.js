@@ -20,8 +20,10 @@ const StudentForm = observer(class StudentForm extends React.Component {
             emailSubmitable: true,
             semesterError: '',
             semesterSubmitable: true,
-            timeout: null,
-            timeout2: null,
+            autofillTimeout: null,
+            idTimeout: null,
+            emailTimeout: null,
+            semesterTimeout: null,
             fieldSelected: ''
         }
     }
@@ -35,8 +37,8 @@ const StudentForm = observer(class StudentForm extends React.Component {
     }
 
     autoFillStudent= (value) =>{
-        clearTimeout(this.studentState.timeout);
-        this.studentState.timeout = setTimeout(() => {
+        clearTimeout(this.studentState.autofillTimeout);
+        this.studentState.autofillTimeout = setTimeout(() => {
             this.checkStudent(value).then((response) => {
                 if(response.data.length == 1){
                     let student = response.data[0];
@@ -91,7 +93,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
     idChange = (value) => {
         this.studentState.fieldSelected = 'student_id';
         this.props.viewEvaluationState.student_state.student_id = value;
-        clearTimeout(this.studentState.timeout2);
+        clearTimeout(this.studentState.idTimeout);
         var pattern = new RegExp("^[0-9]*$");
         if (pattern.test(value) || value === ''){
             this.studentState.idError='';
@@ -99,7 +101,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
             this.autoFillStudent(value);
         }else{
             this.studentState.idSubmitable = false;
-            this.studentState.timeout2 = setTimeout(() => {
+            this.studentState.idTimeout = setTimeout(() => {
                     this.studentState.idError='Invalid Baylor ID number.';
             }, 1000);
         }
@@ -111,13 +113,13 @@ const StudentForm = observer(class StudentForm extends React.Component {
 
     emailChange = (value) => {
         this.props.viewEvaluationState.student_state.email = value;
-        clearTimeout(this.studentState.timeout);
+        clearTimeout(this.studentState.emailTimeout);
         if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value) || value ==''){
             this.studentState.emailError='';
             this.studentState.emailSubmitable= true;
         }else{
             this.studentState.emailSubmitable= false;
-            this.studentState.timeout = setTimeout(() => {
+            this.studentState.emailTimeout = setTimeout(() => {
                     this.studentState.emailError='Invalid email address.'; 
             }, 1000);
         }
@@ -127,14 +129,14 @@ const StudentForm = observer(class StudentForm extends React.Component {
     }
     semesterChange = (value) => {
         this.props.viewEvaluationState.student_state.semester_of_completion = value;
-        clearTimeout(this.studentState.timeout);
+        clearTimeout(this.studentState.semesterTimeout);
         if (/^((Spring |Summer |Fall )20)\d{2}$/.test(value) || value ==''){
             this.studentState.semesterError='';
             this.studentState.semesterSubmitable= true;
         }else{
             this.studentState.semesterSubmitable= false;
-            this.studentState.timeout = setTimeout(() => {
-                    this.studentState.semesterError='Format Ex: Spring 2020'; 
+            this.studentState.semesterTimeout = setTimeout(() => {
+                    this.studentState.semesterError='Invalid Format. Ex: Fall 2020'; 
             }, 1000);
         }
         this.props.viewEvaluationState.student_state.errorFree = (this.studentState.semesterSubmitable 
@@ -234,6 +236,7 @@ const StudentForm = observer(class StudentForm extends React.Component {
                             style={style}
                             error = {this.studentState.semesterError !== ''}
                             helperText = {this.studentState.semesterError}
+                            placeholder = "Fall 2020"
                             value={this.props.viewEvaluationState.student_state.semester_of_completion}
                             label="Semester of completion"
                             InputProps={this.props.viewEvaluationState.readOnly}
