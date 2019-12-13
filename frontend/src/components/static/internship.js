@@ -67,6 +67,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         if (/^((Jan |Feb |Mar |Apr |May |Jun |Jul |Aug |Sep |Oct |Nov |Dec )20)\d{2}$/.test(value) || value === ''){
             this.internshipState.startError = '';
             this.internshipState.startSubmitable= true;
+            this.endChange(this.props.viewEvaluationState.internship_state.end_date);//to update if time range is bad
         }else{
             this.internshipState.startSubmitable= false;
             this.internshipState.timeout = setTimeout(() => {
@@ -76,7 +77,7 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
         this.props.viewEvaluationState.internship_state.errorFree= (this.internshipState.hoursSubmitable 
             && this.internshipState.startSubmitable 
             && this.internshipState.endSubmitable);
-        this.endChange(this.props.viewEvaluationState.internship_state.end_date);//to update if time range is bad
+        
     }
 
     endChange = (value) => {
