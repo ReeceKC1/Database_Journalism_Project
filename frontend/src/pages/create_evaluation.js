@@ -341,16 +341,16 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
               );
           }
         return (
-            <div className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
+            <div style={{paddingTop: '65px'}} className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
                 <Typography variant="h3">
                     Create Evaluation
                 </Typography>
                 
                 <div style={{padding: '10px'}}>
-                    <Typography variant="h3" style={{marginTop: '10px'}}>
+                    <Typography variant="h5" style={{marginTop: '10px'}}>
                         Evaluation Form Information
                     </Typography>
-                    <p style= {{fontSize: '12px', color:'grey'}}>All fields are required.</p>
+                    <p style= {{fontSize: '12px', color:'grey', marginLeft: '10px'}}>All fields are required.</p>
                     {/* Title */}
                     <Grid  container spacing={1} alignItems ="center" direction="column">
                         <Grid item style = {{width: '100%'}}>
