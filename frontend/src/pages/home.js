@@ -98,11 +98,11 @@ export default class Home extends React.Component {
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Title</TableCell>
-                                    <TableCell>Evaluation Type</TableCell>
-                                    <TableCell>Year</TableCell>
-                                    <TableCell>Version</TableCell>
-                                    <TableCell>Duplicate</TableCell>
+                                    <TableCell style={{width: '275px'}}>Title</TableCell>
+                                    <TableCell style={{width: '175px'}}>Evaluation Type</TableCell>
+                                    <TableCell style={{width: '75px'}}>Year</TableCell>
+                                    <TableCell style={{width: '100px'}}>Version</TableCell>
+                                    <TableCell style={{width: '200px'}}>Duplicate</TableCell>
                                     <TableCell>Upload</TableCell>
                                     <TableCell>View Evaluation</TableCell>
                                     <TableCell>Take Evaluation</TableCell>
@@ -114,11 +114,11 @@ export default class Home extends React.Component {
                                 <TableBody >
                                 {rows.map(row => (
                                     <TableRow key={row.year + row.eval_type}>
-                                        <TableCell>{row.title}</TableCell>
-                                        <TableCell>{this.convertTypeToName(row.eval_type)}</TableCell>
-                                        <TableCell>{row.year}</TableCell>
-                                        <TableCell>{row.version}</TableCell>
-                                        <TableCell>
+                                        <TableCell style={{width: '275px'}}>{row.title}</TableCell>
+                                        <TableCell style={{width: '175px'}}>{this.convertTypeToName(row.eval_type)}</TableCell>
+                                        <TableCell style={{width: '75px'}}>{row.year}</TableCell>
+                                        <TableCell style={{width: '100px'}}>{row.version}</TableCell>
+                                        <TableCell style={{width: '200px'}}>
                                             <Button variant="outlined" color="primary"
                                                 component={Link}
                                                 to={{
