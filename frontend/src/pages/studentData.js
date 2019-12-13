@@ -180,6 +180,12 @@ const StudentData = observer(class StudentData extends React.Component {
                     </Paper>
                     {this.makeEvals()}
                 </div>}
+                {this.dataState.loading &&
+                <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
+                    <Typography variant='h4' style={{marginLeft: '40%'}}>
+                        Loading...
+                    </Typography>
+                </div>}
             </div>
         );
     }
