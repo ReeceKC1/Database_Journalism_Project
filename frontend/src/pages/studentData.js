@@ -8,6 +8,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddAnswer from '../components/studentData/addAnswer'
+import { globalState } from '../state'
+import LoadingIcon from '../components/loadingIcon'
 
 const StudentData = observer(class StudentData extends React.Component {
     dataState = {}
@@ -45,14 +47,15 @@ const StudentData = observer(class StudentData extends React.Component {
     }
 
     async componentDidMount() {
+        globalState.appState.loadingMessage = 'Loading'
+        globalState.appState.isLoading = true
         this.dataState.loading = true
-        this.dataState.studentLoading = true
         let search = this.props.location.search
         var id = search.match("id=(.+)")[1]
         var student = await this.getStudentData(id).then(response => {return response.data[0]})
 
         this.dataState.student = student
-        this.dataState.studentLoading = false
+        globalState.appState.isLoading = false
 
         var answers = await this.getAnswersByStudent(id).then(response => {return response.data})
 
@@ -103,89 +106,93 @@ const StudentData = observer(class StudentData extends React.Component {
     }
 
     render() {
-        return (
-            <div style={{marginTop: '65px', height: 'calc(100vh - 65px)'}}>
-                {!this.dataState.studentLoading &&
-                <div style={{padding: '15px', width: '300px', height: '100%', float: 'left'}}>
-                    <Paper style={{height: '100%', padding: '10px', overflow: 'auto'}}>
-                        <Grid container spacing={1} alignItems ="center" direction="column">
-                            <Grid item>
-                                <Typography variant="h5">
-                                    <b>
-                                    {this.dataState.student.first_name} {this.dataState.student.last_name}
-                                    </b>
-                                </Typography>
+        if (!globalState.appState.isLoading){
+            return (
+                <div style={{marginTop: '65px', height: 'calc(100vh - 65px)'}}>
+                    <div style={{padding: '15px', width: '300px', height: '100%', float: 'left'}}>
+                        <Paper style={{height: '100%', padding: '10px', overflow: 'auto'}}>
+                            <Grid container spacing={1} alignItems ="center" direction="column">
+                                <Grid item>
+                                    <Typography variant="h5">
+                                        <b>
+                                        {this.dataState.student.first_name} {this.dataState.student.last_name}
+                                        </b>
+                                    </Typography>
+                                </Grid>
+                                <Grid item style={{width: '100%'}}>
+                                    <Typography variant="h6">
+                                        ID
+                                    </Typography>
+                                    <Typography style={{marginLeft: '10px'}}>
+                                        {this.dataState.student.student_id}
+                                    </Typography>
+                                </Grid>
+                                <Grid item style={{width: '100%'}}>
+                                    <Typography variant="h6">
+                                        Email
+                                    </Typography>
+                                    <Typography style={{marginLeft: '10px'}}>
+                                        {this.dataState.student.email}
+                                    </Typography>
+                                </Grid>
+                                <Grid item style={{width: '100%'}}>
+                                    <Typography variant="h6">
+                                        Class Year
+                                    </Typography>
+                                    <Typography style={{marginLeft: '10px'}}>
+                                        {this.dataState.student.class_year}
+                                    </Typography>
+                                </Grid>
+                                <Grid item style={{width: '100%'}}>
+                                    <Typography variant="h6">
+                                        Semester of Completion
+                                    </Typography>
+                                    <Typography style={{marginLeft: '10px'}}>
+                                        {this.dataState.student.semester_of_completion}
+                                    </Typography>
+                                </Grid>
+                                <Grid item style={{width: '100%'}}>
+                                    <Typography variant="h6">
+                                        Grade
+                                    </Typography>
+                                    <Typography style={{marginLeft: '10px'}}>
+                                        {this.dataState.student.grade}
+                                    </Typography>
+                                </Grid>
+                                <Grid item style={{width: '100%'}}>
+                                    <Typography variant="h6">
+                                        PR Major or Minor
+                                    </Typography>
+                                    <Typography style={{marginLeft: '10px'}}>
+                                        {this.dataState.student.pr_major_minor}
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item style={{width: '100%'}}>
-                                <Typography variant="h6">
-                                    ID
-                                </Typography>
-                                <Typography style={{marginLeft: '10px'}}>
-                                    {this.dataState.student.student_id}
-                                </Typography>
-                            </Grid>
-                            <Grid item style={{width: '100%'}}>
-                                <Typography variant="h6">
-                                    Email
-                                </Typography>
-                                <Typography style={{marginLeft: '10px'}}>
-                                    {this.dataState.student.email}
-                                </Typography>
-                            </Grid>
-                            <Grid item style={{width: '100%'}}>
-                                <Typography variant="h6">
-                                    Class Year
-                                </Typography>
-                                <Typography style={{marginLeft: '10px'}}>
-                                    {this.dataState.student.class_year}
-                                </Typography>
-                            </Grid>
-                            <Grid item style={{width: '100%'}}>
-                                <Typography variant="h6">
-                                    Semester of Completion
-                                </Typography>
-                                <Typography style={{marginLeft: '10px'}}>
-                                    {this.dataState.student.semester_of_completion}
-                                </Typography>
-                            </Grid>
-                            <Grid item style={{width: '100%'}}>
-                                <Typography variant="h6">
-                                    Grade
-                                </Typography>
-                                <Typography style={{marginLeft: '10px'}}>
-                                    {this.dataState.student.grade}
-                                </Typography>
-                            </Grid>
-                            <Grid item style={{width: '100%'}}>
-                                <Typography variant="h6">
-                                    PR Major or Minor
-                                </Typography>
-                                <Typography style={{marginLeft: '10px'}}>
-                                    {this.dataState.student.pr_major_minor}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </div>}
-                {!this.dataState.loading &&
-                <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
-                    <Paper style={{width: '100%', backgroundColor: '#cfe8fc', marginBottom: '5px'}}>
-                        <TextField
-                        style={{width: 'calc(100% - 30px)', marginLeft: '15px', marginBottom: '15px'}}
-                        label="Filter by year or type"
-                        onChange={(e) => {this.filterEvals(e.target.value)}}
-                        />
-                    </Paper>
-                    {this.makeEvals()}
-                </div>}
-                {this.dataState.loading &&
-                <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
-                    <Typography variant='h4' style={{marginLeft: '40%'}}>
-                        Loading...
-                    </Typography>
-                </div>}
-            </div>
-        );
+                        </Paper>
+                    </div>
+                    {!this.dataState.loading &&
+                    <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
+                        <Paper style={{width: '100%', backgroundColor: '#cfe8fc', marginBottom: '5px'}}>
+                            <TextField
+                            style={{width: 'calc(100% - 30px)', marginLeft: '15px', marginBottom: '15px'}}
+                            label="Filter by year or type"
+                            onChange={(e) => {this.filterEvals(e.target.value)}}
+                            />
+                        </Paper>
+                        {this.makeEvals()}
+                    </div>}
+                    {this.dataState.loading &&
+                    <div style={{padding: '5px', overflow: 'auto', width: 'calc(100% - 300px)', height: 'calc(100vh - 65px)', float: 'right'}}>
+                        <LoadingIcon/>
+                    </div>}
+                </div>
+            );
+        }
+        else{
+            return(
+                <LoadingIcon/>
+            )
+        }
     }
 })
 

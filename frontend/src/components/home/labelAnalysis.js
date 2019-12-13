@@ -144,75 +144,79 @@ class LabelAnalysisForm extends React.Component {
     render() {
         return(
             <div style={{height: '100%', width: '100%'}}>
-            <Grid container spacing={2}>
-                {/* Label */}
-                <Grid item xs={2}>
-                    <FormControl>
-                        <TextField
-                        id="label"
-                        label="Label"
-                        helperText="Optional"
-                        value={this.state.label || ''}
-                        onChange={(e) => this.changeLabel(e.target.value)}
-                        />
-                    </FormControl>
-                </Grid>
-
-                {/* Select Type */}
-                <Grid item xs={3}>
-                    {/* Error */}
-                    
-                        <FormControl style={{width: '100%'}} required error={this.state.displayEvalError}>
-                            <InputLabel id="type_label">Evaluation Type</InputLabel>
-                            <Select
-                            labelId="type_label"
-                            id="eval_type"
-                            value={this.state.eval_type || ''}
-                            required={true}
-                            onChange={(e) => this.changeEvalType(e.target.value)}
-                            >
-                                <MenuItem value="student_eval">Student Evaluation</MenuItem>
-                                <MenuItem value="student_onsite_eval">Student On-Site Evaluation</MenuItem>
-                                <MenuItem value="internship_eval">Internship Evaluation</MenuItem>
-                                <MenuItem value="portfolio_eval">Portfolio Evaluation</MenuItem>
-                            </Select>
-                            {this.state.displayEvalError &&
-                            <FormHelperText>Required!</FormHelperText>
-                            }
-                        </FormControl>
-                </Grid>
-
-                {/* Select Year */}
-                <Grid item xs={2}>
-                    {/* Display Error */}
-                    
-                        <FormControl>
-                        <TextField
-                            error={this.state.displayYearError}
-                            id="year"
-                            label="Year"
-                            required={true}
-                            value={this.state.year || ''}
-                            onChange={(e) => this.changeYear(e.target.value)}
+                <Grid container spacing={2}>
+                    {/* Label */}
+                    <Grid item style={{width: '50%'}}>
+                        <FormControl style={{width: '100%'}}>
+                            <TextField
+                            id="label"
+                            label="Label"
+                            style={{width: '100%'}}
+                            helperText="Optional"
+                            value={this.state.label || ''}
+                            onChange={(e) => this.changeLabel(e.target.value)}
                             />
-                            {this.state.displayYearError &&
-                                <FormHelperText style={{color:'red'}}>Required!</FormHelperText>
-                            }
-                    </FormControl>
-                </Grid>
+                        </FormControl>
+                    </Grid>
 
-                {/* Select End Year */}
-                <Grid item xs={2}>
-                    <FormControl>
-                    <TextField
-                        id="endYear"
-                        label="End Year"
-                        helperText="Optional"
-                        value={this.state.end_year || ''}
-                        onChange={(e) => this.changeEndYear(e.target.value)}
-                        />
-                    </FormControl>
+                    {/* Select Type */}
+                    <Grid item style={{width: '50%'}}>
+                        {/* Error */}
+                        
+                            <FormControl style={{width: '100%'}} required error={this.state.displayEvalError}>
+                                <InputLabel id="type_label">Evaluation Type</InputLabel>
+                                <Select
+                                labelId="type_label"
+                                id="eval_type"
+                                value={this.state.eval_type || ''}
+                                required={true}
+                                onChange={(e) => this.changeEvalType(e.target.value)}
+                                >
+                                    <MenuItem value="student_eval">Student Evaluation</MenuItem>
+                                    <MenuItem value="student_onsite_eval">Student On-Site Evaluation</MenuItem>
+                                    <MenuItem value="internship_eval">Internship Evaluation</MenuItem>
+                                    <MenuItem value="portfolio_eval">Portfolio Evaluation</MenuItem>
+                                </Select>
+                                {this.state.displayEvalError &&
+                                <FormHelperText>Required!</FormHelperText>
+                                }
+                            </FormControl>
+                    </Grid>
                 </Grid>
+                <Grid container spacing={2}>
+                    {/* Select Year */}
+                    <Grid item style={{width: 'calc(50% - 100px)'}}>
+                        {/* Display Error */}
+                        
+                            <FormControl style={{width: '100%'}}>
+                            <TextField
+                                error={this.state.displayYearError}
+                                id="year"
+                                label="Year"
+                                style={{width: '100%'}}
+                                required={true}
+                                value={this.state.year || ''}
+                                onChange={(e) => this.changeYear(e.target.value)}
+                                />
+                                {this.state.displayYearError &&
+                                    <FormHelperText style={{color:'red'}}>Required!</FormHelperText>
+                                }
+                        </FormControl>
+                    </Grid>
+
+                    {/* Select End Year */}
+                    <Grid item style={{width: 'calc(50% - 100px)'}}>
+                        <FormControl style={{width: '100%'}}>
+                        <TextField
+                            id="endYear"
+                            label="End Year"
+                            style={{width: '100%'}}
+                            helperText="Optional"
+                            value={this.state.end_year || ''}
+                            onChange={(e) => this.changeEndYear(e.target.value)}
+                            />
+                        </FormControl>
+                    </Grid>
 
                 {/* Go Button */}
                  <Grid item xs={2}>

@@ -6,8 +6,11 @@ import {Link} from 'react-router-dom';
 import ViewEvalByType from '../components/home/viewEvalByType';
 import StudentLookup from '../components/studentData/studentLookup'
 import LabelAnalysisForm from '../components/home/labelAnalysis';
+import { globalState } from '../state'
+import LoadingIcon from '../components/loadingIcon'
+import { observer } from 'mobx-react'
 
-export default class Home extends React.Component {
+const Home = observer(class Home extends React.Component {
     constructor(props) {
         super(props);
 
@@ -18,11 +21,17 @@ export default class Home extends React.Component {
     }
 
     componentDidMount() {
+        globalState.appState.loadingMessage = 'Loading...'
+        globalState.appState.isLoading = true
         axios.get('http://localhost:5000/api/evaluation/get')
         .then(response => {
             let data = response.data;
             this.setState({evaluations: data});
-        }).catch(error => console.log(error));
+            globalState.appState.isLoading = false
+        }).catch(error => {
+            globalState.appState.isLoading = false
+            console.log(error)
+        });
     }
 
     convertTypeToName = (type) =>{
@@ -43,6 +52,8 @@ export default class Home extends React.Component {
     }
 
     loadFileAsText(year, type, e){
+        globalState.appState.loadingMessage = "Uploading CSV"
+        globalState.appState.isLoading = true
         var fileToLoad = e.target.files[0];
         let payload ={
             eval_type: type,
@@ -58,8 +69,12 @@ export default class Home extends React.Component {
 
             axios.post('http://localhost:5000/api/file-upload', payload)
             .then(response => {
+                globalState.appState.isLoading = false
                 console.log(response);
-            }).catch(error => console.log('here',error));
+            }).catch(error => {
+                globalState.appState.isLoading = false
+                console.log('here',error)
+            });
         };
 
        
@@ -94,7 +109,7 @@ export default class Home extends React.Component {
                     }
 
                     {/* Table */}
-                    <div  style={{height: '50%', width: '100%'}}>
+                    <div  style={{height: 'calc(100% - 315px)', width: '100%'}}>
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
@@ -110,8 +125,9 @@ export default class Home extends React.Component {
                             </TableHead>
                         </Table>
                         <div style={{overflowY: 'scroll', height: 'calc(100% - 60px)'}}>
+                            {!globalState.appState.isLoading &&
                             <Table>
-                                <TableBody >
+                                <TableBody>
                                 {rows.map(row => (
                                     <TableRow key={row.year + row.eval_type}>
                                         <TableCell style={{width: '275px'}}>{row.title}</TableCell>
@@ -161,29 +177,39 @@ export default class Home extends React.Component {
                                     </TableRow>
                                 ))}
                                 </TableBody>
-                            </Table>
+                            </Table>}
+                            {globalState.appState.isLoading &&
+                            <LoadingIcon/>}
                         </div>
                     </div>
-                    <div style={{height: '50%'}}>
+                    <div style={{height: '315px'}}>
                             <div style={{float: 'left', width: 'calc(50% - 10px)', margin: '5px', height: '100%'}}>
                                 <Paper style={{padding: '10px', marginBottom: '5px'}}>
                                     <Typography variant='h5'>
                                         Label Analysis
                                     </Typography>
-                                    <LabelAnalysisForm />
+                                    <LabelAnalysisForm/>
                                 </Paper>
-                                <Paper style={{padding: '10px'}}>
+                                <Paper style={{padding: '10px',paddingBottom: '10px'}}>
+                                    <Typography variant='h5'>
+                                        Search Reviews by Type
+                                    </Typography>
                                     <ViewEvalByType/>
                                 </Paper>
                             </div>
 
                             <div style={{float: 'right', width: 'calc(50% - 10px)', margin: '5px', height: '100%'}}>
                                 <Paper style={{padding: '10px', height: 'calc(100% - 15px)'}}>
-                                        <StudentLookup/>
+                                    <Typography variant='h5'>
+                                        Student Lookup
+                                    </Typography>
+                                    <StudentLookup/>
                                 </Paper>
                             </div>
                     </div>
                 </div>
         );
     }
-}
+})
+
+export default Home

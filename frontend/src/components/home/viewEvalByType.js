@@ -52,10 +52,7 @@ export default class ViewEvalByType extends React.Component {
 
         if(!this.state.error) {
             return (
-                <div style={{padding: '10px'}}>
-                    <Typography variant="h5">
-                        Search Reviews by Type
-                    </Typography>
+                <div style={{width: '100%'}}>
                     <Grid container spacing={2}>
                         <Grid item style={{width: 'calc(100% - 80px)'}}>
                             {/* Select Type */}
@@ -87,13 +84,9 @@ export default class ViewEvalByType extends React.Component {
             );
         } else {
             return (
-                <div style={{padding: '10px'}}>
-                    <Typography variant="h5">
-                        Search Reviews by Type
-                    </Typography>
-    
+                <div style={{width: '100%'}}>
                     <Grid container spacing={2}>
-                        <Grid item xs={8}>
+                        <Grid item>
                             {/* Select Type */}
                             <FormControl style={{width: '100%'}} error>
                                 <InputLabel id="type_label">Evaluation Type</InputLabel>
@@ -113,7 +106,7 @@ export default class ViewEvalByType extends React.Component {
                         </Grid>
     
                         {/* Button */}
-                        <Grid item xs={4}>
+                        <Grid item>
                             <Button variant="outlined" color="primary" style={{marginTop: '15px'}}
                                 onClick={() => this.goToType()}>
                                 Go

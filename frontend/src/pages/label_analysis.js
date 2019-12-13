@@ -4,8 +4,11 @@ import { Container, Paper, Typography, TextField, Grid, FormControl, Button, For
 import * as Answers from '../axois/answer';
 import {PieChart, Pie, Sector} from 'recharts';
 import LabelAnalysisForm from '../components/home/labelAnalysis';
+import { globalState } from '../state'
+import LoadingIcon from '../components/loadingIcon'
+import { observer } from 'mobx-react'
 
-export default class LabelAnalysis extends React.Component {
+const LabelAnalysis = observer(class LabelAnalysis extends React.Component {
     constructor(props) {
         super(props);
 
@@ -23,6 +26,8 @@ export default class LabelAnalysis extends React.Component {
 
     // Need to parse through the url to get each value
     componentDidMount() {
+        globalState.appState.loadingMessage = 'Loading...'
+        globalState.appState.isLoading = true
         var search = this.props.location.search;
         var typeRegex = 'type=(.+)&year';
         var yearRegexEnd = 'year=(.+)';
@@ -52,8 +57,11 @@ export default class LabelAnalysis extends React.Component {
 
             Answers.getAnswersByQuestionEvalYear(type[1], year[1], year[1]).then(response => {
                 // console.log(response.data);
+                globalState.appState.isLoading = false
                 this.formatNoLabel(response.data);
-            }).catch(err => console.log('Failed to get answers', err));
+            }).catch(err => {
+                console.log('Failed to get answers', err)
+                globalState.appState.isLoading = false});
         }
         // If just the label is null
          else if(label === null) {
@@ -66,8 +74,10 @@ export default class LabelAnalysis extends React.Component {
 
             Answers.getAnswersByQuestionEvalYear(type[1], year[1], endYear[1]).then(response => {
                 // console.log(response.data);
+                globalState.appState.isLoading = false
                 this.formatNoLabel(response.data);
-            }).catch(err => console.log('Failed to get answers', err));
+            }).catch(err => {console.log('Failed to get answers', err)
+            globalState.appState.isLoading = false});
         } 
         // if just the endYear is null
         else if(endYear === null) {
@@ -81,8 +91,10 @@ export default class LabelAnalysis extends React.Component {
             Answers.getAnswersByQuestionLabelAndEvalYear(type[1], label[1], year[1], year[1])
                 .then(response => {
                     // console.log(response.data);
+                    globalState.appState.isLoading = false
                     this.formatSingleLabel(response.data);
-                }).catch(err => console.log('Failed to get Answers', err));
+                }).catch(err => {console.log('Failed to get Answers', err)
+                globalState.appState.isLoading = false});
         } 
         // All attributes are present
         else {
@@ -97,8 +109,10 @@ export default class LabelAnalysis extends React.Component {
             Answers.getAnswersByQuestionLabelAndEvalYear(type[1], label[1], year[1], endYear[1])
                 .then(response => {
                     // console.log(response.data);
+                    globalState.appState.isLoading = false
                     this.formatSingleLabel(response.data);
-                }).catch(err => console.log('Failed to get Answers', err));
+                }).catch(err => {console.log('Failed to get Answers', err)
+                globalState.appState.isLoading = false});
         }
     }
 
@@ -369,123 +383,135 @@ export default class LabelAnalysis extends React.Component {
             );
         };
 
-        if(this.state.label !== null) {
-            return (
-                <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+        if (!globalState.appState.isLoading){
+            if(this.state.label !== null) {
+                return (
+                    <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                        <Typography variant="h3">
+                            Label Analysis
+                        </Typography>
+                        {/* Search Bar */}
+                        <div style={{marginBottom: '50px'}}>
+                            <LabelAnalysisForm 
+                                label={this.state.label}
+                                eval_type={this.state.type}
+                                year={this.state.year}
+                                end_year={this.state.end_year}
+                            />
+                        </div>
 
-                    {/* Search Bar */}
-                    <div style={{marginBottom: '50px', marginLeft: '100px'}}>
-                        <LabelAnalysisForm 
-                            label={this.state.label}
-                            eval_type={this.state.type}
-                            year={this.state.year}
-                            end_year={this.state.end_year}
-                        />
-                    </div>
-
-                    <Paper style={{padding: '10px'}}>
-                        <Typography variant="h5">Label: {this.state.label}</Typography>
-                        <Typography variant="h5">From: {this.state.year} - {this.state.end_year}</Typography>
-    
-                        {/* Pie Chart */}
-                        <Grid
-                            container
-                            spacing={0}
-                            direction="column"
-                            alignItems="center"
-                            justify="center"
-                            >
-                                <Grid item xs={12}>
-                                {this.state.data.length !== 0 &&
-                                    <PieChart width={500} height={400}>
-                                        
-                                            <Pie 
-                                                activeIndex={this.state.activeIndex}
-                                                activeShape={renderActiveShape} 
-                                                data={this.state.data}
-                                                isAnimationActive={false}
-                                                innerRadius={100}
-                                                outerRadius={120} 
-                                                fill="#3f51b5"
-                                                onMouseEnter={this.onPieEnter}
-                                            />
-                                        
-                                    </PieChart>
-                                }
-
-                                {this.state.data.length === 0 &&
-                                    <Typography variant='h5' centered>
-                                        No Data Found!
-                                    </Typography>
-                                }
-
-                                </Grid>
-    
-                            </Grid>
-                    </Paper>
-                </Container>
-            );
-        } 
-
-        else {
-            return (
-                <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
-                    {/* Search Bar */}
-                    <div style={{marginBottom: '50px', marginLeft: '100px'}}>
-                        <LabelAnalysisForm 
-                            label={this.state.label}
-                            eval_type={this.state.type}
-                            year={this.state.year}
-                            end_year={this.state.end_year}
-                        />
-                    </div>
-
-                    {this.state.noLabel_data.map(data => 
-                        <Paper style={{padding: '10px', marginBottom: '15px'}} key={data.id}>
-                        <Typography variant="h5">Label: {data.name}</Typography>
-                        <Typography variant="h5">From: {this.state.year} - {this.state.end_year}</Typography>
-    
-                        {/* Pie Chart */}
-                        <Grid
-                            container
-                            spacing={0}
-                            direction="column"
-                            alignItems="center"
-                            justify="center"
-                            >
-                                <Grid item xs={12}>
-                                {data.data.length !== 0 &&
-                                    <PieChart width={500} height={400}>
-                                        
-                                            <Pie 
-                                                activeIndex={this.state.activeIndex}
-                                                activeShape={renderActiveShape} 
-                                                data={data.data}
-                                                isAnimationActive={false}
-                                                innerRadius={100}
-                                                outerRadius={120} 
-                                                fill="#3f51b5"
-                                                onMouseEnter={this.onPieEnter}
-                                            />
-                                        
-                                    </PieChart>
-                                }
-
-                                {data.data.length === 0 &&
-                                    <Typography variant='h5' centered>
-                                        No Data Found!
-                                    </Typography>
-                                }
-                                </Grid>
-    
-                            </Grid>
-                    </Paper>
-                        
-                    )}
-                </Container>
-            );
-        }
-
+                        <Paper style={{padding: '10px'}}>
+                            <Typography variant="h5">Label: {this.state.label}</Typography>
+                            <Typography variant="h5">From: {this.state.year} - {this.state.end_year}</Typography>
         
+                            {/* Pie Chart */}
+                            <Grid
+                                container
+                                spacing={0}
+                                direction="column"
+                                alignItems="center"
+                                justify="center"
+                                >
+                                    <Grid item xs={12}>
+                                    {this.state.data.length !== 0 &&
+                                        <PieChart width={500} height={400}>
+                                            
+                                                <Pie 
+                                                    activeIndex={this.state.activeIndex}
+                                                    activeShape={renderActiveShape} 
+                                                    data={this.state.data}
+                                                    isAnimationActive={false}
+                                                    innerRadius={100}
+                                                    outerRadius={120} 
+                                                    fill="#3f51b5"
+                                                    onMouseEnter={this.onPieEnter}
+                                                />
+                                            
+                                        </PieChart>
+                                    }
+
+                                    {this.state.data.length === 0 &&
+                                        <Typography variant='h5' centered>
+                                            No Data Found!
+                                        </Typography>
+                                    }
+
+                                    </Grid>
+        
+                                </Grid>
+                        </Paper>
+                    </Container>
+                );
+            } 
+
+            else {
+                return (
+                    <Container maxWidth="md" minwidth="sm" style={{marginTop: '75px'}}>
+                        <Typography variant="h3">
+                            Label Analysis
+                        </Typography>
+                        {/* Search Bar */}
+                        <div style={{marginBottom: '50px', width: '98%', marginLeft: '1%'}}>
+                            <LabelAnalysisForm 
+                                label={this.state.label}
+                                eval_type={this.state.type}
+                                year={this.state.year}
+                                end_year={this.state.end_year}
+                            />
+                        </div>
+
+                        {this.state.noLabel_data.map(data => 
+                            <Paper style={{padding: '10px', marginBottom: '15px'}} key={data.id}>
+                            <Typography variant="h5">Label: {data.name}</Typography>
+                            <Typography variant="h5">From: {this.state.year} - {this.state.end_year}</Typography>
+        
+                            {/* Pie Chart */}
+                            <Grid
+                                container
+                                spacing={0}
+                                direction="column"
+                                alignItems="center"
+                                justify="center"
+                                >
+                                    <Grid item xs={12}>
+                                    {data.data.length !== 0 &&
+                                        <PieChart width={500} height={400}>
+                                            
+                                                <Pie 
+                                                    activeIndex={this.state.activeIndex}
+                                                    activeShape={renderActiveShape} 
+                                                    data={data.data}
+                                                    isAnimationActive={false}
+                                                    innerRadius={100}
+                                                    outerRadius={120} 
+                                                    fill="#3f51b5"
+                                                    onMouseEnter={this.onPieEnter}
+                                                />
+                                            
+                                        </PieChart>
+                                    }
+
+                                    {data.data.length === 0 &&
+                                        <Typography variant='h5' centered>
+                                            No Data Found!
+                                        </Typography>
+                                    }
+                                    </Grid>
+        
+                                </Grid>
+                        </Paper>
+                            
+                        )}
+                    </Container>
+                );
+            }
+        }
+        else{
+            return(
+                <LoadingIcon/>
+            )
+        }
     }
-}
+})
+
+export default LabelAnalysis

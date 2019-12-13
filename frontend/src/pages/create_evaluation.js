@@ -8,6 +8,8 @@ import * as Evaluation from '../axois/evaluation';
 import { observable, decorate,toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import { Redirect } from 'react-router-dom';
+import { globalState } from '../state'
+import LoadingIcon from '../components/loadingIcon'
 
 const CreateEvaluation =  observer(class CreateEvaluation extends React.Component {
     createState = {}
@@ -40,6 +42,8 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
 
     // If data was passed in render it
     componentDidMount() {
+        globalState.appState.loadingMessage = "Loading..."
+        globalState.appState.isLoading = true
         if(this.props.location !== undefined 
             && this.props.location.state !== undefined 
             && this.props.location.state !== null
@@ -104,9 +108,14 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                 // Update the State
                 this.createState.createEvaluationState= dupeState;
                 this.yearChange (this.createState.createEvaluationState.year); //this gets the errors to display
+                globalState.appState.isLoading = false
             }).catch(error => {
+                globalState.appState.isLoading = false
                 console.log(error);
             });
+        }
+        else{
+            globalState.appState.isLoading = false
         }
     }
 
@@ -222,6 +231,8 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
     // Handle Submit will format data properly
     handleSubmit = (event) => {
         console.log('I am submitting');
+        globalState.appState.loadingMessage = "Submitting your evaluation"
+        globalState.appState.isLoading = true
         
         // Need to go through each question and option to clean up data 
         // in case it has been imported
@@ -276,6 +287,8 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
             console.log(response);
             this.createState.redirectOnSuccess = true;
           }).catch(error => console.log('here',error));
+
+        globalState.appState.isLoading = false
     };
 
 
@@ -340,105 +353,111 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                 }}></Redirect>
               );
           }
-        return (
-            <div style={{paddingTop: '65px'}} className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
-                <Typography variant="h3">
-                    Create Evaluation
-                </Typography>
-                
-                <div style={{padding: '10px'}}>
-                    <Typography variant="h5" style={{marginTop: '10px'}}>
-                        Evaluation Form Information
+        if (!globalState.appState.isLoading){
+            return (
+                <div style={{paddingTop: '65px'}} className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1">
+                    <Typography variant="h3">
+                        Create Evaluation
                     </Typography>
-                    <p style= {{fontSize: '12px', color:'grey', marginLeft: '10px'}}>All fields are required.</p>
-                    {/* Title */}
-                    <Grid  container spacing={1} alignItems ="center" direction="column">
-                        <Grid item style = {{width: '100%'}}>
-                            <TextField
-                            id="standard-basic"
-                            label="Evaluation Title"
-                            margin="normal"
-                            style={style}
-                            onChange={(event) => this.titleChange(event)}
-                            value={this.createState.createEvaluationState.title}
-                            />
-                        </Grid> 
-
-                        {/* Type */}
-                        <Grid item style = {{width: '100%'}}>
-                        <FormControl fullWidth style={style}>
-                            <InputLabel id="type">Type</InputLabel>
-                            <Select
-                            labelId="type"
-                            style={{width: '100%'}}
-                            value={this.createState.createEvaluationState.eval_type}
-                            onChange={(event) => this.typeChange(event)}
-                            >
-                                <MenuItem value="student_eval">Student Evaluation</MenuItem>
-                                <MenuItem value="student_onsite_eval">Student On-Site Evaluation</MenuItem>
-                                <MenuItem value="internship_eval">Internship Evaluation</MenuItem>
-                                <MenuItem value="portfolio_eval">Portfolio Evaluation</MenuItem>
-                            </Select>
-                        </FormControl>
-                        </Grid>
-
-                        {/* Year */}
-                        <Grid item style = {{width: '100%'}}>
-                            <TextField
-                            id="standard-basic"
-                            label="Year"
-                            margin="normal"
-                            error = {this.createState.yearError != ""}
-                            helperText = {this.createState.yearError}
-                            style={style}
-                            onChange={(event) => this.yearChange(event.target.value)}
-                            value={this.createState.createEvaluationState.year}
-                            />
-                        </Grid>
-
-                        {/* Version */}
-                        <Grid item style = {{width: '100%', marginBottom: '10px'}}>
-                            <TextField
-                            id="standard-basic"
-                            label="Version"
-                            margin="normal"
-                            style={style}
-                            value={this.createState.createEvaluationState.version}
-                            readOnly
-                            disabled
-                            />
-                        </Grid>
-                        {/* The real meat and potatoes of the builder */}
-
-                        <Grid item style = {{width: '100%'}}>
-                            {this.createState.createEvaluationState.questions.map((question) => 
-                                <Question 
-                                    question={question} 
-                                    key={question.id}
-                                    createEvaluationState={this.createState.createEvaluationState}
+                    
+                    <div style={{padding: '10px'}}>
+                        <Typography variant="h5" style={{marginTop: '10px'}}>
+                            Evaluation Form Information
+                        </Typography>
+                        <p style= {{fontSize: '12px', color:'grey', marginLeft: '10px'}}>All fields are required.</p>
+                        {/* Title */}
+                        <Grid  container spacing={1} alignItems ="center" direction="column">
+                            <Grid item style = {{width: '100%'}}>
+                                <TextField
+                                id="standard-basic"
+                                label="Evaluation Title"
+                                margin="normal"
+                                style={style}
+                                onChange={(event) => this.titleChange(event)}
+                                value={this.createState.createEvaluationState.title}
                                 />
-                                
-                            )}
-                        </Grid>
+                            </Grid> 
 
-                        <Grid item style = {{width: '100%', marginBottom: '25px'}}>
-                            <Typography>
-                                Evaluation Options
-                            </Typography>
-                            <Button style = {{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addQuestion()}>
-                                Add Question
-                            </Button>
-                            <Button style = {{margin: '5px'}} variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} disabled={!this.isSubmitable()}>
-                                Create Evaluation
-                            </Button>
-                            {/* <Button style = {{margin: '5px'}}color="primary"  onClick={() => this.tester()}>
-                                tester
-                            </Button> */}
+                            {/* Type */}
+                            <Grid item style = {{width: '100%'}}>
+                            <FormControl fullWidth style={style}>
+                                <InputLabel id="type">Type</InputLabel>
+                                <Select
+                                labelId="type"
+                                style={{width: '100%'}}
+                                value={this.createState.createEvaluationState.eval_type}
+                                onChange={(event) => this.typeChange(event)}
+                                >
+                                    <MenuItem value="student_eval">Student Evaluation</MenuItem>
+                                    <MenuItem value="student_onsite_eval">Student On-Site Evaluation</MenuItem>
+                                    <MenuItem value="internship_eval">Internship Evaluation</MenuItem>
+                                    <MenuItem value="portfolio_eval">Portfolio Evaluation</MenuItem>
+                                </Select>
+                            </FormControl>
+                            </Grid>
+
+                            {/* Year */}
+                            <Grid item style = {{width: '100%'}}>
+                                <TextField
+                                id="standard-basic"
+                                label="Year"
+                                margin="normal"
+                                error = {this.createState.yearError != ""}
+                                helperText = {this.createState.yearError}
+                                style={style}
+                                onChange={(event) => this.yearChange(event.target.value)}
+                                value={this.createState.createEvaluationState.year}
+                                />
+                            </Grid>
+
+                            {/* Version */}
+                            <Grid item style = {{width: '100%', marginBottom: '10px'}}>
+                                <TextField
+                                id="standard-basic"
+                                label="Version"
+                                margin="normal"
+                                style={style}
+                                value={this.createState.createEvaluationState.version}
+                                readOnly
+                                disabled
+                                />
+                            </Grid>
+                            {/* The real meat and potatoes of the builder */}
+
+                            <Grid item style = {{width: '100%'}}>
+                                {this.createState.createEvaluationState.questions.map((question) => 
+                                    <Question 
+                                        question={question} 
+                                        key={question.id}
+                                        createEvaluationState={this.createState.createEvaluationState}
+                                    />
+                                    
+                                )}
+                            </Grid>
+
+                            <Grid item style = {{width: '100%', marginBottom: '25px'}}>
+                                <Typography>
+                                    Evaluation Options
+                                </Typography>
+                                <Button style = {{margin: '5px'}} variant="contained" color="primary" type="button" onClick={() => this.addQuestion()}>
+                                    Add Question
+                                </Button>
+                                <Button style = {{margin: '5px'}} variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} disabled={!this.isSubmitable()}>
+                                    Create Evaluation
+                                </Button>
+                                {/* <Button style = {{margin: '5px'}}color="primary"  onClick={() => this.tester()}>
+                                    tester
+                                </Button> */}
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </div>
                 </div>
-            </div>
-        );
+            );}
+        else{
+            return(
+                <LoadingIcon/>
+            )
+        }
     }
 })
 

@@ -7,6 +7,8 @@ import * as Evaluation from '../axois/evaluation';
 import { observable, decorate, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import axios from 'axios';
+import { globalState } from '../state'
+import LoadingIcon from '../components/loadingIcon'
 
 const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     viewState = {}
@@ -74,6 +76,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
 
     // Make the call based on params
     componentDidMount() {
+        globalState.appState.isLoading = true
         if(this.props.location !== undefined) {
             let search = this.props.location.search
             var typePatt = "=(.+)&";
@@ -102,9 +105,14 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
                 console.log('Got Eval', response);
 
                 this.viewState.viewEvaluationState.evaluation = data
+                globalState.appState.isLoading = false
             }).catch(error => {
+                globalState.appState.isLoading = false
                 console.log(error);
             });
+        }
+        else{
+            globalState.appState.isLoading = false
         }
     }
     
@@ -152,6 +160,8 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
     }
 
     submit = (e) => {
+        globalState.appState.loadingMessage = "Submitting your evaluation"
+        globalState.appState.isLoading = true
         e.stopPropagation();
         let structure = toJS(this.viewState.viewEvaluationState)
         let final = {}
@@ -184,8 +194,9 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         console.log(JSON.stringify(final))
         axios.post('http://localhost:5000/api/answer/evaluation', final).then(response => {
             console.log(response);
+            globalState.appState.isLoading = false
             this.viewState.submittedSuccessfully = true;
-        });
+        }).catch(error => globalState.appState.isLoading = false);
     }
 
     render() {
@@ -204,7 +215,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             );
         }
 
-        if(this.viewState.viewEvaluationState.evaluation !== null) {
+        if(!globalState.appState.isLoading) {
             return (
                 <div style={{width: '98%', marginLeft: '1%', marginTop: '75px'}}>
                     <Grid container spacing={1} alignItems ="center" direction="column">
@@ -235,9 +246,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
             );
         } else {
             return (
-                <Container maxWidth="md" minwidth="sm">
-                    Loading...
-                </Container>
+                <LoadingIcon/>
             );
         }
         

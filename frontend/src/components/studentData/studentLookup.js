@@ -53,10 +53,7 @@ const StudentLookup = observer(class StudentLookup extends React.Component {
 
     render() {
         return(
-          <div style={{height: '100%', width: '100%', padding: '10px'}}>
-              <Typography variant='h5'>
-                  Student Lookup
-              </Typography>
+          <div style={{height: '100%', width: '100%'}}>
               <TextField
               style={{width: 'calc(100% - 95px)'}}
               label="ID or Name"
