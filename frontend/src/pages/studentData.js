@@ -35,14 +35,17 @@ const StudentData = observer(class StudentData extends React.Component {
     }
 
     getStudentData = (id) => {
+        console.log('get student data')
         return axios.get(`http://localhost:5000/api/student/check/${id}`)
     }
 
     getAnswersByStudent = (id) => {
+        console.log('get answers by student')
         return axios.get(`http://localhost:5000/api/answer/get?student_id=${id}`)
     }
 
     getEvaluationByAnswers = (type, year) => {
+        console.log('get eval by answers')
         return axios.get(`http://localhost:5000/api/evaluation/get?type=${type}&year=${year}`)
     }
 
