@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
     Button, Snackbar, Typography, Paper, } from '@material-ui/core/';
+import { amber, green } from '@material-ui/core/colors';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import ViewEvalByType from '../components/home/viewEvalByType';
@@ -16,7 +17,9 @@ const Home = observer(class Home extends React.Component {
 
         this.state = {
             evaluations: [],
-            alertOpen : true
+            alertOpen : true,
+            uploadSuccess : false,
+            failedUpload: false
         };
     }
 
@@ -51,7 +54,7 @@ const Home = observer(class Home extends React.Component {
         return displayType;
     }
 
-    loadFileAsText(year, type, e){
+    loadFileAsText = (year, type, e) => {
         globalState.appState.loadingMessage = "Uploading CSV"
         globalState.appState.isLoading = true
         var fileToLoad = e.target.files[0];
@@ -62,7 +65,7 @@ const Home = observer(class Home extends React.Component {
             }
         var fileReader = new FileReader();
         fileReader.readAsText(new Blob([fileToLoad]), "UTF-8");
-        fileReader.onload = function(fileLoadedEvent){
+        fileReader.onload  = (fileLoadedEvent) => {
             var textFromFileLoaded = fileLoadedEvent.target.result;
             payload.file = textFromFileLoaded;
             console.log('loaded',payload);
@@ -70,9 +73,11 @@ const Home = observer(class Home extends React.Component {
             axios.post('http://localhost:5000/api/file-upload', payload)
             .then(response => {
                 globalState.appState.isLoading = false
+                this.setState({uploadSuccess: true})
                 console.log(response);
             }).catch(error => {
                 globalState.appState.isLoading = false
+                this.setState({failedUpload: true})
                 console.log('here',error)
             });
         };
@@ -102,11 +107,32 @@ const Home = observer(class Home extends React.Component {
                         }}
                         open={this.state.alertOpen}
                         autoHideDuration={5000}
-                        variant='success'
                         onClose={() => this.setState({alertOpen: false})}
                         message={<span id="message-id">Evaluation Created Successfully!</span>}
                         />
                     }
+                    
+                        <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={this.state.uploadSuccess}
+                        autoHideDuration={5000}
+                        onClose={() => this.setState({uploadSuccess: false})}
+                        message={<span id="message-id">Successfully uploaded CSV</span>}
+                        />
+                        <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={this.state.failedUpload}
+                        autoHideDuration={5000}
+                        onClose={() => this.setState({failedUpload: false})}
+                        message={<span id="message-id">CSV upload failed. Check format.</span>}
+                        />
+                    
 
                     {/* Table */}
                     <div  style={{height: 'calc(100% - 315px)', width: '100%'}}>
