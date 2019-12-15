@@ -2,7 +2,7 @@ import { Grid, Paper, TextField, Typography, Button } from '@material-ui/core';
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable, decorate } from 'mobx'
-import axios from 'axios';
+import { getStudentData } from '../../axois/misc';
 import {Link} from 'react-router-dom';
 
 const StudentLookup = observer(class StudentLookup extends React.Component {
@@ -21,7 +21,7 @@ const StudentLookup = observer(class StudentLookup extends React.Component {
     }
 
     async submit() {
-        var students = await axios.get(`http://localhost:5000/api/student/check/${this.studentLookupState.id}`).catch((error) => {
+        var students = await getStudentData(this.studentLookupState.id).catch((error) => {
             this.studentLookupState.students = []
         })
         if (students){

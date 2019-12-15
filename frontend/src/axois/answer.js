@@ -16,3 +16,7 @@ export function getAnswersByQuestionEvalYear(type, start_year, end_year) {
         + '&start_year=' + start_year + '&end_year=' + end_year;
     return axios.get(url);
 }
+
+export function answerEvaluation(package){
+    return axios.post('http://localhost:5000/api/answer/evaluation', package)
+}

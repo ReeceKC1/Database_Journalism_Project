@@ -3,7 +3,7 @@ import { Container, TextField, Button, FormControl, InputLabel, Select,
     MenuItem, Typography, Grid } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import Question from '../components/addQuestion';
-import axios from 'axios';
+import { getEvaluationByKey, createEvaluation } from '../axois/evaluation';
 import * as Evaluation from '../axois/evaluation';
 import { observable, decorate,toJS } from 'mobx';
 import { observer } from 'mobx-react';
@@ -157,7 +157,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
                 this.createState.yearSubmitable = true;
             }else{
                 let url = 'http://localhost:5000/api/evaluation/get?type=' +type+'&year='+ value;
-                axios.get(url).then(response => {
+                getEvaluationByKey(type, value).then(response => {
                     console.log(response);
                     this.createState.yearSubmitable = false;             
                     this.createState.yearError = displayType +  ' for ' + value + ' already exists.'; 
@@ -282,7 +282,7 @@ const CreateEvaluation =  observer(class CreateEvaluation extends React.Componen
         console.log(payload);
 
         // Actually Submitting the Data 
-        axios.post('http://localhost:5000/api/evaluation/create', payload)
+        createEvaluation()
         .then(response => {
             console.log(response);
             this.createState.redirectOnSuccess = true;

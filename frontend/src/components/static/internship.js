@@ -1,7 +1,7 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from 'mobx-react';
-import axios from 'axios';
+import { getInternship } from '../../axois/misc';
 import { observable, decorate } from 'mobx'
 
 const InternshipForm = observer(class InternshipForm extends React.Component {
@@ -22,10 +22,6 @@ const InternshipForm = observer(class InternshipForm extends React.Component {
     }
 
     componentDidMount() {}
-    getInternship = (student_id,company_name,start_date) => {
-        let url = 'http://localhost:5000/api/internship/get?student_id=' + student_id + '&company_name=' + company_name + '&start_date=' + start_date;
-        return axios.get(url);
-    }
 
     isGoodRange = (end) => {
         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];

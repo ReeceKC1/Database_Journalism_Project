@@ -3,7 +3,7 @@ import { FormControl, Grid, InputLabel,
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable, decorate } from 'mobx'
-import axios from 'axios';
+import { getStudentData } from '../../axois/misc';
 
 const StudentForm = observer(class StudentForm extends React.Component {
     studentState = {}
@@ -30,16 +30,10 @@ const StudentForm = observer(class StudentForm extends React.Component {
 
     componentDidMount() {}
 
-    checkStudent = (value) => {
-        //   student = axios.get(`http://localhost:5000/api/student/check.${id}`).then(response => {console.log(response)})
-        let url = 'http://localhost:5000/api/student/check/' + value;
-        return axios.get(url);
-    }
-
     autoFillStudent= (value) =>{
         clearTimeout(this.studentState.autofillTimeout);
         this.studentState.autofillTimeout = setTimeout(() => {
-            this.checkStudent(value).then((response) => {
+            getStudentData(value).then((response) => {
                 if(response.data.length == 1){
                     let student = response.data[0];
                     this.studentState.idError = '';

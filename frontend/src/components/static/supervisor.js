@@ -1,7 +1,7 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from 'mobx-react';
-import axios from 'axios';
+import { checkSupervisor } from '../../axois/misc';
 import { observable, decorate } from 'mobx'
 
 const SupervisorForm = observer(class SupervisorForm extends React.Component {
@@ -18,14 +18,10 @@ const SupervisorForm = observer(class SupervisorForm extends React.Component {
 
     componentDidMount() {}
 
-    checkSupervisor = (email) => {
-        let url = 'http://localhost:5000/api/supervisor/check/' + email;
-        return axios.get(url);
-    }
     autoFillSupervisor = (email) =>{
         clearTimeout(this.supervisorState.timeout);
         this.supervisorState.timeout = setTimeout(() => {
-            this.checkSupervisor(email).then((response) => {
+            checkSupervisor(email).then((response) => {
                 let supervisor = response.data;
                 //console.log(supervisor);
                 this.supervisorState.autoFilled = true;

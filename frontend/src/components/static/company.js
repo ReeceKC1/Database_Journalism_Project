@@ -1,7 +1,7 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from '../../../node_modules/mobx-react/dist/mobx-react';
-import axios from 'axios';
+import { getCompany } from '../../axois/misc';
 import { observable, decorate } from 'mobx'
 
 
@@ -17,16 +17,11 @@ const CompanyForm = observer(class CompanyForm extends React.Component {
     }
 
     componentDidMount() {}
-
-    checkCompany = (name) => {
-        let url = 'http://localhost:5000/api/company/check/' + name;
-        return axios.get(url);
-    }
     
     autoFillCompany = (name) =>{
         clearTimeout(this.companyState.timeout);
         this.companyState.timeout = setTimeout(() => {
-            this.checkCompany(name).then((response) => {
+            getCompany(name).then((response) => {
                 let company = response.data;
                 console.log(company);
                 this.companyState.autoFilled = true;

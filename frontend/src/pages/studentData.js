@@ -2,7 +2,7 @@ import { Grid, Paper, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable, decorate } from 'mobx'
-import axios from 'axios';
+import { getStudentData, getAnswersByStudent, getEvaluationByAnswers } from '../axois/misc';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -32,21 +32,6 @@ const StudentData = observer(class StudentData extends React.Component {
             studentLoading: observable,
             filteredAnswers: observable,
         })
-    }
-
-    getStudentData = (id) => {
-        console.log('get student data')
-        return axios.get(`http://localhost:5000/api/student/check/${id}`)
-    }
-
-    getAnswersByStudent = (id) => {
-        console.log('get answers by student')
-        return axios.get(`http://localhost:5000/api/answer/get?student_id=${id}`)
-    }
-
-    getEvaluationByAnswers = (type, year) => {
-        console.log('get eval by answers')
-        return axios.get(`http://localhost:5000/api/evaluation/get?type=${type}&year=${year}`)
     }
 
     async componentDidMount() {

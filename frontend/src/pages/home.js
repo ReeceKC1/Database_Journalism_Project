@@ -2,7 +2,8 @@ import React from 'react';
 import { Container, Table, TableHead, TableRow, TableCell, TableBody,
     Button, Snackbar, Typography, Paper, } from '@material-ui/core/';
 import { amber, green } from '@material-ui/core/colors';
-import axios from 'axios';
+import { getAllEvaluations } from '../axois/evaluation'
+import { postFile } from '../axois/fileUpload'
 import {Link} from 'react-router-dom';
 import ViewEvalByType from '../components/home/viewEvalByType';
 import StudentLookup from '../components/studentData/studentLookup'
@@ -26,8 +27,7 @@ const Home = observer(class Home extends React.Component {
     componentDidMount() {
         globalState.appState.loadingMessage = 'Loading...'
         globalState.appState.isLoading = true
-        axios.get('http://localhost:5000/api/evaluation/get')
-        .then(response => {
+        getAllEvaluations().then(response => {
             let data = response.data;
             this.setState({evaluations: data});
             globalState.appState.isLoading = false
@@ -70,8 +70,7 @@ const Home = observer(class Home extends React.Component {
             payload.file = textFromFileLoaded;
             console.log('loaded',payload);
 
-            axios.post('http://localhost:5000/api/file-upload', payload)
-            .then(response => {
+            postFile(payload).then(response => {
                 globalState.appState.isLoading = false
                 this.setState({uploadSuccess: true})
                 console.log(response);

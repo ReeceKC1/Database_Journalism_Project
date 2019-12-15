@@ -6,7 +6,7 @@ import PortfolioEvalStatic from '../components/static/portfolioEvalStatic';
 import * as Evaluation from '../axois/evaluation';
 import { observable, decorate, toJS } from 'mobx'
 import { observer } from 'mobx-react'
-import axios from 'axios';
+import { answerEvaluation } from '../axois/answer';
 import { globalState } from '../state'
 import LoadingIcon from '../components/loadingIcon'
 
@@ -192,7 +192,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
         
         console.log(JSON.stringify(final))
-        axios.post('http://localhost:5000/api/answer/evaluation', final).then(response => {
+        answerEvaluation(package).then(response => {
             console.log(response);
             globalState.appState.isLoading = false
             this.viewState.submittedSuccessfully = true;
