@@ -40,16 +40,16 @@ const StudentData = observer(class StudentData extends React.Component {
         this.dataState.loading = true
         let search = this.props.location.search
         var id = search.match("id=(.+)")[1]
-        var student = await this.getStudentData(id).then(response => {return response.data[0]})
+        var student = await getStudentData(id).then(response => {return response.data[0]})
 
         this.dataState.student = student
         globalState.appState.isLoading = false
 
-        var answers = await this.getAnswersByStudent(id).then(response => {return response.data})
+        var answers = await getAnswersByStudent(id).then(response => {return response.data})
 
         let evaluation = undefined
         for (let i = 0; i < answers.length; i++){
-            evaluation = await this.getEvaluationByAnswers(answers[i].eval_type, answers[i].eval_year)
+            evaluation = await getEvaluationByAnswers(answers[i].eval_type, answers[i].eval_year)
             evaluation = evaluation.data
             console.log(evaluation)
             this.dataState.answers.push({

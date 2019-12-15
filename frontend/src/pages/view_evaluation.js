@@ -192,7 +192,7 @@ const ViewEvaluation = observer(class ViewEvaluation extends React.Component {
         }
         
         console.log(JSON.stringify(final))
-        answerEvaluation(package).then(response => {
+        answerEvaluation(final).then(response => {
             console.log(response);
             globalState.appState.isLoading = false
             this.viewState.submittedSuccessfully = true;
