@@ -3,8 +3,10 @@ from sqlalchemy.sql import text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+# mysql://zog3xuqpo2u02m31:w6stnkq3v865abui@dno6xji1n8fm828n.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/dakokvhc7gpk9zjn
+
 #  Creating/Getting database
-engine = create_engine('mysql+pymysql://user:password@159.203.125.59:3306/database', pool_size=10, max_overflow=20)
+engine = create_engine('mysql+pymysql://zog3xuqpo2u02m31:w6stnkq3v865abui@dno6xji1n8fm828n.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/dakokvhc7gpk9zjn', pool_size=10, max_overflow=20)
 # Creating metadata object
 # metadata = MetaData()
 # Creating session object
